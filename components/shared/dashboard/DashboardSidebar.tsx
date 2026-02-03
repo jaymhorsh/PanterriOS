@@ -87,29 +87,28 @@ export function DashboardSidebar({
       ? pathname === item.link || pathname.startsWith(item.link + '/')
       : false;
 
+    // Check if this parent has any active children
+    const hasActiveChild = hasChildren && item.children?.some(
+      (child) =>
+        child.link &&
+        (pathname === child.link || pathname.startsWith(child.link + '/')),
+    );
+
     if (hasChildren) {
       return (
         <Collapsible open={isOpen} onOpenChange={() => toggleItem(item.name)}>
           <CollapsibleTrigger asChild>
             <button
               className={cn(
-                'text-accent-foreground flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                level > 0 && 'pl-9',
-                isActive
-                  ? 'bg-blue-100   py-4 text-[#155DFC] font-bold'
-                  : 'text-accent-foreground hover:bg-blue-50',
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors',
+                hasActiveChild
+                  ? 'text-primary-blue font-medium'
+                  : 'text-[#6B7280] hover:bg-accent',
                 isCollapsed && !isMobile && 'justify-center px-2',
               )}
               title={isCollapsed && !isMobile ? item.name : undefined}
             >
-              {isActive && (
-                <span
-                  className={cn(
-                    'h-[80%] rounded-2xl w-4 py-4 -left-2 absolute bg-[#155DFC',
-                  )}
-                ></span>
-              )}
-              {Icon && <Icon className="text-icon h-5 w-5 shrink-0" />}
+              {Icon && <Icon className="h-5 w-5 shrink-0" />}
               {(!isCollapsed || isMobile) && (
                 <>
                   <span className="flex-1 text-left">{item.name}</span>
@@ -133,45 +132,59 @@ export function DashboardSidebar({
       );
     }
 
+    // Child item (level > 0) - no icon
+    if (level > 0) {
+      return (
+        <Link
+          href={item.link || '#'}
+          onClick={isMobile ? onClose : undefined}
+          className={cn(
+            'flex items-center gap-3 rounded-lg p-3 pl-9 transition-colors text-sm',
+            isActive
+              ? 'text-primary-blue font-medium'
+              : 'text-[#6B7280] hover:text-foreground'
+          )}
+        >
+          <span>{item.name}</span>
+        </Link>
+      );
+    }
+
+    // Single item (no children, level 0)
     return (
       <Link
         href={item.link || '#'}
         onClick={isMobile ? onClose : undefined}
         className={cn(
-          'flex items-center gap-3 rounded-md p-3 transition-colors relative overflow-hidden',
-          level > 0 && 'pl-9',
+          'flex items-center gap-3 rounded-lg p-3 transition-colors text-sm',
           isActive
-            ? 'bg-blue-100   py-4 text-[#155DFC] font-bold'
-            : 'text-gray-500 hover:bg-blue-50',
-          isCollapsed && !isMobile && level === 0 && 'justify-center px-2',
+            ? 'text-primary-blue font-medium'
+            : 'text-[#6B7280] hover:bg-accent',
+          isCollapsed && !isMobile && 'justify-center px-2',
         )}
-        title={isCollapsed && !isMobile && level === 0 ? item.name : undefined}
+        title={isCollapsed && !isMobile ? item.name : undefined}
       >
-        {isActive && (
-          <span
-            className={cn(
-              'h-[80%] rounded-2xl w-4 -left-2 absolute bg-[#155DFC] py-4',
-            )}
-          ></span>
-        )}
         {Icon && (
           <Icon
-            className={`h-5 w-5 shrink-0 ${isActive ? 'text-[#155DFC] font-bold' : 'text-icon'} `}
+            className={cn(
+              'h-5 w-5 shrink-0',
+              isActive ? 'text-primary-blue' : ''
+            )}
           />
         )}
-        {(!isCollapsed || isMobile || level > 0) && (
-          <span className="font-sans text-sm font-normal">{item.name}</span>
+        {(!isCollapsed || isMobile) && (
+          <span>{item.name}</span>
         )}
       </Link>
     );
   };
 
   const SidebarContent = () => (
-    <div className=" flex h-full flex-col border">
+    <div className="flex h-full flex-col">
       {/* Logo/Brand */}
       <div
         className={cn(
-          'mx-4 flex h-16 items-center  px-4 py-8 pt-12',
+          'mx-4 flex h-16 items-center px-4 py-8 pt-12 border-b',
           isCollapsed && !isMobile ? 'justify-center' : 'justify-between',
         )}
       >
@@ -208,7 +221,7 @@ export function DashboardSidebar({
         )}
       </div>
 
-      {/* Navigation Items */}
+      {/* Navigation Items - Scrollable */}
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         <div className="space-y-1">
           {navigationItems.map((item) => (
@@ -217,20 +230,20 @@ export function DashboardSidebar({
         </div>
       </nav>
 
-      {/* Account Menu Items */}
-      <div className="p-3 pb-6 flex lg:hidden border-t">
+      {/* Account Menu Items - Always Visible at Bottom */}
+      <div className="p-3 pb-6 border-t">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                'text-accent-foreground hover:bg-accent flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors text-[#6B7280] hover:bg-accent',
                 isCollapsed && !isMobile && 'justify-center px-2',
               )}
               title={isCollapsed && !isMobile ? 'My Account' : undefined}
             >
-              <span className="lg:text-2xl text-lg rounded-full border-2 p-2">
+              <span className="text-lg rounded-full border-2 p-2">
                 AH
-              </span>{' '}
+              </span>
               {(!isCollapsed || isMobile) && (
                 <>
                   <span className="flex-1 text-left">Ahmed Hakimi</span>
@@ -242,7 +255,7 @@ export function DashboardSidebar({
           <DropdownMenuContent
             align={isCollapsed && !isMobile ? 'end' : 'start'}
             side={isCollapsed && !isMobile ? 'right' : 'top'}
-            className="w-56 border-none shadow-lg "
+            className="w-56 border-none shadow-lg"
           >
             {accountMenuItems &&
               accountMenuItems.map((item) => {
@@ -256,7 +269,7 @@ export function DashboardSidebar({
                       className={cn(
                         'flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                         isActive
-                          ? 'bg-accent text-accent-foreground'
+                          ? 'text-primary-blue font-medium'
                           : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
                       )}
                     >
@@ -272,7 +285,7 @@ export function DashboardSidebar({
             <DropdownMenuItem asChild>
               <button
                 onClick={handleLogout}
-                className="flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300"
+                className="flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
               >
                 <LogOut className="h-4 w-4 shrink-0" />
                 <span>Log out</span>
@@ -306,7 +319,7 @@ export function DashboardSidebar({
     <aside className="hidden md:flex md:shrink-0">
       <div
         className={cn(
-          '  flex flex-col rounded-lg transition-all duration-300',
+          'flex flex-col border rounded-lg bg-white transition-all duration-300',
           isCollapsed ? 'w-20' : 'w-64',
         )}
       >

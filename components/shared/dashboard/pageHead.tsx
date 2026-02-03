@@ -15,8 +15,8 @@ export function PageHead({
   return (
     <div className=" flex justify-between items-center container mx-auto">
       <div className={cn('', className)}>
-        <h2 className="lg:text-4xl text-2xl font-bold">{pageTitle}</h2>
-        <p className=" lg:not-only:text-base text-xs ">{subTitle}</p>
+        <h2 className="lg:text-2xl text-2xl text-black font-bold">{pageTitle}</h2>
+        <p className=" lg:not-only:text-base text-[#45556C] mt-0.5 text-xs ">{subTitle}</p>
       </div>
       <div>{children}</div>
     </div>

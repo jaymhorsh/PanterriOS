@@ -1,5 +1,5 @@
 'use client';
-import { ReUseAbleTable } from '@/components/shared/reUseAbleTable';
+import { ReUseAbleTable } from '@/components/shared/reusableTable';
 import { Button } from '@/components/ui/button';
 import { type ColumnDef } from '@tanstack/react-table';
 import { Eye, MapPin } from 'lucide-react';
