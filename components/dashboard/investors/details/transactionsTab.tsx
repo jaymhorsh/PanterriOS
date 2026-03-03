@@ -1,4 +1,4 @@
-import { ReUseAbleTable } from '@/components/shared/reUseAbleTable';
+import { ReUseAbleTable } from '@/components/shared/reusableTable';
 import { ColumnDef } from '@tanstack/react-table';
 interface TransactionsProp {
   date: string;
