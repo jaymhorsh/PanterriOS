@@ -113,7 +113,7 @@ const requiredDoc = [
   '• Financial Projections',
 ];
 
-export function CreateInvestmentForm({ id, step, setStep }: Prop) {
+export function CreateInvestmentForm({ step, setStep }: Prop) {
   const [featureInput, setFeatureInput] = useState('');
   const isLastStep = step === 5;
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { PageHead, StatCard } from '@/components/shared';
-import { ReUseAbleTable } from '@/components/shared/reUseAbleTable';
+import { ReUseAbleTable } from '@/components/shared/reusableTable';
 import { Button } from '@/components/ui/button';
 import { type ColumnDef } from '@tanstack/react-table';
 import {

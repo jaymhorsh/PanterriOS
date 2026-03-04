@@ -2,7 +2,11 @@
 import { CircleCheck, FileText, TriangleAlert } from 'lucide-react';
 import Image from 'next/image';
 
-export default function FormPreview({ previewData }: { previewData: any }) {
+interface FormPreviewProps {
+  previewData: Record<string, unknown>;
+}
+
+export default function FormPreview({ previewData }: FormPreviewProps) {
   return (
     <div className="space-y-6">
       <div className=" px-4 py-3 rounded-lg border">

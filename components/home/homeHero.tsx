@@ -21,7 +21,7 @@ export function HomeHero() {
             size={'lg'}
           >
             {' '}
-            Login to PnterriOS <MoveRight />
+            Login to PanterriOS <MoveRight />
           </Button>
         </Link>
         <div className="flex items-center gap-2 text-red-500 mt-4">

@@ -78,10 +78,12 @@ export function ProfileDetails() {
           <div className=" flex items-end gap-6 ">
             <div className=" w-35 h-35  object-cover object-center items-center rounded-md overflow-hidden">
               {profile?.profileImage ? (
-                <img
+                <Image
                   src={profile.profileImage}
                   alt="Profile"
-                  className="object-center w-full"
+                  width={140}
+                  height={140}
+                  className="object-center w-full h-full"
                 />
               ) : (
                 <Image
@@ -111,9 +113,11 @@ export function ProfileDetails() {
                 <DialogDescription className=" space-y-4 items-center">
                   <div className=" flex gap-4 bg-gray-100 p-2">
                     {profile?.profileImage ? (
-                      <img
+                      <Image
                         src={profile.profileImage}
-                        alt=""
+                        alt="Profile Preview"
+                        width={96}
+                        height={96}
                         className=" w-24 h-24 object-cover object-center items-center rounded-md "
                       />
                     ) : (

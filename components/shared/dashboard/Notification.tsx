@@ -53,27 +53,27 @@ export default function Notification() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9">
-          <Bell className="text-icon h-6 w-6" />
+        <Button variant="ghost" size="icon" className="relative h-10 w-10">
+          <Bell className="h-5 w-5 text-[#6B7280]" />
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
-              className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center p-1.5 text-xs font-normal"
+              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center p-0 text-[10px] font-semibold bg-red-500 border-2 border-white"
             >
               {unreadCount}
             </Badge>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="dark:bg-card w-80 bg-white p-0" align="end">
+      <PopoverContent className="w-80 p-0 bg-white" align="end">
         <div className="flex items-center justify-between border-b p-4">
-          <h3 className="font-semibold">Notifications</h3>
+          <h3 className="font-semibold text-[#111827]">Notifications</h3>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
               size="sm"
               onClick={markAllAsRead}
-              className="text-primary h-auto p-0 text-xs hover:underline"
+              className="h-auto p-0 text-xs text-primary-blue hover:underline hover:bg-transparent"
             >
               Mark all as read
             </Button>
@@ -82,10 +82,10 @@ export default function Notification() {
         <div className="max-h-[400px] overflow-y-auto">
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <BellOff className="text-muted-foreground mb-2 h-12 w-12" />
-              <p className="text-muted-foreground text-sm">No notifications</p>
-              <p className="text-muted-foreground mt-1 text-xs">
-                You`re all caught up!
+              <BellOff className="mb-2 h-12 w-12 text-[#9CA3AF]" />
+              <p className="text-sm text-[#6B7280]">No notifications</p>
+              <p className="mt-1 text-xs text-[#9CA3AF]">
+                You're all caught up!
               </p>
             </div>
           ) : (
@@ -94,7 +94,7 @@ export default function Notification() {
                 <button
                   key={notification.id}
                   onClick={() => markAsRead(notification.id)}
-                  className={`hover:bg-accent w-full p-4 text-left transition-colors`}
+                  className={`w-full p-4 text-left transition-colors hover:bg-gray-50 ${!notification.read ? 'bg-blue-50/50' : ''}`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
