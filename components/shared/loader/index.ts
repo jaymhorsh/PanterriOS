@@ -1,6 +1,7 @@
 export * from './StatCardSkeleton';
 export * from './TableSkeleton';
 export * from './ArticlesPageSkeleton';
+export * from './AIAgentsPageSkeleton';
 export * from './InvestorDetailsSkeleton';
 export * from './UserDetailsSkeleton';
 export * from './ProfilePageSkeleton';
