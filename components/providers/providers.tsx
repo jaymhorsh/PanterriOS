@@ -3,6 +3,7 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from '../ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,10 +21,12 @@ export interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <Toaster richColors position="top-center" />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <Toaster richColors position="top-center" />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </TooltipProvider>
   );
 }

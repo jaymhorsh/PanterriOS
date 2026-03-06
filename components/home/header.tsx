@@ -1,110 +1,57 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoveRight, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import Image from 'next/image';
-import { Button } from '../ui/button';
-import Logo from '@/assets/svg/logo.svg';
-import Icon from '@/assets/icon.png';
+import Link from "next/link";
+import { MoveRight } from "lucide-react";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import Logo from "@/assets/svg/logo.svg";
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="fixed top-0 z-50 w-full ">
-      <header className="bg-transparent w-full  py-3  ">
-        <div className="max-w-7xl mx-auto bg-transparent ">
-          <div className="flex  items-center justify-between lg:h-16">
-            <Link href={'/'}>
-              <div className="flex flex-col items-center gap-2 ">
-                <Image
-                  src={Logo}
-                  alt="PanterriOS Logo"
-                  width={300}
-                  height={100}
-                  priority
-                  className="hidden h-auto w-58 lg:flex"
-                />
+    <div className='fixed w-full top-0'>
+  <header className="w-full py-4 border-b   border-gray-200">
+      <div className="flex items-center px-4 sm:max-w-[95%] sm:px-8 justify-between">
+        {/* Logo */}
+        {/* <Link href={"/"}>
+            <Image
+              src={Logo}
+              alt="PanterriOS Logo"
+              width={120}
+              height={40}
+              priority
+              className="h-auto w-32"
+            />
+          </Link> */}
 
-                <Image
-                  src={Icon}
-                  alt="PanterriOS Logo"
-                  width={30}
-                  height={30}
-                  priority
-                  className="flex h-auto w-8 lg:hidden"
-                />
-                <p className="text-gray-300 text-xs uppercase text-center lg:flex hidden">
-                  Admin Operating System
-                </p>
-              </div>
-            </Link>
-
-            <div className=" items-center gap-4 md:flex">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={'outline'}
-                    size={'lg'}
-                    className="flex items-center lg:py-6 py-3"
-                  >
-                    {' '}
-                    <span> login</span> <MoveRight />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-32 border-none shadow-lg space-y-6 flex flex-col justify-center items-center">
-                  <Link href={'/login'}>
-                    <Button
-                      variant={'outline'}
-                      size={'lg'}
-                      className="flex items-center py-6 px-2 w-fit bg-black text-white "
-                    >
-                      <span>To PanterriOS</span>
-                    </Button>
-                  </Link>
-                  <Link href={''} type="_blank">
-                    <Button
-                      variant={'outline'}
-                      size={'lg'}
-                      className="flex items-center py-6 px-2 w-fit bg-red-500 text-white "
-                    >
-                      {' '}
-                      <span> To Build Core</span>
-                    </Button>
-                  </Link>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="hidden text-white"
-              onClick={() => setIsOpen(!isOpen)}
+        {/* Right side buttons */}
+        <div className="flex items-center self-end flex-1 justify-end gap-4">
+          <Link href={"/login?first-time=true"}>
+            <Button
+              variant="ghost"
+              size="lg"
+              className="text-black font-medium shadow-md rounded-sm border flex items-center py-2 gap-2"
             >
-              {isOpen ? (
-                <X className="h-6 w-6 " />
-              ) : (
-                <Menu className="h-6 w-6 " />
-              )}
-            </button>
-          </div>
+              Login{" "}
+              <span className="text-red-500 text-sm font-medium">
+                *first time
+              </span>
+              <MoveRight className="w-4 h-4" />
+            </Button>
+          </Link>
 
-          {/* Mobile Menu */}
-          {isOpen && (
-            <nav className="flex flex-col items-center justify-center gap-4  md:hidden transition-all absolute w-full bg-white z-30 -translate-x-1/2 left-1/2 ">
-              <div className="flex flex-col gap-3 pt-4">
-                <Button variant={'outline'}> login</Button>
-              </div>
-            </nav>
-          )}
+          <Link href={"/login"}>
+            <Button
+              variant={"destructive"}
+              className="bg-red-600 hover:bg-red-700 rounded-sm   text-white font-medium py-2 px-6"
+              size="lg"
+            >
+              Login to Build Core
+            </Button>
+          </Link>
         </div>
-      </header>
+      </div>
+    </header>
     </div>
+  
   );
 }
