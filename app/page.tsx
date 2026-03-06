@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Header } from '@/components/home/header';
-import HomeHero  from '@/components/home/homeHero';
+import { Header } from "@/components/home/header";
+import HomeHero from "@/components/home/homeHero";
 export default function HomePage() {
   const date = new Date().getFullYear();
 

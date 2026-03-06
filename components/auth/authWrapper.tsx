@@ -1,7 +1,8 @@
 'use client';
 import * as React from 'react';
 import Image from 'next/image';
-import logo from '@/assets/svg/logo.svg';
+import logo from '@/assets/svg/icon.svg';
+
 
 import { Card, CardContent } from '@/components/ui/card';
 
