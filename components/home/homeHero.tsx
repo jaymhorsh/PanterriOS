@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import landingSvg from "@/assets/images/landingPageSvg.png";
+import logo from "@/assets/svg/logo.svg";
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
   MoveRight,
@@ -22,6 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { logout } from "@/services/auth";
 
 interface Feature {
   id: number;
@@ -142,7 +144,7 @@ export default function HomeHero() {
       {/* LEFT SECTION */}
 
       <div className="space-y-8">
-        <p className="text-2xl font-semibold text-black">PanterriOS</p>
+       <Image src={logo} alt="connectors" width={100} height={40} className="object-fit" />
 
         <h1 className="flex flex-col text-5xl font-semibold leading-tight">
           <span className="text-[#000000E5] letter-spacing-wide">
