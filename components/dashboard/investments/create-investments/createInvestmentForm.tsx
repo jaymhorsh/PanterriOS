@@ -32,7 +32,14 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { CalendarIcon, CircleCheck, FileText, Plus, Share } from "lucide-react";
+import {
+  CalendarIcon,
+  CircleCheck,
+  FileText,
+  Plus,
+  Share,
+  Trash2,
+} from "lucide-react";
 import { formatPrice } from "@/utils/formatPrice";
 import FormPreview from "./formPreview";
 import { format } from "date-fns";
@@ -41,6 +48,8 @@ interface Prop {
   step: number;
   setStep: (step: number) => void;
 }
+
+const milestoneStatusValues = ["completed", "in_progress", "upcoming"] as const;
 
 const createInvestmentSchema = z.object({
   propertyName: z.string().min(1, "Property Name is required"),
@@ -62,12 +71,11 @@ const createInvestmentSchema = z.object({
   riskRating: z.string().min(1, "Select Risk Rating"),
   propertyValue: z.number().optional(),
   expectedROI: z.number().optional(),
-  coverimage: z
-    .array(z.instanceof(File))
-    .min(1, "Upload cover image")
+  coverImage: z
+    .instanceof(File, { message: "Upload cover image" })
     .refine(
-      (files) => files.every((file) => file.size <= 5 * 1024 * 1024),
-      "Each file must be less than 5MB",
+      (file) => file.size <= 5 * 1024 * 1024,
+      "Cover image must be less than 5MB",
     ),
   propertyImages: z
     .array(z.instanceof(File))
@@ -88,7 +96,9 @@ const createInvestmentSchema = z.object({
       z.object({
         title: z.string().min(1, "Milestone title is required"),
         date: z.string().min(1, "Milestone date is required"),
-        status: z.string().min(1, "Milestone status is required"),
+        status: z.enum(milestoneStatusValues, {
+          message: "Milestone status must be completed, in_progress, or upcoming",
+        }),
         description: z.string().min(1, "Milestone description is required"),
       }),
     )
@@ -97,6 +107,9 @@ const createInvestmentSchema = z.object({
 
 type CreateInvestmentFormData = z.infer<typeof createInvestmentSchema>;
 type MilestoneItem = CreateInvestmentFormData["projectMilestones"][number];
+type MilestoneInput = Omit<MilestoneItem, "status"> & {
+  status: MilestoneItem["status"] | "";
+};
 
 const typeOptions = [
   { label: "Commercial", value: "commercial" },
@@ -140,12 +153,15 @@ const requiredDoc = [
 export function CreateInvestmentForm({ step, setStep }: Prop) {
   const [featureInput, setFeatureInput] = useState("");
   const [milestoneDate, setMilestoneDate] = useState<Date>();
-  const [milestoneInput, setMilestoneInput] = useState<MilestoneItem>({
+  const [milestoneInput, setMilestoneInput] = useState<MilestoneInput>({
     title: "",
     date: "",
     status: "",
     description: "",
   });
+  const [submitAction, setSubmitAction] = useState<"draft" | "published" | null>(
+    null,
+  );
   const isLastStep = step === 5;
   const { mutateAsync: createInvestmentFn, isPending } = useCreateInvestment();
 
@@ -169,7 +185,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
       riskRating: "",
       propertyValue: 0,
       expectedROI: 0,
-      coverimage: [],
+      coverImage: undefined,
       propertyImages: [],
       legalDocuments: [],
       projectMilestones: [],
@@ -209,7 +225,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
   };
   const isSection3Valid = async () => {
     const result = await form.trigger([
-      "coverimage",
+      "coverImage",
       "propertyImages",
       "legalDocuments",
     ]);
@@ -244,10 +260,20 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
     }
 
     const currentMilestones = form.getValues("projectMilestones");
-    form.setValue("projectMilestones", [...currentMilestones, milestoneInput], {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+    form.setValue(
+      "projectMilestones",
+      [
+        ...currentMilestones,
+        {
+          ...milestoneInput,
+          status: milestoneInput.status as MilestoneItem["status"],
+        },
+      ],
+      {
+        shouldDirty: true,
+        shouldValidate: true,
+      },
+    );
     form.clearErrors("projectMilestones");
 
     setMilestoneInput({
@@ -259,16 +285,32 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
     setMilestoneDate(undefined);
   };
 
+  const handleDeleteMilestone = (indexToDelete: number) => {
+    const currentMilestones = form.getValues("projectMilestones");
+    const updatedMilestones = currentMilestones.filter(
+      (_, index) => index !== indexToDelete,
+    );
+
+    form.setValue("projectMilestones", updatedMilestones, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+
+    if (updatedMilestones.length === 0) {
+      form.setError("projectMilestones", {
+        type: "manual",
+        message: "Add at least one milestone before continuing.",
+      });
+    }
+  };
+
   const onSubmit = async (
     values: CreateInvestmentFormData,
     publicationStatus: "draft" | "published" = "published",
   ) => {
     try {
-      const allPropertyImages = [
-        ...values.propertyImages,
-      ];
-      // first image as cover
-      const coverImageIndex = 0;
+      setSubmitAction(publicationStatus);
+      const allPropertyImages = [...values.propertyImages];
 
       const payload = {
         propertyName: values.propertyName,
@@ -290,7 +332,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
         propertyUnit: values.units.toString(),
         keyHighlights: values.features,
         projectMilestones: values.projectMilestones,
-        coverImage: values.coverimage[0],
+        coverImage: values.coverImage,
         propertyImages: allPropertyImages,
         propertyDocuments: values.legalDocuments,
       };
@@ -299,6 +341,8 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
       setStep(1);
     } catch (error) {
       console.error("Failed to create investment:", error);
+    } finally {
+      setSubmitAction(null);
     }
   };
 
@@ -867,7 +911,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
                 <div className=" grid lg:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="coverimage"
+                    name="coverImage"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2 ">
@@ -875,9 +919,10 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
                         </FormLabel>
                         <FormControl>
                           <FileUpload
-                            value={field.value || []}
-                            onChange={field.onChange}
+                            value={field.value ? [field.value] : []}
+                            onChange={(files) => field.onChange(files[0])}
                             placeholder="Upload the cover image"
+                            single
                           />
                         </FormControl>
 
@@ -1021,7 +1066,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
                         onValueChange={(value) =>
                           setMilestoneInput((prev) => ({
                             ...prev,
-                            status: value,
+                            status: value as MilestoneItem["status"],
                           }))
                         }
                       >
@@ -1100,9 +1145,21 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
                             <h4 className="font-semibold text-black">
                               {milestone.title}
                             </h4>
-                            <span className="text-xs uppercase">
-                              {milestone.status.replace("_", " ")}
-                            </span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs uppercase">
+                                {milestone.status.replace("_", " ")}
+                              </span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-red-500"
+                                onClick={() => handleDeleteMilestone(index)}
+                                aria-label={`Delete milestone ${milestone.title}`}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
                           <p className="text-sm mt-2 text-gray-600">
                             {milestone.description}
@@ -1144,14 +1201,18 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
                     className="flex items-center gap-2"
                   >
                     <FileText className="w-4 h-4" />
-                    Save as Draft
+                    {submitAction === "draft" && isPending
+                      ? "Saving Draft..."
+                      : "Save as Draft"}
                   </Button>
                   <Button
                     type="submit"
                     disabled={isPending}
                     className="flex items-center gap-2"
                   >
-                    {isPending ? "Publishing..." : "Publish Investment"}
+                    {submitAction === "published" && isPending
+                      ? "Publishing..."
+                      : "Publish Investment"}
                     <Share className="w-4 h-4" />
                   </Button>
                 </div>

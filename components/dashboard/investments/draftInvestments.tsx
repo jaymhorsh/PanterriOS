@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { DraftInvestmentItem } from "@/interface";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, MapPin } from "lucide-react";
+import { Clock, Eye, MapPin } from "lucide-react";
 import { InvestmentDetailsView } from "./details/investmentDetailsView";
 import { cn } from "@/lib/utils";
 
@@ -29,19 +29,16 @@ const formatPropertyType = (value: string) =>
 
 const formatDraftId = (value: number) => `D-${value.toString().padStart(3, "0")}`;
 
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
 
 export function DraftInvestments({ data }: DraftInvestmentsProps) {
   const columns: ColumnDef<DraftInvestmentItem>[] = [
     {
       accessorKey: "id",
       header: "draft id",
-      cell: ({ row }) => <div className="font-semibold">{formatDraftId(row.original.id)}</div>,
+      cell: ({ row }) => <div className="flex items-center gap-2 font-semibold">
+        <Clock className='text-orange-400'/>
+        {formatDraftId(row.original.id)}
+        </div>,
     },
     {
       accessorKey: "name",
@@ -104,7 +101,7 @@ export function DraftInvestments({ data }: DraftInvestmentsProps) {
     {
       accessorKey: "lastEdited",
       header: "last edited",
-      cell: ({ row }) => <div className="text-[#62748E]">{formatDate(row.original.lastEdited)}</div>,
+      cell: ({ row }) => <div className="text-[#62748E]">{row.original.lastEdited}</div>,
     },
     {
       accessorKey: "action",

@@ -33,6 +33,7 @@ interface FileUploadProps {
   max?: number; // MB
   showPreview?: boolean;
   enableDrag?: boolean;
+  single?: boolean;
 }
 
 /* ================= SORTABLE ITEM ================= */
@@ -122,6 +123,7 @@ export function FileUpload({
   max = 5,
   showPreview = true,
   enableDrag = false,
+  single = false,
 }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +144,11 @@ export function FileUpload({
         toast.warning(`${file.name} exceeds ${max}MB`);
       }
     });
+
+    if (single) {
+      onChange(validFiles.length > 0 ? [validFiles[0]] : []);
+      return;
+    }
 
     onChange([...value, ...validFiles]);
   };
@@ -223,7 +230,7 @@ export function FileUpload({
       <input
         ref={fileInputRef}
         type="file"
-        multiple
+        multiple={!single}
         accept={
           type === 'video'
             ? 'video/mp4'

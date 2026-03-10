@@ -109,7 +109,7 @@ export default function InvestmentPage() {
       );
     }
 
-    return <DraftInvestments data={draftData?.data || []} />;
+    return <DraftInvestments data={draftData?.data?.data || []} />;
   })();
 
   const tabs = [
@@ -122,7 +122,7 @@ export default function InvestmentPage() {
     {
       title: `Draft `,
       value: "draft",
-      count: draftData?.data?.length || 0,
+      count: draftData?.data?.data?.length || 0,
       content: draftInvestmentsContent,
     },
   ];

@@ -16,7 +16,7 @@ export function useCreateInvestment() {
     onSuccess: (data) => {
       toast.success(data.message || "Investment created successfully");
       queryClient.invalidateQueries({ queryKey: ["investments", "list"] });
-      router.push("/dashboard/investments");
+      router.push("/investments");
     },
   });
 }

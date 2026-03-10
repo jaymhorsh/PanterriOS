@@ -25,7 +25,8 @@ interface DetailsPageViewProp {
   id?: number;
 }
 export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
-  const { data, isLoading, error } = useRetrieveInvestmentDetails(id);
+  const [isOpen, setIsOpen] = useState(false);
+  const { data, isLoading, error } = useRetrieveInvestmentDetails(id, isOpen);
   const [tab, setTab] = useState("overview");
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
 
   return (
     <div>
-      <Drawer direction="right">
+      <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger asChild>{children}</DrawerTrigger>
         <DrawerContent
           className=" lg:data-[vaul-drawer-direction=left]:sm:max-w-xl

@@ -98,7 +98,9 @@ export interface InvestmentListRes {
 
 export interface DraftInvestmentListRes {
   message: string;
-  data: DraftInvestmentItem[];
+  data: {
+    data: DraftInvestmentItem[];
+  };
 }
 
 export interface InvestmentDetails {

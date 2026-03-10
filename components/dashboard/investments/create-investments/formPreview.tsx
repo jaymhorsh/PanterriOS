@@ -13,7 +13,7 @@ interface PreviewData {
   expectedROI?: number;
   duration: string;
   riskRating: string;
-  coverimage?: File[];
+  coverImage?: File;
   propertyImages?: File[];
   legalDocuments?: File[];
   projectMilestones: {
@@ -120,19 +120,17 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
       <div>
         <h2 className="font-semibold mb-2">Cover Image</h2>
         <div className="flex gap-4 flex-wrap">
-          {previewData.coverimage?.map((file: File, index: number) => (
+          {previewData.coverImage ? (
             <Image
-              key={index}
-              src={URL.createObjectURL(file)}
+              src={URL.createObjectURL(previewData.coverImage)}
               alt="img"
               width={100}
               height={100}
               className="h-40 w-40 object-cover rounded"
             />
-          ))}
+          ) : null}
         </div>
       </div>
-
       {/* Property Images */}
       <div>
         <h2 className="font-semibold mb-2">Property Images</h2>
