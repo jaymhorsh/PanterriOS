@@ -48,9 +48,8 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
 
   useEffect(() => {
     const handleInvestmentDeleted = (event: Event) => {
-      const deletedInvestmentId = (
-        event as CustomEvent<{ id: number }>
-      ).detail?.id;
+      const deletedInvestmentId = (event as CustomEvent<{ id: number }>).detail
+        ?.id;
 
       if (deletedInvestmentId === id) {
         setIsOpen(false);
@@ -60,10 +59,7 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
     window.addEventListener("investment-deleted", handleInvestmentDeleted);
 
     return () => {
-      window.removeEventListener(
-        "investment-deleted",
-        handleInvestmentDeleted,
-      );
+      window.removeEventListener("investment-deleted", handleInvestmentDeleted);
     };
   }, [id]);
 
@@ -72,8 +68,6 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
     investmentDetails?.header?.investmentPublicationStatus?.toLowerCase() ??
     "pending";
   const isPublished = publicationStatus === "published";
-
-
 
   const handlePublicationStatus = () => {
     if (!id) return;
@@ -143,18 +137,19 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
     <div>
       <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger asChild>{children}</DrawerTrigger>
-        {isLoading ? (
-          <InvestmentDetailsSkeleton />
-        ) : error ? (
-          <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Unable to load investment details right now.
-          </div>
-        ) : (
-          <DrawerContent
-            className=" py-4 lg:data-[vaul-drawer-direction=left]:sm:max-w-xl
+
+        <DrawerContent
+          className=" py-4 lg:data-[vaul-drawer-direction=left]:sm:max-w-xl
             lg:data-[vaul-drawer-direction=right]:sm:max-w-xl  overflow-hidden overflow-y-auto
             "
-          >
+        >
+          {isLoading ? (
+            <InvestmentDetailsSkeleton />
+          ) : error ? (
+            <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              Unable to load investment details right now.
+            </div>
+          ) : (
             <DrawerHeader>
               <DrawerTitle className="flex justify-between">
                 <div className="w-full">
@@ -220,8 +215,8 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                 ))}
               </Tabs>
             </DrawerHeader>
-          </DrawerContent>
-        )}
+          )}
+        </DrawerContent>
       </Drawer>
     </div>
   );

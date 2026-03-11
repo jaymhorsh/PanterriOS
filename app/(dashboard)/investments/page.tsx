@@ -30,6 +30,7 @@ export default function InvestmentPage() {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [allPage, setAllPage] = useState(1);
+  const [draftPage, setDraftPage] = useState(1);
   const [stateFilter, setStateFilter] = useState<string | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
     undefined,
@@ -42,6 +43,7 @@ export default function InvestmentPage() {
       debounce((value: string) => {
         setDebouncedSearch(value);
         setAllPage(1);
+        setDraftPage(1);
       }, 500),
     [],
   );
@@ -66,7 +68,7 @@ export default function InvestmentPage() {
     isError: isDraftError,
   } = useRetrieveDraftInvestments({
     search: debouncedSearch || undefined,
-    page: 1,
+    page: draftPage,
     limit: 20,
     state: stateFilter,
     investmentStatus: statusFilter,
@@ -90,8 +92,8 @@ export default function InvestmentPage() {
       <AllInvestments
         data={data?.data?.data || []}
         pagination={data?.data?.pagination}
-          currentPage={allPage}
-          onPageChange={setAllPage}
+        currentPage={allPage}
+        onPageChange={setAllPage}
       />
     );
   })();
@@ -109,20 +111,27 @@ export default function InvestmentPage() {
       );
     }
 
-    return <DraftInvestments data={draftData?.data?.data || []} />;
+    return (
+      <DraftInvestments
+        data={draftData?.data?.data || []}
+        pagination={draftData?.data?.pagination}
+        currentPage={draftPage}
+        onPageChange={setDraftPage}
+      />
+    );
   })();
 
   const tabs = [
     {
       title: `All investments`,
       value: "all",
-      count: data?.data?.data.length || 0,
+      count: data?.data?.pagination?.totalItems || 0,
       content: allInvestmentsContent,
     },
     {
       title: `Draft `,
       value: "draft",
-      count: draftData?.data?.data?.length || 0,
+      count: draftData?.data?.pagination?.totalItems || 0,
       content: draftInvestmentsContent,
     },
   ];
@@ -268,6 +277,7 @@ export default function InvestmentPage() {
                     onValueChange={(value) => {
                       filter.setFilter(value === "all" ? undefined : value);
                       setAllPage(1);
+                      setDraftPage(1);
                     }}
                   >
                     <SelectTrigger className="">

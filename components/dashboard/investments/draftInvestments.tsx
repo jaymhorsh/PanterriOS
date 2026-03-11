@@ -15,6 +15,14 @@ import { useState } from "react";
 
 interface DraftInvestmentsProps {
   data: DraftInvestmentItem[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    limit: number;
+  };
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
 const formatCurrency = (value: number) =>
@@ -34,7 +42,12 @@ const formatPropertyType = (value: string) =>
 const formatDraftId = (value: number) =>
   `D-${value.toString().padStart(3, "0")}`;
 
-export function DraftInvestments({ data }: DraftInvestmentsProps) {
+export function DraftInvestments({
+  data,
+  pagination,
+  currentPage,
+  onPageChange,
+}: DraftInvestmentsProps) {
   const router = useRouter();
   const { mutate: deleteInvestment, isPending: isDeleting } =
     useDeleteInvestment();
@@ -183,7 +196,18 @@ export function DraftInvestments({ data }: DraftInvestmentsProps) {
 
   return (
     <div className="space-y-4">
-      <ReUseAbleTable data={data} columns={columns} entityName="drafts" />
+      <ReUseAbleTable
+        data={data}
+        columns={columns}
+        entityName="Drafts"
+        pagination={{
+          currentPage,
+          totalPages: pagination?.totalPages || 1,
+          totalItems: pagination?.totalItems || data.length,
+          limit: pagination?.limit || 20,
+          onPageChange,
+        }}
+      />
 
       <ConfirmationDialog
         open={isDialogOpen}

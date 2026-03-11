@@ -100,6 +100,12 @@ export interface DraftInvestmentListRes {
   message: string;
   data: {
     data: DraftInvestmentItem[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      limit: number;
+    };
   };
 }
 
