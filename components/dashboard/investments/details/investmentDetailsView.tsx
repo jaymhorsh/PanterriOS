@@ -143,21 +143,17 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
             lg:data-[vaul-drawer-direction=right]:sm:max-w-xl  overflow-hidden overflow-y-auto
             "
         >
-          {isLoading ? (
-            <InvestmentDetailsSkeleton />
-          ) : error ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-              Unable to load investment details right now.
-            </div>
-          ) : (
-            <DrawerHeader>
-              <DrawerTitle className="flex justify-between">
+          <DrawerHeader>
+            {/* DrawerTitle must always be present for screen-reader accessibility */}
+            <DrawerTitle className="flex justify-between">
+              {isLoading || error ? (
+                <span className="sr-only">Investment Details</span>
+              ) : (
                 <div className="w-full">
                   <div className="flex gap-14 items-center">
                     <div className="text-xl font-bold">
                       {investmentDetails?.header.propertyName ?? "-"}
                     </div>
-
                     <StatusBadge
                       status={
                         investmentDetails?.header
@@ -171,14 +167,24 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                     <span>{investmentDetails?.header.location ?? "-"}</span>
                   </p>
                 </div>
-                <DrawerClose asChild>
-                  <button type="button" aria-label="Close investment details">
-                    <X />
-                  </button>
-                </DrawerClose>
-              </DrawerTitle>
+              )}
+              <DrawerClose asChild>
+                <button type="button" aria-label="Close investment details">
+                  <X />
+                </button>
+              </DrawerClose>
+            </DrawerTitle>
 
-              <DrawerDescription>
+            <DrawerDescription />
+
+            {isLoading ? (
+              <InvestmentDetailsSkeleton />
+            ) : error ? (
+              <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                Unable to load investment details right now.
+              </div>
+            ) : (
+              <>
                 <div className="flex my-2 justify-between">
                   <Button
                     variant="outline"
@@ -194,28 +200,31 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                   </Button>
                   <div className="w-24" aria-hidden="true" />
                 </div>
-              </DrawerDescription>
 
-              <Tabs value={tab} className="space-y-2 w-full">
-                <TabsList className="flex flex-wrap w-full">
+                <Tabs value={tab} className="space-y-2 w-full">
+                  <TabsList className="flex flex-wrap w-full">
+                    {tabs.map((currentTab) => (
+                      <TabsTrigger
+                        value={currentTab.value}
+                        key={currentTab.value}
+                        onClick={() => setTab(currentTab.value)}
+                      >
+                        {currentTab.title}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
                   {tabs.map((currentTab) => (
-                    <TabsTrigger
+                    <TabsContent
                       value={currentTab.value}
                       key={currentTab.value}
-                      onClick={() => setTab(currentTab.value)}
                     >
-                      {currentTab.title}
-                    </TabsTrigger>
+                      {currentTab.content}
+                    </TabsContent>
                   ))}
-                </TabsList>
-                {tabs.map((currentTab) => (
-                  <TabsContent value={currentTab.value} key={currentTab.value}>
-                    {currentTab.content}
-                  </TabsContent>
-                ))}
-              </Tabs>
-            </DrawerHeader>
-          )}
+                </Tabs>
+              </>
+            )}
+          </DrawerHeader>
         </DrawerContent>
       </Drawer>
     </div>

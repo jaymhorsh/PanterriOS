@@ -170,7 +170,13 @@ export function DraftInvestments({
               type="button"
               variant="outline"
               className="cursor-pointer"
-              onClick={() => router.push(`/investments/${rowId}?edit=true`)}
+              onClick={() =>
+                router.push(
+                  `/investments/${rowId}?edit&propertyName=${encodeURIComponent(
+                    row.original.name,
+                  )}`,
+                )
+              }
             >
               <Edit className="w-5 h-5 inline" />
             </Button>
