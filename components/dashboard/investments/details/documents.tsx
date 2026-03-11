@@ -1,8 +1,12 @@
 import { type InvestmentDocument } from "@/interface";
 import { FileText, Globe, Lock } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 interface DocumentsProps {
   documents: InvestmentDocument[];
+  onToggleVisibility?: (documentId: number) => void;
+  isToggling?: boolean;
+  togglingDocumentId?: number | null;
 }
 
 const formatFileSize = (bytes: number) => {
@@ -15,7 +19,12 @@ const formatFileSize = (bytes: number) => {
   return `${size.toFixed(sizeIndex === 0 ? 0 : 1)} ${sizes[sizeIndex]}`;
 };
 
-export function Documents({ documents }: DocumentsProps) {
+export function Documents({
+  documents,
+  onToggleVisibility,
+  isToggling,
+  togglingDocumentId,
+}: DocumentsProps) {
   return (
     <div className="space-y-4 my-4">
       <div className="font-bold">Legal Documents</div>
@@ -24,7 +33,10 @@ export function Documents({ documents }: DocumentsProps) {
         <div className="text-sm text-gray-500 border rounded-md p-4">No documents available.</div>
       ) : (
         <div className="space-y-3">
-          {documents.map((doc) => (
+          {documents.map((doc) => {
+            const isPublic = doc.isPublic ?? true;
+
+            return (
             <div className="bg-gray-100 p-4 flex justify-between items-center" key={doc.id}>
               <div className="flex items-center gap-2 min-w-0">
                 <div className="bg-white p-2 text-red-500 rounded-md">
@@ -37,15 +49,21 @@ export function Documents({ documents }: DocumentsProps) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {doc.isPublic ? (
+                {isPublic ? (
                   <Globe className="text-green-600 w-4 h-4" />
                 ) : (
                   <Lock className="text-gray-500 w-4 h-4" />
                 )}
-                <p className="text-gray-500 text-sm">{doc.isPublic ? "Public" : "Private"}</p>
+                <p className="text-gray-500 text-sm">{isPublic ? "Public" : "Private"}</p>
+                <Switch
+                  checked={isPublic}
+                  onCheckedChange={() => onToggleVisibility?.(doc.id)}
+                  disabled={Boolean(isToggling && togglingDocumentId === doc.id)}
+                  className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-gray-300"
+                />
               </div>
             </div>
-          ))}
+          )})}
         </div>
       )}
     </div>

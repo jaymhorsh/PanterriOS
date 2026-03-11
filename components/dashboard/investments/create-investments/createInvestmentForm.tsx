@@ -97,7 +97,8 @@ const createInvestmentSchema = z.object({
         title: z.string().min(1, "Milestone title is required"),
         date: z.string().min(1, "Milestone date is required"),
         status: z.enum(milestoneStatusValues, {
-          message: "Milestone status must be completed, in_progress, or upcoming",
+          message:
+            "Milestone status must be completed, in_progress, or upcoming",
         }),
         description: z.string().min(1, "Milestone description is required"),
       }),
@@ -159,9 +160,9 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
     status: "",
     description: "",
   });
-  const [submitAction, setSubmitAction] = useState<"draft" | "published" | null>(
-    null,
-  );
+  const [submitAction, setSubmitAction] = useState<
+    "draft" | "published" | null
+  >(null);
   const isLastStep = step === 5;
   const { mutateAsync: createInvestmentFn, isPending } = useCreateInvestment();
 
@@ -232,6 +233,7 @@ export function CreateInvestmentForm({ step, setStep }: Prop) {
 
     return result;
   };
+
   const isSection4Valid = async () => {
     const milestones = form.getValues("projectMilestones");
     if (milestones.length === 0) {

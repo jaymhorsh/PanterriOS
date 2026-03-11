@@ -6,7 +6,9 @@ import {
   InvestmentListRes,
   RetrieveInvestmentDetailsRes,
   RetrieveInvestmentsQuery,
+  ToggleInvestmentDocumentVisibilityRes,
   UpdateInvestmentReq,
+  UpdateInvestmentPublicationStatusRes,
   UpdateInvestmentRes,
 } from '@/interface';
 import API from '@/services/axios';
@@ -176,6 +178,18 @@ export const updateInvestmentDetails = async (
   appendIfDefined('documentUpdates', payload.documentUpdates);
   appendIfDefined('imageUpdates', payload.imageUpdates);
 
+  if (payload.coverImage) {
+    formData.append('coverImage', payload.coverImage);
+  }
+
+  payload.propertyImages?.forEach((file) => {
+    formData.append('propertyImages', file);
+  });
+
+  payload.propertyDocuments?.forEach((file) => {
+    formData.append('propertyDocuments', file);
+  });
+
   const { data } = await API.put(`/investments/admin/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -187,5 +201,23 @@ export const updateInvestmentDetails = async (
 
 export const deleteInvestment = async (id: number): Promise<CommonRes> => {
   const { data } = await API.delete(`/investments/admin/${id}`);
+  return data;
+};
+
+export const toggleInvestmentDocumentVisibility = async (
+  documentId: number,
+): Promise<ToggleInvestmentDocumentVisibilityRes> => {
+  const { data } = await API.patch(
+    `/investments/admin/documents/${documentId}/toggle-visibility`,
+  );
+
+  return data;
+};
+
+export const updateInvestmentPublicationStatus = async (
+  id: number,
+): Promise<UpdateInvestmentPublicationStatusRes> => {
+  const { data } = await API.patch(`/investments/admin/${id}/publication-status`);
+
   return data;
 };

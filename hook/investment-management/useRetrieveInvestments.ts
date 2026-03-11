@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { retrieveInvestments } from '@/services/investment-management';
+import { useQuery } from "@tanstack/react-query";
+import { retrieveInvestments } from "@/services/investment-management";
 
 export function useRetrieveInvestments({
-  search = '',
+  search = "",
   page = 1,
   limit = 10,
   state,
@@ -20,8 +20,8 @@ export function useRetrieveInvestments({
 }) {
   return useQuery({
     queryKey: [
-      'investments',
-      'list',
+      "investments",
+      "list",
       {
         search,
         page,
@@ -40,6 +40,5 @@ export function useRetrieveInvestments({
         investmentStatus,
         propertyType,
       }),
-    
   });
 }

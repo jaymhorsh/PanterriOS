@@ -251,6 +251,9 @@ export interface UpdateInvestmentReq {
   coverImageIndex?: number;
   documentUpdates?: DocumentUpdate[];
   imageUpdates?: ImageUpdate[];
+  coverImage?: File;
+  propertyImages?: File[];
+  propertyDocuments?: File[];
 }
 
 export interface UpdateInvestmentRes {
@@ -259,4 +262,17 @@ export interface UpdateInvestmentRes {
     id: number;
     investmentPublicationStatus: string;
   };
+}
+
+export interface ToggleInvestmentDocumentVisibilityRes {
+  message: string;
+  data: {
+    id: number;
+    isPublic: boolean;
+    fileUrl: string;
+  };
+}
+
+export interface UpdateInvestmentPublicationStatusRes {
+  message: string;
 }
