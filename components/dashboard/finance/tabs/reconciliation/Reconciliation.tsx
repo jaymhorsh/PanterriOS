@@ -48,7 +48,7 @@ export function Reconciliation() {
 
       return true;
     });
-  }, [filterTime]);
+  }, [filterTime,reconciliationData]);
 
   const handleDownloadCSV = () => {
     // Convert data to CSV format
