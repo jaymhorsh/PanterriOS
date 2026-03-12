@@ -1,7 +1,9 @@
 "use client";
 
-import { FormStepper } from "@/components/dashboard/investments";
-import { EditInvestmentForm } from "@/components/dashboard/investments/edit-investments/editInvestmentForm";
+import {
+  CreateInvestmentForm,
+  FormStepper,
+} from "@/components/dashboard/investments";
 import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -41,10 +43,10 @@ export default function InvestmentByIdPage() {
           <p>Back</p>
           <ChevronLeft className="w-4 h-4" />
         </div>
-        <EditInvestmentForm
+        <CreateInvestmentForm
+          id={investmentId}
           step={step}
           setStep={(nextStep) => setStep(nextStep)}
-          investmentId={investmentId}
         />
       </main>
     </div>
