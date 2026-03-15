@@ -1,26 +1,45 @@
 import { TransactionType } from '@/utils/transactionTypeColors';
+import {
+  type WalletFinanceSummary,
+  type WalletFinanceTransaction,
+  type YieldDisbursementItem,
+} from '@/interface';
 
 export interface Transaction {
-  id: string;
+  id: number;
   reference: string;
+  investorId: number;
   investor: string;
   type: TransactionType;
   amount: number;
   formattedAmount: string;
   date: string;
   time: string;
-  status: 'Completed' | 'Pending' | 'Rejected' | 'Processing';
+  status: string;
+  description?: string;
 }
 
 export interface FinanceStats {
   label: string;
-  value: string;
+  value: number;
   description: string;
   icon: string;
   color: string;
   bgColor: string;
   iconColor: string;
 }
+
+export interface YieldEventRow {
+  reference: string;
+  investorName: string;
+  investorEmail: string;
+  propertyName: string;
+  yieldRate: string;
+  amount: string;
+  disbursedDate: string;
+  status: string;
+}
+
 
 export const FINANCE_TAB_SECTIONS = [
   { id: 'all-transactions', label: 'All Transactions', count: 10 },
