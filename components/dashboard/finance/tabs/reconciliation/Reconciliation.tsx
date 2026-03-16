@@ -5,14 +5,8 @@ import { DUMMY_RECONCILIATION_DATA } from "./data";
 import { reconciliationColumns } from "./reconciliationColumns";
 import { Clock, Download } from "lucide-react";
 import { useState } from "react";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectValue,
-  SelectItem,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ReusableSelect } from "@/components/ui/ReusableSelect";
 
 export function Reconciliation() {
   const reconciliationData = DUMMY_RECONCILIATION_DATA;
@@ -104,20 +98,20 @@ export function Reconciliation() {
             Download Full Reconciliation Report (CSV)
           </Button>
 
-          <Select value={filterTime} onValueChange={setFilterTime}>
-            <SelectTrigger className="rounded-sm items-center bg-white border-[#E5E7EB] h-9 w-40">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[#6B7280]" />
-                <SelectValue placeholder="All Time" />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="today">Today</SelectItem>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="w-40">
+            <ReusableSelect
+              value={filterTime}
+              onChange={setFilterTime}
+              placeholder="All Time"
+              icon={<Clock className="h-4 w-4 text-[#6B7280]" />}
+              items={[
+                { label: "All Time", value: "all" },
+                { label: "Today", value: "today" },
+                { label: "This Week", value: "week" },
+                { label: "This Month", value: "month" },
+              ]}
+            />
+          </div>
         </div>
       </div>
 
