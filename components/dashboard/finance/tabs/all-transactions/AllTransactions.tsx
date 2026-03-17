@@ -63,10 +63,6 @@ export function AllTransactions({
     onCountChange,
   ]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [filterType, filterStatus, filterTime]);
-
   return (
     <div className="w-full space-y-6">
       <TableFilters
