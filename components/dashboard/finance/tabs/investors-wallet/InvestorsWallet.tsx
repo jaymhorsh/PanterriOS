@@ -1,87 +1,108 @@
-'use client';
-import { useMemo } from 'react';
-import { ReUseAbleTable } from '@/components/shared/reusableTable';
-import { DUMMY_TRANSACTIONS } from '../../data';
-import { transactionColumns } from '../all-transactions/transactionColumns';
-import { Transaction } from '../../types';
-
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import { ReUseAbleTable } from "@/components/shared/reusableTable";
+import { TableFilters } from "@/components/shared/TableFilters";
+import { TableSkeleton } from "@/components/shared/loader";
+import { Check } from "lucide-react";
+import {
+  type InvestorWalletStatusFilter,
+  type WalletFinanceSummary,
+} from "@/interface";
+import { useRetrieveInvestorWallets } from "@/hook/wallet-finance";
+import { investorsWalletColumns } from "./investorsWalletColumns";
+import { debounce } from "@/utils/helpers";
 
 interface InvestorsWalletProps {
-  searchValue?: string;
-  filterType?: string;
-  filterStatus?: string;
-  filterTime?: string;
+  onCountChange?: (count: number, summary?: WalletFinanceSummary) => void;
 }
 
-function filterWalletData(
-  transactions: Transaction[],
-  searchValue?: string,
-  filterType?: string,
-  filterStatus?: string,
-  filterTime?: string
-): Transaction[] {
-  return transactions.filter((transaction) => {
-    if (searchValue && searchValue.trim()) {
-      const lowerSearch = searchValue.toLowerCase();
-      const matchesSearch =
-        transaction.reference.toLowerCase().includes(lowerSearch) ||
-        transaction.investor.toLowerCase().includes(lowerSearch) ||
-        transaction.formattedAmount.toLowerCase().includes(lowerSearch);
-      if (!matchesSearch) return false;
-    }
+export function InvestorsWallet({ onCountChange }: InvestorsWalletProps) {
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [page, setPage] = useState(1);
 
-    if (filterType && filterType !== 'all') {
-      if (transaction.type !== filterType) return false;
-    }
-
-    if (filterStatus && filterStatus !== 'all') {
-      if (transaction.status !== filterStatus) return false;
-    }
-
-    if (filterTime && filterTime !== 'all') {
-      const today = new Date();
-      const txnDate = new Date(transaction.date);
-      
-      switch (filterTime) {
-        case 'today':
-          return txnDate.toDateString() === today.toDateString();
-        case 'week':
-          const weekAgo = new Date(today);
-          weekAgo.setDate(weekAgo.getDate() - 7);
-          return txnDate >= weekAgo;
-        case 'month':
-          const monthAgo = new Date(today);
-          monthAgo.setMonth(monthAgo.getMonth() - 1);
-          return txnDate >= monthAgo;
-        default:
-          return true;
-      }
-    }
-
-    return true;
-  });
-}
-
-export function InvestorsWallet({
-  searchValue = '',
-  filterType = 'all',
-  filterStatus = 'all',
-  filterTime = 'all',
-}: InvestorsWalletProps) {
-  const filteredData = useMemo(
-    () => filterWalletData(DUMMY_TRANSACTIONS, searchValue, filterType, filterStatus, filterTime),
-    [searchValue, filterType, filterStatus, filterTime]
+  const debouncedSetSearch = useMemo(
+    () => debounce((val: string) => setDebouncedSearchValue(val), 600),
+    [],
   );
 
+  const status =
+    filterStatus === "all"
+      ? undefined
+      : (filterStatus as InvestorWalletStatusFilter);
+
+  const { data, isLoading } = useRetrieveInvestorWallets({
+    page,
+    limit: 20,
+    status: status,
+    search: debouncedSearchValue || undefined,
+  });
+  const walletsData = data?.data?.data;
+
+  useEffect(() => {
+    onCountChange?.(
+      walletsData?.pagination?.totalItems ?? 0,
+      walletsData?.summary,
+    );
+  }, [
+    walletsData?.pagination?.totalItems,
+    walletsData?.summary,
+    onCountChange,
+  ]);
+
   return (
-    <div className="w-full space-y-4">
-     
+    <div className="w-full space-y-6">
+      <TableFilters
+        searchValue={searchValue}
+        onSearchChange={(value) => {
+          setSearchValue(value);
+          setPage(1);
+          debouncedSetSearch(value);
+        }}
+        searchPlaceholder="Search by investor, code, or email..."
+        title="Investor Wallets"
+        subtitle="View investor wallet balances and account status"
+        filters={[
+          {
+            id: "status",
+            label: "All Status",
+            value: filterStatus,
+            onChange: (value) => {
+              setFilterStatus(value);
+              setPage(1);
+            },
+            icon: <Check className="h-4 w-4 text-[#6B7280]" />,
+            options: [
+              { label: "All Status", value: "all" },
+              { label: "Active", value: "active" },
+              { label: "Suspended", value: "suspended" },
+              { label: "Closed", value: "closed" },
+            ],
+          },
+        ]}
+      />
+
+      {isLoading ? (
+        <TableSkeleton rows={6} columns={6} />
+      ) : (
         <ReUseAbleTable
-          data={filteredData}
-          columns={transactionColumns}
+          data={walletsData?.data ?? []}
+          columns={investorsWalletColumns}
           entityName="investor wallets"
+          pagination={
+            walletsData?.pagination
+              ? {
+                  currentPage: walletsData.pagination.currentPage,
+                  totalPages: walletsData.pagination.totalPages,
+                  totalItems: walletsData.pagination.totalItems,
+                  limit: walletsData.pagination.limit,
+                  onPageChange: setPage,
+                }
+              : undefined
+          }
         />
-    
+      )}
     </div>
   );
 }

@@ -4,3 +4,4 @@ export * from './InvestorDetailsSkeleton';
 export * from './UserDetailsSkeleton';
 export * from './ProfilePageSkeleton';
 export * from './InvestmentDetailsSkeleton';
+export * from './TransactionAuditSkeleton';

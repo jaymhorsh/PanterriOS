@@ -1,27 +1,38 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Transaction } from "../../types";
-import { getTransactionTypeConfig } from "@/utils/transactionTypeColors";
+import {
+  getTransactionTypeConfig,
+  normalizeTransactionType,
+} from "@/utils/transactionTypeColors";
 import { cn } from "@/lib/utils";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { SlideInPanelDrawer } from "@/components/shared";
 import { Eye } from "lucide-react";
 import { TransactionAudit } from "./TransactionAudit";
+import { WalletFinanceTransaction } from "@/interface";
 
-export const transactionColumns: ColumnDef<Transaction>[] = [
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+export const transactionColumns: ColumnDef<WalletFinanceTransaction>[] = [
   {
     accessorKey: "reference",
     header: "Reference",
     cell: ({ row }) => (
       <span className="font-medium text-base text-gray-900">
-        {row.getValue("reference")}
+        {row.original.reference}
       </span>
     ),
   },
   {
-    accessorKey: "investor",
+    accessorKey: "investorName",
     header: "Investor",
     cell: ({ row }) => (
-      <span className="text-gray-700">{row.getValue("investor")}</span>
+      <span className="text-gray-700">{row.original.investorName}</span>
     ),
   },
   {
@@ -29,8 +40,10 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     header: "Type",
     cell: ({ row }) => {
       const type = row.getValue("type") as string;
-      const config = getTransactionTypeConfig(type as unknown as Parameters<typeof getTransactionTypeConfig>[0]);
-      const IconComponent = config.icon as React.ComponentType<{ className: string }>;
+      const config = getTransactionTypeConfig(normalizeTransactionType(type));
+      const IconComponent = config.icon as React.ComponentType<{
+        className: string;
+      }>;
       return (
         <div className="flex items-center gap-2">
           <IconComponent className={cn("h-4 w-4", config.color)} />
@@ -40,26 +53,20 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     },
   },
   {
-    accessorKey: "formattedAmount",
+    accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => (
       <span className="font-semibold text-gray-900">
-        {row.getValue("formattedAmount")}
+        {formatCurrency(row.original.amount)}
       </span>
     ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "dateTime",
     header: "Date & Time",
-    cell: ({ row }) => {
-      const date = row.getValue("date") as string;
-      const time = row.original.time;
-      return (
-        <span className="text-gray-600">
-          {date} {time}
-        </span>
-      );
-    },
+    cell: ({ row }) => (
+      <span className="text-gray-600">{row.original.dateTime}</span>
+    ),
   },
   {
     accessorKey: "status",
@@ -84,7 +91,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           subtitle={transaction.reference}
           width="md"
         >
-          <TransactionAudit transaction={transaction} />
+          <TransactionAudit transactionId={transaction.id} />
         </SlideInPanelDrawer>
       );
     },

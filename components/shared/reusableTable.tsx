@@ -54,6 +54,7 @@ export function ReUseAbleTable<TData extends object>({
   return (
     <div className="w-full">
       <div className="overflow-hidden rounded-lg border border-[#E2E2E2] bg-white shadow-sm">
+        <div className="w-full overflow-x-auto">
         <Table>
           <TableHeader className="bg-white">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -61,7 +62,7 @@ export function ReUseAbleTable<TData extends object>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="h-14 py-3 font-medium text-[#62748E]  px-6 uppercase"
+                    className="h-14 whitespace-nowrap px-4 py-3 font-medium uppercase text-[#62748E] sm:px-6"
                   >
                     {header.isPlaceholder
                       ? null
@@ -79,12 +80,12 @@ export function ReUseAbleTable<TData extends object>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-b min-h-20 capitalize border-[#E2E2E2] hover:bg-[#F9FAFB]/50"
+                  className="border-b min-h-20  border-[#E2E2E2] hover:bg-[#F9FAFB]/50"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="px-6 text-sm font-normal"
+                      className="px-4 text-sm font-normal sm:px-6"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -114,9 +115,10 @@ export function ReUseAbleTable<TData extends object>({
             )}
           </TableBody>
         </Table>
+        </div>
         {/* Pagination */}
         {hasData && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E7EB]">
+          <div className="flex flex-col gap-3 border-t border-[#E5E7EB] px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
             {pagination ? (
               <>
                 <div className="text-sm text-[#6B7280]">
@@ -134,7 +136,7 @@ export function ReUseAbleTable<TData extends object>({
                   </span>{" "}
                   {entityName}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex flex-wrap items-center gap-1">
                   <Button
                     variant="outline"
                     size="sm"
@@ -226,7 +228,7 @@ export function ReUseAbleTable<TData extends object>({
                   </span>{" "}
                   {entityName}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex flex-wrap items-center gap-1">
                   <Button
                     variant="outline"
                     size="sm"

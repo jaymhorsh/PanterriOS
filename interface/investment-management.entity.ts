@@ -121,6 +121,7 @@ export interface InvestmentDetails {
   investors: InvestmentInvestors;
 }
 
+
 export interface InvestmentDetailsHeader {
   propertyName: string;
   location: string;

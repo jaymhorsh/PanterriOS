@@ -1,88 +1,73 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ReUseAbleTable } from "@/components/shared/reusableTable";
 import { transactionColumns } from "./transactionColumns";
-import { Transaction } from "../../types";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { Calendar, Clock, Check } from "lucide-react";
+import {
+  type WalletFinanceSummary,
+  type WalletFinanceTimeRangeFilter,
+  type WalletFinanceTransactionStatusFilter,
+  type WalletFinanceTransactionTypeFilter,
+} from "@/interface";
+import { TableSkeleton } from "@/components/shared";
+import { useRetrieveWalletFinance } from "@/hook/wallet-finance";
+import { debounce } from "@/utils/helpers";
 
-function filterTransactions(
-  transactions: Transaction[],
-  searchValue?: string,
-  filterType?: string,
-  filterStatus?: string,
-  filterTime?: string,
-): Transaction[] {
-  return transactions.filter((transaction) => {
-    // Search filter
-    if (searchValue && searchValue.trim()) {
-      const lowerSearch = searchValue.toLowerCase();
-      const matchesSearch =
-        transaction.reference.toLowerCase().includes(lowerSearch) ||
-        transaction.investor.toLowerCase().includes(lowerSearch) ||
-        transaction.formattedAmount.toLowerCase().includes(lowerSearch);
-      if (!matchesSearch) return false;
-    }
+export function AllTransactions({
+  onCountChange,
+}: {
+  onCountChange?: (count: number, summary?: WalletFinanceSummary) => void;
+}) {
+  const [search, setSearch] = useState("");
 
-    // Type filter
-    if (filterType && filterType !== "all") {
-      if (transaction.type !== filterType) return false;
-    }
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [filterType, setFilterType] =
+    useState<WalletFinanceTransactionTypeFilter>("all");
+  const [filterStatus, setFilterStatus] =
+    useState<WalletFinanceTransactionStatusFilter>("all");
+  const [filterTime, setFilterTime] =
+    useState<WalletFinanceTimeRangeFilter>("all_time");
+  const [page, setPage] = useState(1);
 
-    // Status filter
-    if (filterStatus && filterStatus !== "all") {
-      if (transaction.status !== filterStatus) return false;
-    }
-
-    // Time filter (simple date-based filtering)
-    if (filterTime && filterTime !== "all") {
-      const today = new Date();
-      const txnDate = new Date(transaction.date);
-
-      switch (filterTime) {
-        case "today":
-          return txnDate.toDateString() === today.toDateString();
-        case "week":
-          const weekAgo = new Date(today);
-          weekAgo.setDate(weekAgo.getDate() - 7);
-          return txnDate >= weekAgo;
-        case "month":
-          const monthAgo = new Date(today);
-          monthAgo.setMonth(monthAgo.getMonth() - 1);
-          return txnDate >= monthAgo;
-        default:
-          return true;
-      }
-    }
-
-    return true;
-  });
-}
-
-export function AllTransactions({ data }: { data: Transaction[] }) {
-  const [searchValue, setSearchValue] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterTime, setFilterTime] = useState("all");
-
-  const filteredData = useMemo(
-    () =>
-      filterTransactions(
-        data,
-        searchValue,
-        filterType,
-        filterStatus,
-        filterTime,
-      ),
-    [data, searchValue, filterType, filterStatus, filterTime],
+  const debouncedSetSearch = useMemo(
+    () => debounce((val: string) => setDebouncedSearch(val), 600),
+    [],
   );
+  const { data, isLoading } = useRetrieveWalletFinance({
+    page,
+    limit: 10,
+    type: filterType === "all" ? undefined : filterType,
+    status: filterStatus === "all" ? undefined : filterStatus,
+    timeRange: filterTime === "all_time" ? undefined : filterTime,
+    search: debouncedSearch || undefined,
+  });
+
+  const transactionsData = data?.data;
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+    debouncedSetSearch(value);
+  };
+
+  useEffect(() => {
+    onCountChange?.(
+      transactionsData?.pagination?.totalItems ?? 0,
+      transactionsData?.summary,
+    );
+  }, [
+    transactionsData?.pagination?.totalItems,
+    transactionsData?.summary,
+    onCountChange,
+  ]);
 
   return (
     <div className="w-full space-y-6">
       <TableFilters
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
+        searchValue={search}
+        onSearchChange={handleSearchChange}
         searchPlaceholder="Search..."
         title="All Transactions"
         subtitle="Track all financial transactions"
@@ -91,50 +76,71 @@ export function AllTransactions({ data }: { data: Transaction[] }) {
             id: "type",
             label: "All Types",
             value: filterType,
-            onChange: setFilterType,
+            onChange: (value) =>
+              setFilterType(value as WalletFinanceTransactionTypeFilter),
             icon: <Calendar className="h-4 w-4 text-[#6B7280]" />,
             options: [
               { label: "All Types", value: "all" },
-              { label: "Deposits", value: "Deposit" },
-              { label: "Withdrawals", value: "Withdrawal" },
-              { label: "Investments", value: "Investment" },
-              { label: "Yields", value: "Yield" },
+              { label: "Deposits", value: "deposit" },
+              { label: "Withdrawals", value: "withdrawal" },
+              { label: "Investments", value: "investment" },
+              { label: "Yields", value: "yield" },
+              { label: "Investment Opt Out", value: "investment_opt_out" },
             ],
           },
           {
             id: "status",
             label: "All Status",
             value: filterStatus,
-            onChange: setFilterStatus,
+            onChange: (value) =>
+              setFilterStatus(value as WalletFinanceTransactionStatusFilter),
             icon: <Check className="h-4 w-4 text-[#6B7280]" />,
             options: [
               { label: "All Status", value: "all" },
-              { label: "Completed", value: "Completed" },
-              { label: "Pending", value: "Pending" },
-              { label: "Processing", value: "Processing" },
-              { label: "Rejected", value: "Rejected" },
+              { label: "Completed", value: "completed" },
+              { label: "Pending", value: "pending" },
+              { label: "Processing", value: "processing" },
+              { label: "Approved", value: "approved" },
+              { label: "Rejected", value: "rejected" },
+              { label: "Failed", value: "failed" },
             ],
           },
           {
             id: "time",
             label: "All Time",
             value: filterTime,
-            onChange: setFilterTime,
+            onChange: (value: string) =>
+              setFilterTime(value as WalletFinanceTimeRangeFilter),
             icon: <Clock className="h-4 w-4 text-[#6B7280]" />,
             options: [
-              { label: "All Time", value: "all" },
+              { label: "All Time", value: "all_time" },
               { label: "Today", value: "today" },
-              { label: "This Week", value: "week" },
-              { label: "This Month", value: "month" },
+              { label: "This Week", value: "this_week" },
+              { label: "This Month", value: "this_month" },
             ],
           },
         ]}
       />
-      <ReUseAbleTable
-        data={filteredData}
-        columns={transactionColumns}
-        entityName="transactions"
-      />
+      {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <ReUseAbleTable
+          data={transactionsData?.data ?? []}
+          columns={transactionColumns}
+          entityName="transactions"
+          pagination={
+            transactionsData?.pagination
+              ? {
+                  currentPage: transactionsData.pagination.currentPage,
+                  totalPages: transactionsData.pagination.totalPages,
+                  totalItems: transactionsData.pagination.totalItems,
+                  limit: transactionsData.pagination.limit,
+                  onPageChange: setPage,
+                }
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 }

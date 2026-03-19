@@ -1,15 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { debounce } from "@/utils/helpers";
+import { ReusableSelect } from "@/components/ui/ReusableSelect";
 import { Search, X } from "lucide-react";
 
 export interface FilterOption {
@@ -43,26 +36,22 @@ export function TableFilters({
 }: TableFiltersProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
 
-  const debouncedSearchChange = useMemo(
-    () => debounce((value: string) => onSearchChange(value), 500),
-    [onSearchChange],
-  );
-
   useEffect(() => {
     setLocalSearch(searchValue);
   }, [searchValue]);
 
   return (
-    <div className="flex justify-between gap-4">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
       {/* Header Section */}
-      <div className="px-5 pt-3">
+      <div className="px-1 pt-1 sm:px-5 sm:pt-3">
         <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
         <p className="text-gray-600 text-sm mt-1">{subtitle}</p>
       </div>
 
       {/* Search Bar & Filters Together */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-fit">
-        <div className="relative border rounded-sm shadow-xs w-full sm:w-fit">
+      <div className="flex w-full flex-col gap-3 lg:w-auto lg:min-w-[420px] lg:items-end">
+        <div className="flex w-full flex-col gap-3 lg:justify-end">
+          <div className="relative w-full rounded-sm border shadow-xs lg:max-w-xs">
           <Search className="text-gray-600 pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 transform" />
 
           <Input
@@ -71,9 +60,9 @@ export function TableFilters({
             onChange={(e) => {
               const value = e.target.value;
               setLocalSearch(value);
-              debouncedSearchChange(value);
+              onSearchChange(value);
             }}
-            className="border-border w-40 bg-[#F3F4F6] placeholder:text-[#636363] h-9 pr-8 pl-10 text-sm"
+            className="h-9 w-full border-border bg-[#F3F4F6] pl-10 pr-8 text-sm placeholder:text-[#636363] sm:min-w-[220px]"
             aria-label="Search tasks"
           />
 
@@ -82,7 +71,6 @@ export function TableFilters({
               onClick={() => {
                 setLocalSearch("");
                 onSearchChange("");
-                debouncedSearchChange("");
               }}
               className="absolute top-1/2 right-2 flex -translate-y-1/2 bg-gray-900 p-1 rounded-full cursor-pointer"
               aria-label="Clear search"
@@ -91,33 +79,22 @@ export function TableFilters({
               <X className="text-white h-3.5 w-3.5" />
             </div>
           )}
-        </div>
+          </div>
 
-        {/* Filter Dropdowns */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Filter Dropdowns */}
+          <div className="grid w-full grid-cols-2 gap-2 lg:flex lg:w-auto lg:flex-wrap lg:justify-end">
           {filters.map((filter) => (
-            <Select
-              key={filter.id}
-              value={filter.value}
-              onValueChange={filter.onChange}
-            >
-              <SelectTrigger className="rounded-sm items-center bg-white border-[#E5E7EB] h-9">
-                <div className="flex items-center gap-2">
-                  {filter.icon && (
-                    <span className="text-sm">{filter.icon}</span>
-                  )}
-                  <SelectValue placeholder={filter.label} />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {filter.options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div key={filter.id} className="w-full lg:w-[180px]">
+              <ReusableSelect
+                value={filter.value}
+                onChange={filter.onChange}
+                placeholder={filter.label}
+                items={filter.options}
+                icon={filter.icon}
+              />
+            </div>
           ))}
+          </div>
         </div>
       </div>
     </div>

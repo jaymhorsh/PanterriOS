@@ -8,7 +8,12 @@ import {
   Zap,
 } from "lucide-react";
 
-export type TransactionType = "Deposit" | "Withdrawal" | "Investment" | "Yield";
+export type TransactionType =
+  | "Deposit"
+  | "Withdrawal"
+  | "Investment"
+  | "Yield"
+  | "Investment Opt Out";
 
 export interface TransactionTypeConfig {
   color: string;
@@ -45,12 +50,30 @@ export const TRANSACTION_TYPE_CONFIG: Record<
     icon: Zap,
     label: "Yield",
   },
+  "Investment Opt Out": {
+    color: "text-violet-600",
+    bgColor: "bg-violet-50",
+    icon: ArrowUpRight,
+    label: "Investment Opt Out",
+  },
 };
 
+export function normalizeTransactionType(type: string): TransactionType {
+  const normalizedType = type.trim().toLowerCase();
+
+  if (normalizedType === "deposit") return "Deposit";
+  if (normalizedType === "withdrawal") return "Withdrawal";
+  if (normalizedType === "investment") return "Investment";
+  if (normalizedType === "yield") return "Yield";
+  if (normalizedType === "investment_opt_out") return "Investment Opt Out";
+
+  return "Investment";
+}
+
 export function getTransactionTypeConfig(
-  type: TransactionType,
+  type: TransactionType | string,
 ): TransactionTypeConfig {
-  return TRANSACTION_TYPE_CONFIG[type];
+  return TRANSACTION_TYPE_CONFIG[normalizeTransactionType(type)];
 }
 
 export function getTransactionTypeIcon(type: TransactionType) {
