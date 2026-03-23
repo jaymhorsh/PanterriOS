@@ -1,51 +1,52 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Download, CheckCircle2 } from "lucide-react";
+import { Download, CheckCircle2, Section } from "lucide-react";
 import { StatusBadge, TransactionAuditSkeleton } from "@/components/shared";
 import { useRetrieveTransactionDetails } from "@/hook/wallet-finance";
 import { formatDate } from "@/utils/helpers";
+import { DrawerClose } from "@/components/ui/drawer";
 
 export function TransactionAudit({ transactionId }: { transactionId: number }) {
   const { data, isLoading, error } =
     useRetrieveTransactionDetails(transactionId);
-  const handleDownloadReceipt = () => {
-    // TODO: Implement download receipt functionality
-    // console.log("Downloading receipt for:", transaction.reference);
-  };
+
+  const handleDownloadReceipt = () => {};
+
+  if (isLoading) return <TransactionAuditSkeleton />;
+
+  if (error)
+    return (
+      <div className="p-4 text-sm text-red-500">
+        Failed to load transaction details.
+      </div>
+    );
 
   return (
-    <>
-      {isLoading ? (
-        <TransactionAuditSkeleton />
-      ) : error ? (
-        <div className="text-red-500">Failed to load transaction details.</div>
-      ) : (
-        <>
-          <div className="flex flex-col h-full">
-            {/* Main Content */}
-            <div className="flex-1 overflow-y-auto  p-6 space-y-6">
-              <div className="border bg-gray-100  border-border rounded-lg p-6">
-                <div className="flex justify-between items-end gap-4">
-                  <div className="flex-1">
-                    <p className="text-gray-600 text-sm mb-2">
-                      Transaction Amount
-                    </p>
-                    <p className="text-4xl font-bold text-gray-900">
-                      {data?.amount}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-sm mb-2">Status</p>
-                    <StatusBadge status={data?.status || ""} />
-                  </div>
-                </div>
-              </div>
+    <div className="flex flex-col h-full max-w-2xl mx-auto">
+      {/* SCROLLABLE CONTENT */}
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6">
+        {/* AMOUNT CARD */}
+        <div className="border rounded-lg p-4 bg-gray-50">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-xs text-gray-500">Transaction Amount</p>
+              <p className="text-2xl font-semibold text-gray-900 mt-1">
+                {data?.amount}
+              </p>
+            </div>
 
-              {/* Transaction Details Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Transaction Details
-                </h3>
+            <div>
+              <p className="text-xs text-gray-500 mb-1">Status</p>
+              <StatusBadge status={data?.status || ""} />
+            </div>
+          </div>
+        </div>
+
+        {/* DETAILS */}
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900">
+            Transaction Details
+          </h3>
 
                 <div className="grid grid-cols-1 gap-4">
                   <p className="text-sm text-gray-600 block mb-1">
@@ -56,84 +57,80 @@ export function TransactionAudit({ transactionId }: { transactionId: number }) {
                   </p>
                 </div>
 
-                {/* Date and Time Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="border bg-gray-100 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 block mb-1">Date</p>
-                    <p className="text-base font-semibold text-gray-900">
-                      {data?.date}
-                    </p>
-                  </div>
-                  <div className="border bg-gray-100 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 block mb-1">Time</p>
-                    <p className="text-base font-semibold text-gray-900">
-                      {data?.time}
-                    </p>
-                  </div>
-                </div>
-                {/* Investor Details */}
-                <div className="grid grid-cols-1 gap-4">
-                  <p className="text-sm text-gray-600 block mb-1">
-                    Investor Name
-                  </p>
-                  <p className="text-base font-semibold text-gray-900">
-                    {data?.investorName}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                  <p className="text-sm text-gray-600 block mb-1">
-                    Transaction Type
-                  </p>
-                  <p className="text-base font-semibold text-gray-900">
-                    {data?.type}
-                  </p>
-                </div>
-              </div>
+          {/* Date and Time Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="border bg-gray-100 rounded-lg p-4">
+              <p className="text-sm text-gray-600 block mb-1">Date</p>
+              <p className="text-base font-semibold text-gray-900">
+                {data?.date}
+              </p>
             </div>
-
-            {/* Audit Trail Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Audit Trail
-              </h3>
-              <div className="space-y-4">
-                {data?.auditTrail.map((event, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="mt-1">
-                      <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">
-                        {event.title}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {formatDate(event?.dateTime)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="border bg-gray-100 rounded-lg p-5">
+              <p className="text-sm text-gray-600 block mb-1">Time</p>
+              <p className="text-base font-semibold text-gray-900">
+                {data?.time}
+              </p>
             </div>
           </div>
+          {/* Investor Details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600 block mb-1">Investor Name</p>
+              <p className="text-base font-semibold text-gray-900">
+                {data?.investorName}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 block mb-1">
+                Transaction Type
+              </p>
+              <p className="text-base font-semibold text-gray-900">
+                {data?.type}
+              </p>
+            </div>
+          </div>
+        </section>
+        {/* Audit Trail Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Audit Trail</h3>
+          <div className="space-y-4">
+            {data?.auditTrail.map((event, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="mt-1">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900">{event.title}</p>
+                  <p className="text-sm text-gray-600">
+                    {formatDate(event?.dateTime)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-          <div className="border-t p-6 flex gap-3 bg-white">
+      <div className="border-t bg-white px-4 py-4">
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            className="flex-1 h-11 text-sm flex items-center justify-center gap-2"
+            onClick={handleDownloadReceipt}
+          >
+            <Download className="h-4 w-4" />
+            Download Receipt
+          </Button>
+          <DrawerClose asChild>
             <Button
-              variant="outline"
-              className="flex-1 flex items-center justify-center gap-2 h-11 font-semibold"
-              onClick={handleDownloadReceipt}
-            >
-              <Download className="h-4 w-4" />
-              Download Receipt
-            </Button>
-            <Button
-              className="flex-1 h-11 font-semibold bg-gray-900 hover:bg-gray-800 text-white"
+              className="flex-1 h-11 text-sm bg-gray-900 hover:bg-gray-800 text-white"
               onClick={() => console.log("Closing transaction audit")}
             >
               Close
             </Button>
-          </div>
-        </>
-      )}
-    </>
+          </DrawerClose>
+        </div>
+      </div>
+    </div>
   );
 }
