@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
+// import { useEffect, useState } from "react";
+// import { Input } from "@/components/ui/input";
 import { ReusableSelect } from "@/components/ui/ReusableSelect";
-import { Search, X } from "lucide-react";
+// import { Search, X } from "lucide-react";
 
 export interface FilterOption {
   label: string;
@@ -28,17 +28,17 @@ export interface TableFiltersProps {
 
 export function TableFilters({
   searchValue,
-  onSearchChange,
+  // onSearchChange,
   title,
   subtitle,
-  searchPlaceholder = "Search by user, action, or reference...",
+  // searchPlaceholder = "Search by user, action, or reference...",
   filters = [],
 }: TableFiltersProps) {
-  const [localSearch, setLocalSearch] = useState(searchValue);
+  // const [localSearch, setLocalSearch] = useState(searchValue);
 
-  useEffect(() => {
-    setLocalSearch(searchValue);
-  }, [searchValue]);
+  // useEffect(() => {
+  //   setLocalSearch(searchValue);
+  // }, [searchValue]);
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
