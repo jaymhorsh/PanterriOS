@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { CircleCheckBig, CircleX } from "lucide-react";
 import { toast } from "sonner";
 import { SlideInPanelDrawer } from "@/components/shared";
-import { CheckStatus } from "./CheckStatus";
+import { WithdrawalRequestDetails } from "./WithdrawalRequestDetails";
 import { useWithdrawalActions } from "@/hook/wallet-finance/useWithdrawalActions";
-import { WithdrawalApprovalItem } from "@/interface";
+import { WithdrawalRequestItem } from "@/interface";
 
 export const WithdrawalActionButtons = ({
   row,
 }: {
-  row: WithdrawalApprovalItem;
+  row: WithdrawalRequestItem;
 }) => {
   const status = row.statusLabel?.trim().toLowerCase();
   const id = row.requestId;
@@ -47,7 +47,7 @@ export const WithdrawalActionButtons = ({
     }
   };
 
-  // Pending: Approve and Reject enabled
+  // Pending
   if (status === "pending") {
     return (
       <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ export const WithdrawalActionButtons = ({
     );
   }
 
-  // Processing: Check Status and Reject disabled
+  // Processing
   if (status === "processing") {
     return (
       <div className="flex items-center gap-2">
@@ -93,7 +93,7 @@ export const WithdrawalActionButtons = ({
           width="md"
           contentClassName={"mx-0"}
         >
-          <CheckStatus requestId={id} />
+          <WithdrawalRequestDetails requestId={id} />
         </SlideInPanelDrawer>
 
         <Button
@@ -128,7 +128,7 @@ export const WithdrawalActionButtons = ({
         width="md"
         contentClassName={"mx-0"}
       >
-        <CheckStatus requestId={id} />
+        <WithdrawalRequestDetails requestId={id} />
       </SlideInPanelDrawer>
       <Button
         size="sm"

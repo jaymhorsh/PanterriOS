@@ -147,7 +147,7 @@ export interface RetrieveWithdrawalApprovalsQuery {
   search?: string;
 }
 
-export interface WithdrawalApprovalItem {
+export interface WithdrawalRequestItem {
   requestId: string;
   investorId: number;
   investorName: string;
@@ -168,7 +168,7 @@ export interface WithdrawalApprovalItem {
 
 export interface RetrieveWithdrawalApprovalsRes {
   message: string;
-  data: WithdrawalApprovalItem[];
+  data: WithdrawalRequestItem[];
   summary?: WalletFinanceSummary;
   pagination: {
     currentPage: number;

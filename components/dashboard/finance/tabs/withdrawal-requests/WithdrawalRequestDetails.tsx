@@ -3,7 +3,7 @@ import { DrawerClose } from "@/components/ui/drawer";
 import { StatusBadge, TransactionAuditSkeleton } from "@/components/shared";
 import { useWithdrawalRequestDetails } from "@/hook/wallet-finance/useWithdrawalActions";
 
-export function CheckStatus({ requestId }: { requestId: string }) {
+export function WithdrawalRequestDetails({ requestId }: { requestId: string }) {
   const {
     data,
     isError,
@@ -37,7 +37,7 @@ export function CheckStatus({ requestId }: { requestId: string }) {
       {/* CONTENT */}
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
 
-        {/* STATUS CARD */}
+      
         <div className="rounded-xl border bg-white p-4 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-500">Current Status</p>
@@ -48,7 +48,7 @@ export function CheckStatus({ requestId }: { requestId: string }) {
           <StatusBadge status={walletDetails?.statusLabel || ""} showDot />
         </div>
 
-        {/* DETAILS CARD */}
+        
         <div className="rounded-xl border bg-white p-4 space-y-4">
           
           <div className="flex justify-between items-center">
@@ -84,7 +84,7 @@ export function CheckStatus({ requestId }: { requestId: string }) {
         </div>
       </div>
 
-      {/* FOOTER */}
+     
       <div className="border-t bg-white px-4 pt-4 pb-5">
         <DrawerClose asChild>
           <Button className="h-11 w-full rounded-md text-sm bg-[#0B1533] text-white hover:bg-[#0B1533]/90">

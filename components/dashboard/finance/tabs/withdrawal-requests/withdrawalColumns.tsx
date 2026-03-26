@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { WithdrawalApprovalItem } from "@/interface";
+import { WithdrawalRequestItem } from "@/interface";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatCurrency } from "@/utils/helpers";
@@ -14,7 +14,7 @@ const getRiskColor = (riskProfileLabel: string) => {
   return colors[riskProfileLabel] || "bg-gray-50 text-gray-700 border-gray-200";
 };
 
-export const withdrawalColumns: ColumnDef<WithdrawalApprovalItem>[] = [
+export const withdrawalColumns: ColumnDef<WithdrawalRequestItem>[] = [
   {
     accessorKey: "requestId",
     header: "REQUEST ID",
