@@ -1,9 +1,6 @@
 import { WithdrawalRequestActions } from "@/interface";
-import {
-  withdrawalRequest,
-  withdrawalRequestDetails,
-} from "@/services/wallet-finance";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { withdrawalRequest } from "@/services/wallet-finance";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useWithdrawalActions = () => {
   const queryClient = useQueryClient();
@@ -27,12 +24,4 @@ export const useWithdrawalActions = () => {
     },
   });
   return { withdrawalAction, isPending, isError, variables };
-};
-
-export const useWithdrawalRequestDetails = (requestId: string) => {
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["wallet-finance", "withdrawal-request-details"],
-    queryFn: () => withdrawalRequestDetails(requestId),
-  });
-  return { data, isPending, isError };
 };

@@ -263,15 +263,18 @@ export interface WithdrawalRequestActions {
   params: { decision: "approve" | "reject"; adminNote: string };
 }
 
-export interface WithdrawalResponseDetails {
+export interface WithdrawalRequestDetails {
+  requestId: string;
+  reference: string;
+  status: string;
+  statusLabel: string;
+  providerStatus: string;
+  providerTransactionReference: string;
+  payoutInitiatedAt: string;
+  auditTrail: WalletFinanceAuditTrailItem[];
+}
+
+export interface RetrieveWithdrawalRequestDetailsRes {
   message: string;
-  data: {
-    requestId: string;
-    reference: string;
-    status: string;
-    statusLabel: string;
-    providerStatus: string;
-    providerTransactionReference: string;
-    payoutInitiatedAt: string;
-  };
+  data: WithdrawalRequestDetails;
 }

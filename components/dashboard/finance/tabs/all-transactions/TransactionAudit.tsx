@@ -23,7 +23,6 @@ export function TransactionAudit({ transactionId }: { transactionId: number }) {
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto">
-      
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6">
         {/* AMOUNT CARD */}
         <div className="border rounded-lg p-4 bg-gray-50">

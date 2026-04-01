@@ -10,7 +10,7 @@ import {
   type RetrieveWithdrawalApprovalsQuery,
   type RetrieveWithdrawalApprovalsRes,
   WithdrawalRequestActions,
-  WithdrawalResponseDetails,
+  RetrieveWithdrawalRequestDetailsRes,
 } from "@/interface";
 import API from "@/services/axios";
 
@@ -93,11 +93,11 @@ export const withdrawalRequest = async (
   return data;
 };
 
-export const withdrawalRequestDetails = async (
+export const retrieveWithdrawalRequestDetails = async (
   requestId: string,
-): Promise<WithdrawalResponseDetails> => {
-  const { data } = await API.post(
-    `/investor-wallet/admin/withdrawals/approvals/${requestId}/requery`,
+): Promise<RetrieveWithdrawalRequestDetailsRes> => {
+  const { data } = await API.get(
+    `/investor-wallet/admin/withdrawals/approvals/${requestId}`,
   );
   return data?.data;
 };
