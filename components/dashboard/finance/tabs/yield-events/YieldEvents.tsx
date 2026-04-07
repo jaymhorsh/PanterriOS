@@ -9,29 +9,30 @@ import {
   type WalletFinanceSummary,
   type WalletFinanceTransaction,
 } from "@/interface";
+import { yieldColumns } from "./yieldColumns";
 
-function mapYieldRows(
-  data: {
-    reference: string;
-    investorId: number;
-    investorName: string;
-    amount: number;
-    disbursedDate: string;
-    status: string;
-  }[],
-): WalletFinanceTransaction[] {
-  return data.map((item, index) => ({
-    id: index + 1,
-    reference: item.reference,
-    investorId: item.investorId,
-    investorName: item.investorName,
-    type: "yield",
-    amount: item.amount,
-    dateTime: item.disbursedDate,
-    status: item.status.toLowerCase() as WalletFinanceTransaction["status"],
-    description: "Yield disbursement",
-  }));
-}
+// function mapYieldRows(
+//   data: {
+//     reference: string;
+//     investorId: number;
+//     investorName: string;
+//     amount: number;
+//     disbursedDate: string;
+//     status: string;
+//   }[],
+// ): WalletFinanceTransaction[] {
+//   return data.map((item, index) => ({
+//     id: index + 1,
+//     reference: item.reference,
+//     investorId: item.investorId,
+//     investorName: item.investorName,
+//     type: "yield",
+//     amount: item.amount,
+//     dateTime: item.disbursedDate,
+//     status: item.status.toLowerCase() as WalletFinanceTransaction["status"],
+//     description: "Yield disbursement",
+//   }));
+// }
 
 export function YieldEvents({
   onCountChange,
@@ -45,7 +46,7 @@ export function YieldEvents({
     onCountChange?.(data?.pagination.totalItems ?? 0, data?.summary);
   }, [data?.pagination.totalItems, data?.summary, onCountChange]);
   
-  const yieldRows = useMemo(() => mapYieldRows(data?.data ?? []), [data?.data]);
+  // const yieldRows = useMemo(() => mapYieldRows(data?.data ?? []), [data?.data]);
 
   return (
     <div className="w-full space-y-6">
@@ -53,8 +54,8 @@ export function YieldEvents({
         <TableSkeleton rows={6} columns={7} />
       ) : (
         <ReUseAbleTable
-          data={yieldRows}
-          columns={transactionColumns}
+          data={data?.data ?? []}
+          columns={yieldColumns}
           entityName="yield events"
           pagination={
             data?.pagination
