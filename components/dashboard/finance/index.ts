@@ -1,4 +1,4 @@
-export { FinanceContainer } from './FinanceContainer';
+export { FinancePageShell } from './FinancePageShell';
 export { AllTransactions } from './tabs/all-transactions/AllTransactions';
 export { WithdrawalRequests } from './tabs/withdrawal-requests/WithdrawalRequests';
 export { Reconciliation } from './tabs/reconciliation/Reconciliation';

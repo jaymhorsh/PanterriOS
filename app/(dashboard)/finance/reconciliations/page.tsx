@@ -1,7 +1,12 @@
-const ReconciliationPage = () => {
-  return (
-    <div>ReconciliationPage</div>
-  )
-}
+import { FinancePageShell, Reconciliation } from "@/components/dashboard/finance";
 
-export default ReconciliationPage
+export default function ReconciliationPage() {
+  return (
+    <FinancePageShell
+      title="Wallet and Finance"
+      subtitle="Track and verify reconciliation records"
+    >
+      <Reconciliation />
+    </FinancePageShell>
+  );
+}
