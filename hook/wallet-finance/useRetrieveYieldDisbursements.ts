@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { type RetrieveYieldDisbursementsQuery } from "@/interface";
-import { retrieveYieldDisbursements } from "@/services/wallet-finance";
+import { retrieveYieldDisbursements } from "@/services/yield-disbursements";
 
 export function useYieldDisbursements(
   params: RetrieveYieldDisbursementsQuery = {},

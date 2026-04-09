@@ -100,28 +100,114 @@ export interface RetrieveYieldDisbursementsQuery {
   timeRange?: WalletFinanceTimeRangeFilter;
 }
 
+export type YieldDisbursementStatus =
+  | "pending"
+  | "disbursed"
+  | "flagged"
+  | "partial";
+
+export interface YieldDisbursementStatusBreakdown {
+  pending: number;
+  disbursed: number;
+  flagged: number;
+}
+
 export interface YieldDisbursementItem {
-  reference: string;
-  investorId: number;
-  investorName: string;
-  investorEmail: string;
-  propertyName: string;
+  batchId: string;
+  eventId: string;
+  investmentId: number;
+  investmentName: string;
+  totalInvestors: number;
   yieldRate: number;
+  totalPayout: number;
   amount: number;
+  dateTime: string;
+  displayDateLabel: string;
+  displayDate: string;
+  disbursedAt: string;
   disbursedDate: string;
-  status: string;
+  disbursedTime: string;
+  returnsDate: string;
+  status: YieldDisbursementStatus;
+  statusBreakdown: YieldDisbursementStatusBreakdown;
 }
 
 export interface RetrieveYieldDisbursementsRes {
   message: string;
+  summary: WalletFinanceSummary;
   data: YieldDisbursementItem[];
-  summary?: WalletFinanceSummary;
   pagination: {
     currentPage: number;
     totalPages: number;
     totalItems: number;
     limit: number;
   };
+}
+
+
+
+export interface YieldDisbursementLedgerInvestor {
+  disbursementId: number;
+  investorId: number;
+  investmentFundId: number;
+  disbursementCode: string;
+  investorName: string;
+  amountInvested: number;
+  payoutAmount: number;
+  status: YieldDisbursementStatus;
+  canFlag: boolean;
+  canDisburse: boolean;
+  flagReason: string | null;
+  flaggedAt: string | null;
+}
+
+export interface YieldDisbursementLedger {
+  batchId: string;
+  eventId: string;
+  investmentId: number;
+  investmentName: string;
+  totalPayout: number;
+  yieldRate: number;
+  disbursedDate: string;
+  returnsDate: string;
+  status: YieldDisbursementStatus;
+  statusBreakdown: YieldDisbursementStatusBreakdown;
+  totalParticipatingInvestors: number;
+  investors: YieldDisbursementLedgerInvestor[];
+}
+
+export interface RetrieveYieldDisbursementLedgerRes {
+  message: string;
+  data: YieldDisbursementLedger;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    limit: number;
+  };
+}
+
+export type FlagYieldDisbursementReq = Record<string, never>;
+
+export interface YieldDisbursementReviewDetails {
+  reviewId: number;
+  eventId: string;
+  investmentFundId: number;
+  disbursementId: number;
+  status: string;
+  flagReason: string;
+  flaggedAt: string;
+  resolvedAt?: string | null;
+  reviewedBy?: string | null;
+  investorName?: string;
+  payoutAmount?: number;
+  amountInvested?: number;
+  disbursementCode?: string;
+}
+
+export interface RetrieveYieldDisbursementReviewRes {
+  message: string;
+  data: YieldDisbursementReviewDetails;
 }
 
 // ─── Withdrawal Approvals ────────────────────────────────────────────────────
