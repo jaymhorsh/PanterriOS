@@ -102,10 +102,10 @@ export function DashboardSidebar({
           <CollapsibleTrigger asChild>
             <button
               className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 ease-out",
                 hasActiveChild
                   ? "text-primary-blue font-medium"
-                  : "text-[#6B7280] hover:bg-accent",
+                  : "text-[#6B7280] hover:bg-accent hover:translate-x-0.5",
                 isCollapsed && !isMobile && "justify-center px-2",
               )}
               title={isCollapsed && !isMobile ? item.name : undefined}
@@ -141,12 +141,20 @@ export function DashboardSidebar({
           href={item.link || "#"}
           onClick={isMobile ? onClose : undefined}
           className={cn(
-            "flex items-center gap-3 rounded-lg p-3 pl-9 transition-colors text-sm",
+            "relative overflow-hidden flex items-center gap-3 rounded-lg p-3 pl-9 text-sm transition-all duration-200 ease-out",
             isActive
-              ? "text-primary-blue font-medium"
-              : "text-[#6B7280] hover:text-foreground",
+              ? "bg-blue-100 text-[#155DFC]"
+              : "text-gray-500 hover:bg-blue-50 hover:translate-x-0.5",
           )}
         >
+          {isActive && (
+            <span
+              className={cn(
+                "h-[80%] rounded-2xl w-4 -left-2 absolute bg-[#155DFC] py-4 transition-all duration-300 ease-out",
+              )}
+            ></span>
+          )}
+          <span>{item.icon && <item.icon className="h-4 w-4" />}</span>
           <span>{item.name}</span>
         </Link>
       );
@@ -158,11 +166,11 @@ export function DashboardSidebar({
         href={item.link || "#"}
         onClick={isMobile ? onClose : undefined}
         className={cn(
-          "flex items-center gap-3 rounded-md p-3 transition-colors relative overflow-hidden",
+          "group flex items-center gap-3 rounded-md p-3 transition-all duration-200 ease-out relative overflow-hidden",
           level > 0 && "pl-9",
           isActive
             ? "bg-blue-100   py-4 text-[#155DFC] font-bold"
-            : "text-gray-500 hover:bg-blue-50",
+            : "text-gray-500 hover:bg-blue-50 hover:translate-x-0.5",
           isCollapsed && !isMobile && level === 0 && "justify-center px-2",
         )}
         title={isCollapsed && !isMobile && level === 0 ? item.name : undefined}
@@ -170,7 +178,7 @@ export function DashboardSidebar({
         {isActive && (
           <span
             className={cn(
-              "h-[80%] rounded-2xl w-4 -left-2 absolute bg-[#155DFC] py-4",
+              "h-[80%] rounded-2xl w-4 -left-2 absolute bg-[#155DFC] py-4 transition-all duration-300 ease-out",
             )}
           ></span>
         )}
@@ -238,12 +246,12 @@ export function DashboardSidebar({
       </nav>
 
       {/* Account Menu Items - Always Visible at Bottom */}
-      {/* <div className="p-3 pb-6 border-t">
+      <div className="p-3 pb-6 border-t">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors text-[#6B7280] hover:bg-accent",
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#6B7280] hover:bg-accent transition-all duration-200 ease-out hover:translate-x-0.5",
                 isCollapsed && !isMobile && "justify-center px-2",
               )}
               title={isCollapsed && !isMobile ? "My Account" : undefined}
@@ -298,7 +306,7 @@ export function DashboardSidebar({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div> */}
+      </div>
     </div>
   );
 

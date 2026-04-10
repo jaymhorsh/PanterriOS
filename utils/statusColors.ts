@@ -1,3 +1,5 @@
+import { ca } from "date-fns/locale";
+
 export function getStatusColor(status: string): {
   textColor: string;
   bgColor: string;
@@ -5,7 +7,6 @@ export function getStatusColor(status: string): {
   borderColor: string;
 } {
   const normalizedStatus = status.toLowerCase();
-
   switch (normalizedStatus) {
     case "success":
     case "completed":
@@ -17,6 +18,7 @@ export function getStatusColor(status: string): {
     case "published":
     case "investment":
     case "paid":
+    case "disbursed":
       return {
         textColor: "text-[#008236]",
         bgColor: "bg-[#F0FDF4]",
@@ -56,6 +58,7 @@ export function getStatusColor(status: string): {
     case "suspended":
     case "deactivated":
     case "mismatch":
+    case "flagged":
       return {
         textColor: "text-[#C10007]",
         bgColor: "bg-[#FEF2F2]",

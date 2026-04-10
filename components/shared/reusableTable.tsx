@@ -85,7 +85,7 @@ export function ReUseAbleTable<TData extends object>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="px-4 text-sm font-normal sm:px-6"
+                      className="px-4 text-sm font-normal whitespace-normal break-words [overflow-wrap:anywhere] sm:px-6"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

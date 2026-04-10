@@ -76,20 +76,28 @@ export function DraftInvestments({
   const columns: ColumnDef<DraftInvestmentItem>[] = [
     {
       accessorKey: "id",
-      header: "draft id",
+      header: () => (
+        <span className="block max-w-[90px] truncate text-xs sm:text-sm">
+          draft id
+        </span>
+      ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-2 font-semibold">
-          <Clock className="text-orange-400 w-4 h-4" />
-          {formatDraftId(row.original.id)}
+        <div className="flex items-center gap-2 font-semibold text-xs sm:text-sm">
+          <Clock className="h-4 w-4 flex-shrink-0 text-orange-400" />
+          <span className="break-all">{formatDraftId(row.original.id)}</span>
         </div>
       ),
     },
     {
       accessorKey: "name",
-      header: "investment name",
+      header: () => (
+        <span className="block max-w-[140px] truncate text-xs sm:text-sm">
+          investment name
+        </span>
+      ),
       cell: ({ row }) => (
         <div className="space-y-1">
-          <p className="font-medium text-sm text-[#0F172A]">
+          <p className="text-xs font-medium text-[#0F172A] sm:text-sm whitespace-normal break-words">
             {row.original.name}
           </p>
         </div>
@@ -97,11 +105,15 @@ export function DraftInvestments({
     },
     {
       accessorKey: "location",
-      header: "location",
+      header: () => (
+        <span className="block max-w-[100px] truncate text-xs sm:text-sm">
+          location
+        </span>
+      ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-2 text-[#62748E]">
-          <MapPin className="h-4 w-4" />
-          <span>
+        <div className="flex items-start gap-2 text-xs text-[#62748E] sm:text-sm">
+          <MapPin className="h-4 w-4 flex-shrink-0" />
+          <span className="whitespace-normal break-words">
             {row.original.location.city}, {row.original.location.state}
           </span>
         </div>
@@ -109,30 +121,38 @@ export function DraftInvestments({
     },
     {
       accessorKey: "propertyType",
-      header: "type",
+      header: () => <span className="block truncate text-xs sm:text-sm">type</span>,
       cell: ({ row }) => (
-        <span className="inline-flex items-center gap-2 rounded-sm border px-3 py-1 text-xs font-medium border-blue-200 bg-blue-50 text-blue-600">
+        <span className="inline-flex items-center gap-2 rounded-sm border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600 sm:px-3 sm:text-sm">
           {formatPropertyType(row.original.propertyType)}
         </span>
       ),
     },
     {
       accessorKey: "targetedAmount",
-      header: "target amount",
+      header: () => (
+        <span className="block max-w-[120px] truncate text-xs sm:text-sm">
+          target amount
+        </span>
+      ),
       cell: ({ row }) => (
-        <div className="font-semibold">
+        <div className="text-xs font-semibold break-all sm:text-sm">
           {formatCurrency(row.original.targetedAmount)}
         </div>
       ),
     },
     {
       accessorKey: "completionPercentage",
-      header: "completion",
+      header: () => (
+        <span className="block max-w-[100px] truncate text-xs sm:text-sm">
+          completion
+        </span>
+      ),
       cell: ({ row }) => {
         const value = row.original.completionPercentage;
 
         return (
-          <div className="flex items-center gap-3 min-w-32">
+          <div className="flex min-w-28 items-center gap-2 sm:min-w-32 sm:gap-3">
             <Progress
               value={value}
               className={cn(
@@ -140,36 +160,49 @@ export function DraftInvestments({
                 "[&>div]:bg-orange-500 [&>div]:transition-colors duration-300",
               )}
             />
-            <span className="font-medium text-orange-600">{value}%</span>
+            <span className="text-xs font-medium text-orange-600 sm:text-sm">
+              {value}%
+            </span>
           </div>
         );
       },
     },
     {
       accessorKey: "lastEdited",
-      header: "last edited",
+      header: () => (
+        <span className="block max-w-[100px] truncate text-xs sm:text-sm">
+          last edited
+        </span>
+      ),
       cell: ({ row }) => (
-        <div className="text-[#62748E]">{row.original.lastEdited}</div>
+        <div className="text-xs text-[#62748E] sm:text-sm whitespace-normal break-words">
+          {row.original.lastEdited}
+        </div>
       ),
     },
     {
       accessorKey: "action",
-      header: "actions",
+      header: () => (
+        <span className="block text-xs sm:text-sm truncate">actions</span>
+      ),
       cell: ({ row }) => {
         const rowId = row.original.id;
 
         return (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             <InvestmentDetailsView id={rowId}>
-              <Button variant="outline">
-                <Eye className="w-5 h-5" />
+              <Button
+                variant="outline"
+                className="h-9 w-9 p-0 sm:h-10 sm:w-10"
+              >
+                <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </InvestmentDetailsView>
 
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="h-9 w-9 cursor-pointer p-0 sm:h-10 sm:w-10"
               onClick={() =>
                 router.push(
                   `/investments/${rowId}?edit&propertyName=${encodeURIComponent(
@@ -178,12 +211,12 @@ export function DraftInvestments({
                 )
               }
             >
-              <Edit className="w-5 h-5 inline" />
+              <Edit className="inline h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="h-9 w-9 cursor-pointer p-0 sm:h-10 sm:w-10"
               onClick={() => {
                 setSelectedInvestment({
                   id: rowId,
@@ -192,7 +225,7 @@ export function DraftInvestments({
                 setIsDialogOpen(true);
               }}
             >
-              <Trash2 className="w-5 h-5 text-red-500 inline" />
+              <Trash2 className="inline h-4 w-4 text-red-500 sm:h-5 sm:w-5" />
             </Button>
           </div>
         );

@@ -1,7 +1,5 @@
-'use client';
-
-import { FinanceContainer } from '@/components/dashboard/finance';
+import { redirect } from "next/navigation";
 
 export default function FinancePage() {
-  return <FinanceContainer />;
+  redirect("/finance/transactions");
 }

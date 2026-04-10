@@ -22,7 +22,8 @@ export function StatusBadge({
     "approved",
     "active",
     "published",
-    "paid"
+    "paid",
+    "disbursed",
   ].includes(normalizedStatus);
   const isWarning = ["pending", "in progress", "processing"].includes(
     normalizedStatus,
@@ -38,7 +39,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-sm border px-3 py-1 text-xs font-medium",
+        "inline-flex items-center gap-2 rounded-sm border capitalize px-3 py-1 text-xs font-medium",
         borderColor,
         bgColor,
         textColor,

@@ -30,46 +30,46 @@ interface FormPreviewProps {
 
 export default function FormPreview({ previewData }: FormPreviewProps) {
   return (
-    <div className="space-y-6">
-      <div className=" px-4 py-3 rounded-lg border">
-        <h1 className="text-2xl font-semibold">Investment Preview</h1>
+    <div className="space-y-4 sm:space-y-6 w-full">
+      <div className="m-2 sm:m-4 p-3 sm:p-5 rounded-lg border w-full">
+        <h1 className="text-lg sm:text-xl font-semibold">Investment Preview</h1>
 
         {/* Basic Info */}
-        <div className=" px-4 py-6 rounded-lg space-y-2">
-          <h2 className="font-semibold border-b-2 py-4">Basic Information</h2>
-          <div className="flex justify-between">
+        <div className="p-3 sm:p-5 rounded-lg space-y-2 sm:space-y-3 w-full">
+          <h2 className="text-base sm:text-lg font-semibold border-b-2 py-2 sm:py-4">Basic Information</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
             <p className="flex flex-col space-y-1.5">
-              <small>Name</small>{' '}
-              <span className="font-semibold capitalize">
+              <small className="text-xs sm:text-sm">Name</small>{' '}
+              <span className="font-semibold capitalize text-xs sm:text-sm">
                 {' '}
                 {previewData.propertyName}
               </span>
             </p>
             <p className="flex flex-col space-y-1.5">
-              <small>Type</small>{' '}
-              <span className="font-semibold capitalize">
+              <small className="text-xs sm:text-sm">Type</small>{' '}
+              <span className="font-semibold capitalize text-xs sm:text-sm">
                 {previewData.propertyType}{' '}
               </span>
             </p>{' '}
           </div>
           <p className="flex flex-col ">
-            <small>Location</small>{' '}
-            <span className="font-semibold capitalize">
+            <small className="text-xs sm:text-sm">Location</small>{' '}
+            <span className="font-semibold capitalize text-xs sm:text-sm">
               {' '}
               {previewData.state}
             </span>
           </p>
           <p className="flex flex-col space-y-1.5">
-            <small>Description</small>{' '}
-            <span className="">{previewData.description} </span>
+            <small className="text-xs sm:text-sm">Description</small>{' '}
+            <span className="text-xs sm:text-sm">{previewData.description} </span>
           </p>{' '}
           <div>
-            <h2 className="font-semibold">Key Higlight</h2>
+            <h2 className="text-sm sm:text-base font-semibold">Key Higlight</h2>
             <div className="flex flex-col">
               {previewData.features.map((feature: string) => (
                 <div
                   key={feature}
-                  className="px-2 py-2 flex items-center gap-2"
+                  className="px-2 py-2 flex items-center gap-2 text-xs sm:text-sm"
                 >
                   <CircleCheck className="w-4 h-4 text-green-500" />
                   <span> {feature}</span>
@@ -81,60 +81,60 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
       </div>
 
       {/* Financial Info */}
-      <div className=" p-4 rounded-lg space-y-2 border ">
-        <h2 className="font-semibold py-4 px-2 border-b-2">
+      <div className="m-2 sm:m-4 p-3 sm:p-5 rounded-lg space-y-2 sm:space-y-3 border w-full">
+        <h2 className="text-base sm:text-lg font-semibold py-2 sm:py-4 px-2 border-b-2">
           Financial Details
         </h2>
-        <div className="flex flex-row justify-between text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 text-left sm:text-center">
           <p className="flex flex-col space-y-1.5">
-            <small>Target Amount</small>{' '}
-            <span className="font-semibold capitalize">
+            <small className="text-xs sm:text-sm">Target Amount</small>{' '}
+            <span className="font-semibold capitalize text-xs sm:text-sm">
               {' '}
               {previewData.targetAmount}
             </span>
           </p>
           <p className="flex flex-col space-y-1.5">
-            <small>Min. Investment</small>{' '}
-            <span className="font-semibold capitalize">
+            <small className="text-xs sm:text-sm">Min. Investment</small>{' '}
+            <span className="font-semibold capitalize text-xs sm:text-sm">
               {previewData.minimumInvestment}{' '}
             </span>
           </p>{' '}
           <p className="flex flex-col space-y-1.5">
-            <small>Expected ROI</small>{' '}
-            <span className="font-semibold capitalize text-green-500">
+            <small className="text-xs sm:text-sm">Expected ROI</small>{' '}
+            <span className="font-semibold capitalize text-green-500 text-xs sm:text-sm">
               {previewData.expectedROI}%
             </span>
           </p>
           <p className="flex flex-col space-y-1.5">
-            <small>Duration</small>{' '}
-            <span className="font-semibold ">{previewData.duration} </span>
+            <small className="text-xs sm:text-sm">Duration</small>{' '}
+            <span className="font-semibold text-xs sm:text-sm">{previewData.duration} </span>
           </p>{' '}
           <p className="flex flex-col space-y-1.5">
-            <small>Risk Rating</small>{' '}
-            <span className="font-semibold ">{previewData.riskRating} </span>
+            <small className="text-xs sm:text-sm">Risk Rating</small>{' '}
+            <span className="font-semibold text-xs sm:text-sm">{previewData.riskRating} </span>
           </p>{' '}
         </div>
       </div>
 
       {/* Images */}
-      <div>
-        <h2 className="font-semibold mb-2">Cover Image</h2>
-        <div className="flex gap-4 flex-wrap">
+      <div className="m-2 sm:m-4">
+        <h2 className="text-sm sm:text-base font-semibold mb-2">Cover Image</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
           {previewData.coverImage ? (
             <Image
               src={URL.createObjectURL(previewData.coverImage)}
               alt="img"
               width={100}
               height={100}
-              className="h-40 w-40 object-cover rounded"
+              className="h-40 sm:h-44 w-full object-cover rounded"
             />
           ) : null}
         </div>
       </div>
       {/* Property Images */}
-      <div>
-        <h2 className="font-semibold mb-2">Property Images</h2>
-        <div className="flex gap-4 flex-wrap">
+      <div className="m-2 sm:m-4">
+        <h2 className="text-sm sm:text-base font-semibold mb-2">Property Images</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
           {previewData.propertyImages?.map((file: File, index: number) => (
             <Image
               key={index}
@@ -142,18 +142,18 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
               width={100}
               height={100}
               src={URL.createObjectURL(file)}
-              className="h-32 w-32 object-cover rounded"
+              className="h-32 sm:h-40 w-full object-cover rounded"
             />
           ))}
         </div>
       </div>
 
       {/* Legal Docs */}
-      <div>
-        <h2 className="font-semibold mb-2">Legal Documents</h2>
+      <div className="m-2 sm:m-4">
+        <h2 className="text-sm sm:text-base font-semibold mb-2">Legal Documents</h2>
         <ul className="space-y-1">
           {previewData.legalDocuments?.map((file: File, index: number) => (
-            <li key={index} className="text-sm flex gap-1">
+            <li key={index} className="text-xs sm:text-sm flex gap-1">
               <FileText className="w-4 h-4 text-red-500" /> {file.name}
             </li>
           ))}
@@ -162,8 +162,8 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
 
       {/* Projrct milestone preview style */}
       {previewData.projectMilestones.length > 0 && (
-        <div className="space-y-3  max-w-lg rounded-2xl px-4 py-6">
-          <h3 className="text-lg font-semibold border-b p-2">
+        <div className="space-y-3 w-full rounded-2xl p-3 sm:p-5 m-2 sm:m-4">
+          <h3 className="text-base sm:text-lg font-semibold border-b p-2">
             Milestones Preview ({previewData.projectMilestones.length})
           </h3>
           {previewData.projectMilestones.map((milestone, index) => {
@@ -181,25 +181,25 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
                   : 'bg-gray-700';
 
             return (
-              <div key={`${milestone.title}-${index}`} className="flex gap-4">
+              <div key={`${milestone.title}-${index}`} className="flex gap-2 sm:gap-4">
                 <div className="items-center flex flex-col">
                   <div className={`w-5 h-5 rounded-2xl ${ovalBg}`}></div>
                   <div className="w-0.5 min-h-14 h-auto bg-gray-300"></div>
                 </div>
 
-                <div className={`border rounded-md p-4 w-full ${statusClass}`}>
+                <div className={`border rounded-md p-3 sm:p-4 w-full ${statusClass}`}>
                   <div className="flex justify-between items-center gap-3">
-                    <h4 className="font-semibold text-black">
+                    <h4 className="font-semibold text-black text-sm sm:text-base">
                       {milestone.title}
                     </h4>
-                    <span className="text-xs uppercase">
+                    <span className="text-xs sm:text-sm uppercase">
                       {milestone.status.replace('_', ' ')}
                     </span>
                   </div>
-                  <p className="text-sm mt-2 text-gray-600">
+                  <p className="text-xs sm:text-sm mt-2 text-gray-600">
                     {milestone.description}
                   </p>
-                  <p className=" mt-1 capitalize text-xs text-gray-600">
+                  <p className="mt-1 capitalize text-xs sm:text-sm text-gray-600">
                     {milestone.status.replace('_', ' ')}-{milestone.date}
                   </p>
                 </div>
@@ -209,11 +209,11 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
         </div>
       )}
 
-      <div className="bg-yellow-50 border border-yellow-500 flex gap-2 rounded-lg p-4">
+      <div className="bg-yellow-50 border border-yellow-500 flex gap-2 rounded-lg p-3 sm:p-5 m-2 sm:m-4 w-full">
         <TriangleAlert className="w-5 h-5 text-yellow-500" />
-        <div className=" space-y-2 ">
-          <h2 className="font-bold">Before Publishing</h2>
-          <p>
+        <div className="space-y-2 text-xs sm:text-sm">
+          <h2 className="font-bold text-sm sm:text-base">Before Publishing</h2>
+          <p className="text-xs sm:text-sm">
             Once published, this investment will be immediately visible to
             authorized investors in the Marketplace Terminal. Risk rating
           </p>

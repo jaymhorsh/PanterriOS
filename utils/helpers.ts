@@ -18,6 +18,7 @@ export function formatCurrency(amount: number) {
     style: "currency",
     currency: "NGN",
     maximumFractionDigits: 2,
+    
   }).format(amount);
 }
 

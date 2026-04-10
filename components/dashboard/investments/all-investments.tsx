@@ -67,9 +67,9 @@ export function AllInvestments({
       accessorKey: "propertyName",
       header: "property",
       cell: ({ row }) => (
-        <div className="">
-          <p>{row.original.propertyName} </p>
-          <small className="text-gray-500 flex items-center gap-1">
+        <div className="max-w-[10rem] sm:max-w-none">
+          <p className="text-xs sm:text-sm break-words">{row.original.propertyName} </p>
+          <small className="text-[11px] sm:text-xs text-gray-500 flex items-center gap-1 break-words">
             {" "}
             {/* <MapPin className="w-3 h-3" /> <span> {row.original.location}</span> */}
           </small>
@@ -79,7 +79,9 @@ export function AllInvestments({
     {
       accessorKey: "propertyType",
       header: "type",
-      cell: ({ row }) => <div>{row.original.propertyType}</div>,
+      cell: ({ row }) => (
+        <div className="text-xs sm:text-sm break-words">{row.original.propertyType}</div>
+      ),
     },
     {
       accessorKey: "investmentStatus",
@@ -95,18 +97,18 @@ export function AllInvestments({
       cell: ({ row }) => {
         const value = row.original.funding;
         return (
-          <div className=" flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-[7rem]">
             <Progress
               value={value}
               className={cn(
-                "rounded-sm bg-gray-200",
+                "rounded-sm bg-gray-200 h-2",
                 value > 85 && "[&>div]:bg-green-500",
                 value <= 85 && value > 75 && "[&>div]:bg-blue-500",
                 value <= 75 && "[&>div]:bg-red-500",
                 "[&>div]:transition-colors duration-300",
               )}
             />
-            {value}%
+            <span className="text-xs sm:text-sm whitespace-nowrap">{value}%</span>
           </div>
         );
       },
@@ -114,24 +116,30 @@ export function AllInvestments({
     {
       accessorKey: "targetAmount",
       header: "target",
-      cell: ({ row }) => <div>{formatCurrency(row.original.targetAmount)}</div>,
+      cell: ({ row }) => (
+        <div className="text-xs sm:text-sm whitespace-nowrap">{formatCurrency(row.original.targetAmount)}</div>
+      ),
     },
     {
       accessorKey: "amountRaised",
       header: "raised",
-      cell: ({ row }) => <div>{formatCurrency(row.original.amountRaised)}</div>,
+      cell: ({ row }) => (
+        <div className="text-xs sm:text-sm whitespace-nowrap">{formatCurrency(row.original.amountRaised)}</div>
+      ),
     },
     {
       accessorKey: "returns",
       header: "returns",
       cell: ({ row }) => (
-        <div className=" text-blue-600">{row.original.returns}%</div>
+        <div className="text-xs sm:text-sm text-blue-600 whitespace-nowrap">{row.original.returns}%</div>
       ),
     },
     {
       accessorKey: "totalNumberOfInvestors",
       header: "investors",
-      cell: ({ row }) => <div>{row.original.totalNumberOfInvestors}</div>,
+      cell: ({ row }) => (
+        <div className="text-xs sm:text-sm whitespace-nowrap">{row.original.totalNumberOfInvestors}</div>
+      ),
     },
     {
       accessorKey: "action",
@@ -142,7 +150,7 @@ export function AllInvestments({
         return (
           <div className="flex items-center justify-center gap-2">
             <InvestmentDetailsView id={rowId}>
-              <Button variant="outline">
+              <Button variant="outline" className="h-10 min-w-10 px-2 sm:px-3">
                 <Eye className="w-5 h-5" />
               </Button>
             </InvestmentDetailsView>
@@ -150,7 +158,7 @@ export function AllInvestments({
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="cursor-pointer h-10 min-w-10 px-2 sm:px-3"
               onClick={() =>
                 router.push(
                   `/investments/${rowId}?edit&propertyName=${encodeURIComponent(
@@ -165,7 +173,7 @@ export function AllInvestments({
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="cursor-pointer h-10 min-w-10 px-2 sm:px-3"
               onClick={() => {
                 setSelectedInvestment({
                   id: rowId,
@@ -184,18 +192,20 @@ export function AllInvestments({
 
   return (
     <div className="space-y-4">
-      <ReUseAbleTable
-        data={data}
-        columns={columns}
-        entityName="All Investments"
-        pagination={{
-          currentPage,
-          totalPages: pagination?.totalPages || 1,
-          totalItems: pagination?.totalItems || data.length,
-          limit: pagination?.limit || 20,
-          onPageChange,
-        }}
-      />
+      <div className="w-full overflow-x-auto rounded-md">
+        <ReUseAbleTable
+          data={data}
+          columns={columns}
+          entityName="All Investments"
+          pagination={{
+            currentPage,
+            totalPages: pagination?.totalPages || 1,
+            totalItems: pagination?.totalItems || data.length,
+            limit: pagination?.limit || 20,
+            onPageChange,
+          }}
+        />
+      </div>
 
       <ConfirmationDialog
         open={isDialogOpen}

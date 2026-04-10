@@ -47,43 +47,43 @@ export default function Overview({ overview }: OverviewProps) {
   ];
 
   return (
-    <div className="space-y-4 my-4">
-      <div className="border rounded-md lg:p-4 p-2 space-y-2">
+    <div className="space-y-3 sm:space-y-4 my-4 text-xs sm:text-sm">
+      <div className="border rounded-md p-2 sm:p-4 space-y-2 sm:space-y-3">
         <div className="flex justify-between font-bold items-center gap-2">
-          <h2>Funding Progress</h2>
-          <div className="text-blue-700 text-2xl">
+          <h2 className="text-sm sm:text-base">Funding Progress</h2>
+          <div className="text-blue-700 text-lg sm:text-2xl whitespace-nowrap">
             {overview.fundingProgress.progressPercentage}%
           </div>
         </div>
 
         <Progress
           value={overview.fundingProgress.progressPercentage}
-          className="h-5 w-full"
+          className="h-4 sm:h-5 w-full"
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
           <div>
-            <small>Target Amount</small>
-            <p className="text-xl font-bold">
+            <small className="text-[11px] sm:text-xs">Target Amount</small>
+            <p className="text-sm sm:text-xl font-bold break-words">
               {formatCurrency(overview.fundingProgress.targetAmount)}
             </p>
           </div>
           <div>
-            <small>Amount Raised</small>
-            <p className="text-xl font-bold text-green-500">
+            <small className="text-[11px] sm:text-xs">Amount Raised</small>
+            <p className="text-sm sm:text-xl font-bold text-green-500 break-words">
               {formatCurrency(overview.fundingProgress.amountRaised)}
             </p>
           </div>
           <div>
-            <small>Remaining</small>
-            <p className="text-xl font-bold text-yellow-500">
+            <small className="text-[11px] sm:text-xs">Remaining</small>
+            <p className="text-sm sm:text-xl font-bold text-yellow-500 break-words">
               {formatCurrency(overview.fundingProgress.remainingAmount)}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
         {cards.map((card, index) => (
           <StatCard
             label={card.label}

@@ -49,9 +49,15 @@ export function FinancialDetails({ financialDetails }: FinancialDetailsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 my-4 text-xs sm:text-sm">
       {cards.map((card, index) => (
-        <StatCard label={card.label} value={card.value} key={`${card.label}-${index}`} />
+        <div className="min-h-10">
+          <StatCard
+            label={card.label}
+            value={card.value}
+            key={`${card.label}-${index}`}
+          />
+        </div>
       ))}
     </div>
   );

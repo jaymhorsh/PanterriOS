@@ -2,8 +2,6 @@ import {
   type RetrieveWalletFinanceQuery,
   type RetrieveWalletFinanceRes,
   type RetrieveWalletFinanceTransactionDetailsRes,
-  type RetrieveYieldDisbursementsQuery,
-  type RetrieveYieldDisbursementsRes,
   type RetrieveInvestorWalletsQuery,
   type RetrieveInvestorWalletsRes,
   type InvestorWalletDetails,
@@ -33,16 +31,6 @@ export const retrieveWalletFinanceTransactionDetails = async (
   const { data } = await API.get(
     `/investor-wallet/admin/finance/transactions/${transactionId}`,
   );
-
-  return data?.data;
-};
-
-export const retrieveYieldDisbursements = async (
-  query: RetrieveYieldDisbursementsQuery,
-): Promise<RetrieveYieldDisbursementsRes> => {
-  const { data } = await API.get("/investments/admin/yield-disbursements", {
-    params: query,
-  });
 
   return data?.data;
 };

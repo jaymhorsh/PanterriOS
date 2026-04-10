@@ -34,7 +34,7 @@ export default function ClientLayoutWrapper({
     firstName: loggedInUser?.firstName ?? '',
     lastName: loggedInUser?.lastName ?? '',
     role: loggedInUser?.roles ?? [],
-    initials: `${loggedInUser?.firstName.trim()?.charAt(0) || 'A'}${loggedInUser?.lastName?.charAt(0) || 'U'}`,
+    initials: `${loggedInUser?.firstName?.trim()?.charAt(0) || 'A'}${loggedInUser?.lastName?.charAt(0) || 'U'}`,
   };
 
   if (isAuthRoute) {

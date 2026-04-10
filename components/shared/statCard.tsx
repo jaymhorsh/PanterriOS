@@ -42,7 +42,12 @@ export function StatCard({
         ) : null}
       </div>
 
-      <div className={cn("text-3xl font-bold capitalize text-[#000000] mb-2", color)}>
+      <div
+        className={cn(
+          "mb-2 text-2xl sm:text-3xl font-bold capitalize text-[#000000] leading-tight [overflow-wrap:anywhere]",
+          color,
+        )}
+      >
         {value}
       </div>
 

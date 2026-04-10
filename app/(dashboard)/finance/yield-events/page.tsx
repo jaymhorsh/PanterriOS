@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { WithdrawalRequests, FinancePageShell } from "@/components/dashboard/finance";
+import { FinancePageShell, YieldEvents } from "@/components/dashboard/finance";
 import { type WalletFinanceSummary } from "@/interface";
 
-export default function WithdrawalRequestPage() {
+export default function YieldEventPage() {
   const [summary, setSummary] = useState<WalletFinanceSummary | undefined>();
 
   return (
     <FinancePageShell
       title="Wallet and Finance"
-      subtitle="Review and process withdrawal requests"
+      subtitle="Track investor yield disbursement events"
       summary={summary}
     >
-      <WithdrawalRequests
+      <YieldEvents
         onCountChange={(_, nextSummary) => {
           if (nextSummary) setSummary(nextSummary);
         }}

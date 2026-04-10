@@ -26,35 +26,37 @@ export function Documents({
   togglingDocumentId,
 }: DocumentsProps) {
   return (
-    <div className="space-y-4 my-4">
-      <div className="font-bold">Legal Documents</div>
+    <div className="space-y-3 sm:space-y-4 my-4 text-xs sm:text-sm">
+      <div className="font-bold text-sm sm:text-base">Legal Documents</div>
 
       {documents.length === 0 ? (
-        <div className="text-sm text-gray-500 border rounded-md p-4">No documents available.</div>
+        <div className="text-xs sm:text-sm text-gray-500 border rounded-md p-3 sm:p-4">No documents available.</div>
       ) : (
         <div className="space-y-3">
           {documents.map((doc) => {
             const isPublic = doc.isPublic ?? true;
 
             return (
-            <div className="bg-gray-100 p-4 flex justify-between items-center" key={doc.id}>
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="bg-white p-2 text-red-500 rounded-md">
+            <div className="bg-gray-100 p-2 sm:p-4 flex flex-row justify-between items-center gap-3 rounded-md" key={doc.id}>
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="bg-white p-2 text-red-500 rounded-md shrink-0">
                   <FileText className="w-4 h-4" />
                 </div>
-                <div className="min-w-0">
-                  <p className="truncate">{doc.documentName}</p>
-                  <p className="text-xs text-gray-500">{formatFileSize(doc.fileSizeBytes)}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm [overflow-wrap:anywhere]">
+                    {doc.documentName}
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-gray-500">{formatFileSize(doc.fileSizeBytes)}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 min-h-10">
                 {isPublic ? (
                   <Globe className="text-green-600 w-4 h-4" />
                 ) : (
                   <Lock className="text-gray-500 w-4 h-4" />
                 )}
-                <p className="text-gray-500 text-sm">{isPublic ? "Public" : "Private"}</p>
+                <p className="text-gray-500 text-xs sm:text-sm">{isPublic ? "Public" : "Private"}</p>
                 <Switch
                   checked={isPublic}
                   onCheckedChange={() => onToggleVisibility?.(doc.id)}

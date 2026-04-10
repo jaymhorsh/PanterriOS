@@ -148,15 +148,15 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
             lg:data-[vaul-drawer-direction=right]:sm:max-w-xl  overflow-hidden overflow-y-auto
             "
         >
-          <DrawerHeader>
+          <DrawerHeader className="p-3 sm:p-4">
             {/* DrawerTitle must always be present for screen-reader accessibility */}
             <DrawerTitle className="flex justify-between">
               {isLoading || error ? (
                 <span className="sr-only">Investment Details</span>
               ) : (
                 <div className="w-full">
-                  <div className="flex gap-14 items-center">
-                    <div className="text-xl font-bold">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center">
+                    <div className="text-base sm:text-xl font-bold break-words">
                       {investmentDetails?.header.propertyName ?? "-"}
                     </div>
                     <StatusBadge
@@ -167,15 +167,15 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                       showDot
                     />
                   </div>
-                  <p className="text-gray-500 pt-1 flex items-center">
-                    <MapPin className="w-4 h-4" />
-                    <span className="capitalize">{investmentDetails?.header.location ?? "-"}</span>
+                  <p className="text-gray-500 pt-1 flex items-center text-xs sm:text-sm gap-1">
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span className="capitalize break-words">{investmentDetails?.header.location ?? "-"}</span>
                   </p>
                 </div>
               )}
               <DrawerClose asChild>
-                <button type="button" aria-label="Close investment details">
-                  <X />
+                <button type="button" aria-label="Close investment details" className="h-10 w-10 inline-flex items-center justify-center">
+                  <X className="w-5 h-5" />
                 </button>
               </DrawerClose>
             </DrawerTitle>
@@ -185,15 +185,15 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
             {isLoading ? (
               <InvestmentDetailsSkeleton />
             ) : error ? (
-              <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <div className="rounded-md border border-red-200 bg-red-50 p-3 sm:p-4 text-xs sm:text-sm text-red-700">
                 Unable to load investment details right now.
               </div>
             ) : (
               <>
-                <div className="flex my-2 justify-between">
+                <div className="flex my-2 justify-between items-center gap-2">
                   <Button
                     // variant="secondary"
-                    className="w-fit bg-primary-blue cursor-pointer"
+                    className="w-fit h-10 bg-primary-blue cursor-pointer text-xs sm:text-sm"
                     onClick={handlePublicationStatus}
                     disabled={isUpdatingPublicationStatus || !id}
                   >
@@ -209,13 +209,14 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                 <Tabs
                   value={tab}
                   onValueChange={setTab}
-                  className="space-y-2 w-full"
+                  className="space-y-3 w-full"
                 >
-                  <TabsList className="flex flex-wrap w-full">
+                  <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap lg:items-center !h-auto gap-2 lg:gap-3 p-1">
                     {tabs.map((currentTab) => (
                       <TabsTrigger
                         value={currentTab.value}
                         key={currentTab.value}
+                        className="h-9 sm:h-10 w-full lg:w-auto px-2.5 sm:px-3 lg:px-4 text-[11px] sm:text-xs lg:text-sm whitespace-nowrap"
                       >
                         {currentTab.title}
                       </TabsTrigger>
@@ -225,6 +226,7 @@ export function InvestmentDetailsView({ children, id }: DetailsPageViewProp) {
                     <TabsContent
                       value={currentTab.value}
                       key={currentTab.value}
+                      className="mt-1"
                     >
                       {currentTab.content}
                     </TabsContent>

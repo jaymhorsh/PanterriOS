@@ -517,12 +517,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
   };
 
   if (isEditMode && isEditLoading) {
-    return <div className="p-6">Loading investment details...</div>;
+    return <div className="p-3 sm:p-6 text-xs sm:text-sm">Loading investment details...</div>;
   }
 
   return (
-    <div className="space-y-6 pb-6 w-full">
-      <Card className=" p-6">
+    <div className="space-y-4 sm:space-y-6 pb-4 sm:pb-6 w-full">
+      <Card className="m-2 sm:m-4 p-3 sm:p-5 w-full">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((values) =>
@@ -533,26 +533,26 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                 e.preventDefault();
               }
             }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6 w-full"
           >
             {step === 1 && (
               <>
                 <div className=" items-center gap-4">
-                  <h1 className="text-2xl font-semibold"> Basic Information</h1>
-                  <p>
+                  <h1 className="text-lg sm:text-xl font-semibold"> Basic Information</h1>
+                  <p className="text-xs sm:text-sm">
                     {isEditMode
                       ? "Update the fundamental details about the property"
                       : "Enter the fundamental details about the property"}
                   </p>
                 </div>
-                <div className="grid lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                   {/* Property Name */}
                   <FormField
                     control={form.control}
                     name="propertyName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Property Name</span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -560,7 +560,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <Input
                             {...field}
                             placeholder="e.g., Victoria Island Office Complex"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -574,7 +574,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="propertyType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Property Type</span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -584,7 +584,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             onValueChange={field.onChange}
                             value={field.value ?? ""}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm">
                               <SelectValue placeholder="Select property type" />
                             </SelectTrigger>
                             <SelectContent position={"popper"}>
@@ -604,14 +604,14 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   />
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
                   {/* state */}
                   <FormField
                     control={form.control}
                     name="state"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> State</span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -621,7 +621,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             onValueChange={field.onChange}
                             value={field.value ?? ""}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm">
                               <SelectValue placeholder="Select state" />
                             </SelectTrigger>
                             <SelectContent position={"popper"}>
@@ -645,7 +645,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="city"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> City </span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -653,7 +653,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <input
                             {...field}
                             placeholder="e.g., Ikeja"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -665,7 +665,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Street Address </span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -673,7 +673,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <Input
                             {...field}
                             placeholder="Full street address"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -681,13 +681,13 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     )}
                   />
                 </div>
-                <div className="grid lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
                   <FormField
                     control={form.control}
                     name="propertySize"
                     render={() => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> PropertySize (Sqm)</span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -698,7 +698,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             })}
                             placeholder="2,500"
                             type="number"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm "
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -710,7 +710,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="units"
                     render={() => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">Total Units</span>
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -721,7 +721,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             })}
                             type="number"
                             placeholder="24"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -735,7 +735,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 ">
+                      <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                         <span className="font-bold"> Property Description</span>{" "}
                         <p className="text-red-500">*</p>
                       </FormLabel>
@@ -743,7 +743,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                         <Textarea
                           {...field}
                           placeholder="Provide a detailed description of the property including key features, location advantages, target market, and investment highlights..."
-                          className="border-input bg-surface h-32 w-full rounded-md border px-3 text-sm"
+                          className="border-input bg-surface min-h-28 sm:min-h-32 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                         />
                       </FormControl>
                       <FormMessage />
@@ -755,21 +755,22 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   name="features"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 ">
+                      <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                         <span className="font-bold"> Key Features</span>{" "}
                         <p className="text-red-500">*</p>
                       </FormLabel>
 
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full">
                         <Input
                           value={featureInput}
                           onChange={(e) => setFeatureInput(e.target.value)}
                           placeholder="Add feature "
-                          className="w-65 lg:w-115 border"
+                          className="w-full border h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm"
                         />
 
                         <Button
                           type="button"
+                          className="text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                           onClick={() => {
                             if (featureInput.trim()) {
                               field.onChange([...field.value, featureInput]);
@@ -785,7 +786,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                         {field.value.map((feature, index) => (
                           <div
                             key={index}
-                            className="px-3 py-2 bg-gray-100 rounded flex items-center gap-2"
+                            className="px-3 py-2 bg-gray-100 rounded flex items-center gap-2 text-xs sm:text-sm"
                           >
                             <CircleCheck className="w-4 h-4 text-green-500" />
                             <span> {feature}</span>
@@ -802,17 +803,17 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
             {step === 2 && (
               <>
                 <div className=" items-center gap-4">
-                  <h1 className="text-2xl font-semibold"> Financial Details</h1>
-                  <p>Define the investment terms and expected returns</p>
+                  <h1 className="text-lg sm:text-xl font-semibold"> Financial Details</h1>
+                  <p className="text-xs sm:text-sm">Define the investment terms and expected returns</p>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
                   <FormField
                     control={form.control}
                     name="targetAmount"
                     render={() => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Target Amount (₦) </span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -823,7 +824,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             })}
                             type="number"
                             placeholder="₦ 50,000,000"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -835,7 +836,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="minimumInvestment"
                     render={() => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">
                             {" "}
                             Minimum Investment (₦){" "}
@@ -849,7 +850,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             })}
                             type="number"
                             placeholder="₦ 100000"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -861,7 +862,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="returnDistributionSchedule"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">
                             {" "}
                             Return Distribution Schedule
@@ -873,7 +874,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm">
                               <SelectValue placeholder="Select return schedule" />
                             </SelectTrigger>
                             <SelectContent position={"popper"}>
@@ -893,13 +894,13 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   />
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
                   <FormField
                     control={form.control}
                     name="duration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Duration (Months) </span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -907,7 +908,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <Input
                             {...field}
                             placeholder="24"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -919,7 +920,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="expectedReturns"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">
                             Expected Returns (%)
                           </span>{" "}
@@ -929,7 +930,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <Input
                             {...field}
                             placeholder="18"
-                            className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                            className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -941,7 +942,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="riskRating"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">Risk Rating</span>{" "}
                           <p className="text-red-500">*</p>
                         </FormLabel>
@@ -951,7 +952,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm">
                               <SelectValue placeholder="Select risk" />
                             </SelectTrigger>
                             <SelectContent position={"popper"}>
@@ -971,17 +972,17 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   />
                 </div>
 
-                <div className=" bg-blue-50 border border-blue-200 space-y-4 px-4 py-2 rounded-md ">
-                  <h2 className="text-lg font-bold">
+                <div className="bg-blue-50 border border-blue-200 space-y-3 sm:space-y-4 p-3 sm:p-5 rounded-md m-2 sm:m-4 w-full">
+                  <h2 className="text-base sm:text-lg font-bold">
                     Additional Financial Info (Optional)
                   </h2>
-                  <div className="grid lg:grid-cols-2 gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                     <FormField
                       control={form.control}
                       name="propertyValue"
                       render={() => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 ">
+                          <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                             <span className="font-bold">
                               Property Value (₦)
                             </span>{" "}
@@ -993,7 +994,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                               })}
                               type="number"
                               placeholder="10000000"
-                              className="border-input bg-white h-10 w-full rounded-md border px-3 text-sm"
+                              className="border-input bg-white h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                             />
                           </FormControl>
                           <FormMessage />
@@ -1005,7 +1006,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                       name="expectedROI"
                       render={() => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 ">
+                          <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                             <span className="font-bold">Expected ROI (%)</span>{" "}
                             <p className="text-red-500">*</p>
                           </FormLabel>
@@ -1016,7 +1017,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                               })}
                               type="number"
                               placeholder="18"
-                              className="border-input bg-white h-10 w-full rounded-md border px-3 text-sm"
+                              className="border-input bg-white h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                             />
                           </FormControl>
                           <FormMessage />
@@ -1026,9 +1027,9 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   </div>
                 </div>
 
-                <div className=" bg-green-50 border border-green-200 space-y-4 px-4 py-2 rounded-md ">
-                  <h2 className="text-lg font-bold">Investment summary</h2>
-                  <div className="grid lg:grid-cols-4 gap-4 ">
+                <div className="bg-green-50 border border-green-200 space-y-3 sm:space-y-4 p-3 sm:p-5 rounded-md m-2 sm:m-4 w-full">
+                  <h2 className="text-base sm:text-lg font-bold">Investment summary</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full text-xs sm:text-sm">
                     <div className="">
                       <small>Target Amount</small>
                       <div>{formatPrice(form.getValues("targetAmount"))}</div>
@@ -1059,26 +1060,28 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
             {step === 3 && (
               <>
                 <div className=" items-center gap-4">
-                  <h1 className="text-2xl font-semibold">Media & Documents</h1>
-                  <p>Define the investment terms and expected returns</p>
+                  <h1 className="text-lg sm:text-xl font-semibold">Media & Documents</h1>
+                  <p className="text-xs sm:text-sm">Define the investment terms and expected returns</p>
                 </div>
 
-                <div className=" grid lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                   <FormField
                     control={form.control}
                     name="coverImage"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Cover Image </span>
                         </FormLabel>
                         <FormControl>
-                          <FileUpload
-                            value={field.value ? [field.value] : []}
-                            onChange={(files) => field.onChange(files[0])}
-                            placeholder="Upload the cover image"
-                            single
-                          />
+                          <div className="w-full min-h-28 sm:min-h-32 text-xs sm:text-sm">
+                            <FileUpload
+                              value={field.value ? [field.value] : []}
+                              onChange={(files) => field.onChange(files[0])}
+                              placeholder="Upload the cover image"
+                              single
+                            />
+                          </div>
                         </FormControl>
 
                         <FormMessage />
@@ -1090,16 +1093,18 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     name="propertyImages"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold"> Property Images</span>
                         </FormLabel>
                         <FormControl>
-                          <FileUpload
-                            value={field.value || []}
-                            onChange={field.onChange}
-                            placeholder="Upload other property images"
-                            enableDrag={true}
-                          />
+                          <div className="w-full min-h-28 sm:min-h-32 text-xs sm:text-sm">
+                            <FileUpload
+                              value={field.value || []}
+                              onChange={field.onChange}
+                              placeholder="Upload other property images"
+                              enableDrag={true}
+                            />
+                          </div>
                         </FormControl>
 
                         <FormMessage />
@@ -1107,31 +1112,33 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     )}
                   />
                 </div>
-                <div className="grid lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                   <FormField
                     control={form.control}
                     name="legalDocuments"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 ">
+                        <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                           <span className="font-bold">
                             Legal Documents
                           </span>{" "}
                         </FormLabel>
                         <FormControl>
-                          <FileUpload
-                            value={field.value || []}
-                            onChange={field.onChange}
-                            placeholder="Upload Legal Documents"
-                            type="file"
-                          />
+                          <div className="w-full min-h-28 sm:min-h-32 text-xs sm:text-sm">
+                            <FileUpload
+                              value={field.value || []}
+                              onChange={field.onChange}
+                              placeholder="Upload Legal Documents"
+                              type="file"
+                            />
+                          </div>
                         </FormControl>
 
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="bg-orange-50 rounded-md border border-orange-100 p-4">
+                  <div className="bg-orange-50 rounded-md border border-orange-100 p-3 sm:p-5 m-2 sm:m-4 text-xs sm:text-sm w-full">
                     <div className="flex gap-2">
                       <FileText className=" text-orange-400" />
                       <span className="font-bold">Required Documents:</span>
@@ -1148,12 +1155,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
             {step === 4 && (
               <>
                 <div className=" items-center gap-4">
-                  <h1 className="text-2xl font-semibold">Project Milestones</h1>
-                  <p>Define key milestones for the project timeline</p>
+                  <h1 className="text-lg sm:text-xl font-semibold">Project Milestones</h1>
+                  <p className="text-xs sm:text-sm">Define key milestones for the project timeline</p>
                 </div>
-                <div className="grid lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full">
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 ">
+                    <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                       <span className="font-bold"> Title </span>{" "}
                       <p className="text-red-500">*</p>
                     </FormLabel>
@@ -1167,12 +1174,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           }))
                         }
                         placeholder="E.g Site Acquisition"
-                        className="border-input bg-surface h-10 w-full rounded-md border px-3 text-sm"
+                        className="border-input bg-surface h-9 sm:h-10 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                       />
                     </FormControl>
                   </FormItem>
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 ">
+                    <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                       <span className="font-bold">Date</span>{" "}
                       <p className="text-red-500">*</p>
                     </FormLabel>
@@ -1183,7 +1190,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             type="button"
                             variant="outline"
                             data-empty={!milestoneInput.date}
-                            className="w-[280px] justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+                            className="w-full sm:w-[280px] h-9 sm:h-10 px-3 sm:px-4 justify-start text-left font-normal text-xs sm:text-sm data-[empty=true]:text-muted-foreground"
                           >
                             <CalendarIcon />
                             {milestoneInput.date ? (
@@ -1211,7 +1218,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     </FormControl>
                   </FormItem>
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 ">
+                    <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                       <span className="font-bold">Status</span>{" "}
                       <p className="text-red-500">*</p>
                     </FormLabel>
@@ -1225,7 +1232,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           }))
                         }
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="h-9 sm:h-10 p-2 sm:p-3 text-xs sm:text-sm">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent position={"popper"}>
@@ -1242,7 +1249,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   </FormItem>
                 </div>
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 ">
+                  <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                     <span className="font-bold">
                       {" "}
                       Milestone Description
@@ -1258,16 +1265,17 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                         }))
                       }
                       placeholder="Describe this milestone..."
-                      className="border-input bg-surface h-32 w-full rounded-md border px-3 text-sm"
+                      className="border-input bg-surface min-h-28 sm:min-h-32 w-full rounded-md border p-2 sm:p-3 text-xs sm:text-sm"
                     />
                   </FormControl>
                 </FormItem>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                   <div>Minimum 100 characters recommended</div>
                   <Button
                     type="button"
                     variant={"outline"}
                     onClick={handleAddMilestone}
+                    className="text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                   >
                     Add Milestone <Plus />
                   </Button>
@@ -1279,8 +1287,8 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                 )}
 
                 {milestones.length > 0 && (
-                  <div className="space-y-3 max-w-lg rounded-2xl px-4 py-6">
-                    <h3 className="text-lg font-semibold border-b p-2 ">
+                  <div className="space-y-3 w-full rounded-2xl p-3 sm:p-5 m-2 sm:m-4">
+                    <h3 className="text-base sm:text-lg font-semibold border-b p-2">
                       Milestones Preview ({milestones.length})
                     </h3>
                     {milestones.map((milestone, index) => {
@@ -1294,21 +1302,21 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                       return (
                         <div
                           key={`${milestone.title}-${index}`}
-                          className={`border rounded-md p-4 ${statusClass}`}
+                          className={`border rounded-md p-3 sm:p-4 text-xs sm:text-sm ${statusClass}`}
                         >
                           <div className="flex justify-between items-center gap-3">
                             <h4 className="font-semibold text-black">
                               {milestone.title}
                             </h4>
                             <div className="flex items-center gap-3">
-                              <span className="text-xs uppercase">
+                              <span className="text-xs sm:text-sm uppercase">
                                 {milestone.status.replace("_", " ")}
                               </span>
                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="h-7 w-7 text-red-500"
+                                className="h-7 sm:h-8 w-7 sm:w-8 text-red-500"
                                 onClick={() => handleDeleteMilestone(index)}
                                 aria-label={`Delete milestone ${milestone.title}`}
                               >
@@ -1316,7 +1324,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                               </Button>
                             </div>
                           </div>
-                          <p className="text-sm mt-2 text-gray-600">
+                          <p className="text-xs sm:text-sm mt-2 text-gray-600">
                             {milestone.description}
                           </p>
                           <p className=" mt-1 capitalize text-xs text-gray-600">
@@ -1333,11 +1341,11 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
             {step === 5 && <FormPreview previewData={form.getValues()} />}
 
             {/* Buttons */}
-            <div className="space-y-3 flex gap-4 justify-between w-full">
+            <div className="space-y-3 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-between w-full">
               <Button
                 type="button"
                 variant="outline"
-                className=" font-medium p-4"
+                className="font-medium text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                 onClick={handlePrev}
                 disabled={step === 1}
               >
@@ -1345,7 +1353,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
               </Button>
 
               {isLastStep ? (
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                   <Button
                     type="button"
                     variant="outline"
@@ -1353,7 +1361,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                       form.handleSubmit((values) => onSubmit(values, "draft"))()
                     }
                     disabled={isPending || isUpdating}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                   >
                     <FileText className="w-4 h-4" />
                     {submitAction === "draft" && (isPending || isUpdating)
@@ -1365,7 +1373,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   <Button
                     type="submit"
                     disabled={isPending || isUpdating}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                   >
                     {submitAction === "published" && (isPending || isUpdating)
                       ? isEditMode
@@ -1382,6 +1390,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                   type={"button"}
                   onClick={isLastStep ? undefined : handleNext}
                   disabled={isPending || isUpdating}
+                  className="text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4"
                 >
                   {isLastStep ? "Submit" : "Continue"}
                 </Button>
