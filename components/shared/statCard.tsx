@@ -44,7 +44,7 @@ export function StatCard({
 
       <div
         className={cn(
-          "mb-2 text-2xl sm:text-3xl font-bold capitalize text-[#000000] leading-tight [overflow-wrap:anywhere]",
+          "mb-2 text-2xl sm:text-2xl font-bold capitalize text-[#000000] leading-tight [overflow-wrap:anywhere]",
           color,
         )}
       >

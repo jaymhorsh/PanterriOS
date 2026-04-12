@@ -66,7 +66,7 @@ export function SlideInPanelDrawer({
           </div>
           <DrawerClose
             asChild
-            className="absolute top-[25%] right-5 bg-gray-100 p-2 "
+            className="absolute top-[25%] right-5 cursor-pointer bg-gray-100 p-2 "
           >
             <Button
               variant="ghost"

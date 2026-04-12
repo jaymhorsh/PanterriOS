@@ -6,7 +6,7 @@ import { retrieveYieldDisbursementLedger } from "@/services/yield-disbursements"
 
 export function useRetrieveYieldDisbursementLedger(
   eventId?: string,
-  query: RetrieveWalletFinanceQuery = {},
+  query:  RetrieveWalletFinanceQuery = { page: 1, limit: 20 },
 ) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["wallet-finance", "yield-disbursement-ledger", eventId, query],
