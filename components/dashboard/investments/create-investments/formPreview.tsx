@@ -28,6 +28,12 @@ interface FormPreviewProps {
   previewData: PreviewData;
 }
 
+const formatDisplayValue = (value: string) =>
+  value
+    .replace(/_/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
 export default function FormPreview({ previewData }: FormPreviewProps) {
   return (
     <div className="space-y-4 sm:space-y-6 w-full">
@@ -48,7 +54,7 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
             <p className="flex flex-col space-y-1.5">
               <small className="text-xs sm:text-sm">Type</small>{' '}
               <span className="font-semibold capitalize text-xs sm:text-sm">
-                {previewData.propertyType}{' '}
+                {formatDisplayValue(previewData.propertyType)}{' '}
               </span>
             </p>{' '}
           </div>
@@ -182,7 +188,7 @@ export default function FormPreview({ previewData }: FormPreviewProps) {
 
             return (
               <div key={`${milestone.title}-${index}`} className="flex gap-2 sm:gap-4">
-                <div className="items-center flex flex-col">
+                <div className="items-center justify-end flex flex-col">
                   <div className={`w-5 h-5 rounded-2xl ${ovalBg}`}></div>
                   <div className="w-0.5 min-h-14 h-auto bg-gray-300"></div>
                 </div>

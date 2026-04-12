@@ -116,6 +116,12 @@ type MilestoneItem = CreateInvestmentFormData["projectMilestones"][number];
 type MilestoneInput = Omit<MilestoneItem, "status"> & {
   status: MilestoneItem["status"] | "";
 };
+type ExistingUploadItem = {
+  id: number;
+  name: string;
+  url: string;
+  type?: string;
+};
 
 const typeOptions = [
   { label: "Commercial", value: "commercial" },
@@ -182,6 +188,15 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
   const investmentId = id ? Number(id) : undefined;
   const isEditMode = Boolean(investmentId);
   const [featureInput, setFeatureInput] = useState("");
+  const [existingCoverImage, setExistingCoverImage] = useState<
+    ExistingUploadItem[]
+  >([]);
+  const [existingPropertyImages, setExistingPropertyImages] = useState<
+    ExistingUploadItem[]
+  >([]);
+  const [existingLegalDocuments, setExistingLegalDocuments] = useState<
+    ExistingUploadItem[]
+  >([]);
   const [milestoneDate, setMilestoneDate] = useState<Date>();
   const [milestoneInput, setMilestoneInput] = useState<MilestoneInput>({
     title: "",
@@ -241,6 +256,46 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
       editDetails.propertyDetails.state,
       statesOption,
     );
+    const coverImageUrl = (
+      editDetails.propertyDetails as { coverImage?: string }
+    ).coverImage;
+    const mappedExistingImages = (editDetails.propertyDetails.images ?? []).map(
+      (img) => ({
+        id: img.id,
+        name: img.fileName,
+        url: img.url,
+        type: img.mimeType,
+      }),
+    );
+    const coverFromImages = coverImageUrl
+      ? mappedExistingImages.find((img) => img.url === coverImageUrl)
+      : undefined;
+
+    setExistingCoverImage(
+      coverImageUrl
+        ? [
+            {
+              id: coverFromImages?.id ?? 0,
+              name: coverFromImages?.name ?? "Cover image",
+              url: coverImageUrl,
+              type: coverFromImages?.type,
+            },
+          ]
+        : [],
+    );
+    setExistingPropertyImages(
+      coverImageUrl
+        ? mappedExistingImages.filter((img) => img.url !== coverImageUrl)
+        : mappedExistingImages,
+    );
+
+    const mappedExistingDocuments = (editDetails.documents ?? []).map((doc) => ({
+      id: doc.id,
+      name: doc.documentName,
+      url: doc.fileUrl,
+      type: doc.mimeType,
+    }));
+    setExistingLegalDocuments(mappedExistingDocuments);
 
     form.reset({
       propertyName: editDetails.propertyDetails.propertyName,
@@ -452,8 +507,8 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
         expectedReturnPercentage: parseFloat(values.expectedReturns),
         riskRating: values.riskRating,
         investmentPublicationStatus: publicationStatus,
-        propertyValue: values.propertyValue,
-        expectedRoi: values.expectedROI,
+        propertyValue: values.propertyValue === 0 ? undefined : values.propertyValue,
+        expectedRoi: values.expectedROI  === 0 ? undefined : values.expectedROI,
         propertySizeSqm: values.propertySize,
         propertyUnit: values.units?.toString(),
         keyHighlights: values.features,
@@ -1023,7 +1078,7 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 text-xs sm:text-sm">
                             <span className="font-bold">Expected ROI (%)</span>{" "}
-                            <p className="text-red-500">*</p>
+                            {/* <p className="text-red-500">*</p> */}
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -1060,12 +1115,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                     <div className="">
                       <small>Expected ROI</small>
                       <div className="text-green-500">
-                        {form.getValues("expectedROI")}%
+                        {form.getValues("expectedReturns")}%
                       </div>
                     </div>
                     <div className="">
                       <small>Duration</small>
-                      <div className="text-green-500">
+                      <div className="text-green-500 capitalize">
                         {form.getValues("duration")} months
                       </div>
                     </div>
@@ -1098,7 +1153,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                           <div className="w-full min-h-28 sm:min-h-32 text-xs sm:text-sm">
                             <FileUpload
                               value={field.value ? [field.value] : []}
-                              onChange={(files) => field.onChange(files[0])}
+                              onChange={(files) => {
+                                setExistingCoverImage([]);
+                                field.onChange(files[0]);
+                              }}
+                              existingFiles={existingCoverImage}
+                              onRemoveExisting={() => setExistingCoverImage([])}
                               placeholder="Upload the cover image"
                               single
                             />
@@ -1122,6 +1182,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             <FileUpload
                               value={field.value || []}
                               onChange={field.onChange}
+                              existingFiles={existingPropertyImages}
+                              onRemoveExisting={(id) =>
+                                setExistingPropertyImages(
+                                  existingPropertyImages.filter((img) => img.id !== id),
+                                )
+                              }
                               placeholder="Upload other property images"
                               enableDrag={true}
                             />
@@ -1149,6 +1215,12 @@ export function CreateInvestmentForm({ step, setStep, id }: Prop) {
                             <FileUpload
                               value={field.value || []}
                               onChange={field.onChange}
+                              existingFiles={existingLegalDocuments}
+                              onRemoveExisting={(id) =>
+                                setExistingLegalDocuments(
+                                  existingLegalDocuments.filter((doc) => doc.id !== id),
+                                )
+                              }
                               placeholder="Upload Legal Documents"
                               type="file"
                             />

@@ -64,7 +64,7 @@ export const yieldColumns: ColumnDef<YieldDisbursementItem>[] = [
     header: "Date & Time",
     cell: ({ row }) => (
       <span className="text-gray-600">
-        {row.original.disbursedDate} {"  "} {row.original.disbursedTime}
+        {row.original.dateTime}
       </span>
     ),
   },

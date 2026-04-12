@@ -91,3 +91,11 @@ export function generatePassword(length: number = 12): string {
   password = password.sort(() => Math.random() - 0.5);
   return password.join("");
 }
+
+
+export const formatDisplayValue = (value: string): string => {
+  return value
+    .replace(/_/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};

@@ -4,8 +4,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        // protocol: "https",
+        protocol: "https",
         hostname: "panterrium-staging.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
       },
     ],
   },

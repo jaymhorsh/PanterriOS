@@ -11,6 +11,7 @@ import { InvestmentListItem } from "@/interface";
 import { useDeleteInvestment } from "@/hook/investment-management";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatDisplayValue } from "@/utils/helpers";
 
 interface AllInvestmentsProps {
   data: InvestmentListItem[];
@@ -68,7 +69,9 @@ export function AllInvestments({
       header: "property",
       cell: ({ row }) => (
         <div className="max-w-[10rem] sm:max-w-none">
-          <p className="text-xs sm:text-sm break-words">{row.original.propertyName} </p>
+          <p className="text-xs sm:text-sm break-words">
+            {row.original.propertyName}{" "}
+          </p>
           <small className="text-[11px] sm:text-xs text-gray-500 flex items-center gap-1 break-words">
             {" "}
             {/* <MapPin className="w-3 h-3" /> <span> {row.original.location}</span> */}
@@ -80,7 +83,9 @@ export function AllInvestments({
       accessorKey: "propertyType",
       header: "type",
       cell: ({ row }) => (
-        <div className="text-xs sm:text-sm  reak-words">{row.original.propertyType}</div>
+        <div className="text-xs sm:text-sm  reak-words">
+          {formatDisplayValue(row.original.propertyType)}
+        </div>
       ),
     },
     {
@@ -108,7 +113,9 @@ export function AllInvestments({
                 "[&>div]:transition-colors duration-300",
               )}
             />
-            <span className="text-xs sm:text-sm whitespace-nowrap">{value}%</span>
+            <span className="text-xs sm:text-sm whitespace-nowrap">
+              {value}%
+            </span>
           </div>
         );
       },
@@ -117,28 +124,36 @@ export function AllInvestments({
       accessorKey: "targetAmount",
       header: "target",
       cell: ({ row }) => (
-        <div className="text-xs sm:text-sm whitespace-nowrap">{formatCurrency(row.original.targetAmount)}</div>
+        <div className="text-xs sm:text-sm whitespace-nowrap">
+          {formatCurrency(row.original.targetAmount)}
+        </div>
       ),
     },
     {
       accessorKey: "amountRaised",
       header: "raised",
       cell: ({ row }) => (
-        <div className="text-xs sm:text-sm whitespace-nowrap">{formatCurrency(row.original.amountRaised)}</div>
+        <div className="text-xs sm:text-sm whitespace-nowrap">
+          {formatCurrency(row.original.amountRaised)}
+        </div>
       ),
     },
     {
       accessorKey: "returns",
       header: "returns",
       cell: ({ row }) => (
-        <div className="text-xs sm:text-sm text-blue-600 whitespace-nowrap">{row.original.returns}%</div>
+        <div className="text-xs sm:text-sm text-blue-600 whitespace-nowrap">
+          {row.original.returns}%
+        </div>
       ),
     },
     {
       accessorKey: "totalNumberOfInvestors",
       header: "investors",
       cell: ({ row }) => (
-        <div className="text-xs sm:text-sm whitespace-nowrap">{row.original.totalNumberOfInvestors}</div>
+        <div className="text-xs sm:text-sm whitespace-nowrap">
+          {row.original.totalNumberOfInvestors}
+        </div>
       ),
     },
     {
