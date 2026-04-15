@@ -1,3 +1,5 @@
+import ArticlesContainer from "@/components/dashboard/articles/ArticlesContainer";
+
 export default function ArticlesPage() {
-  return <div>page</div>;
+  return <ArticlesContainer />;
 }
