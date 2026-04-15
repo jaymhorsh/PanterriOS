@@ -4,22 +4,25 @@ import { useEffect, useMemo, useState } from "react";
 import { ReUseAbleTable } from "@/components/shared/reusableTable";
 import { transactionColumns } from "./transactionColumns";
 import { TableFilters } from "@/components/shared/TableFilters";
-import { Calendar, Clock, Check } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Check,
+  Wallet,
+  Users2,
+  TrendingUp,
+} from "lucide-react";
 import {
   type WalletFinanceSummary,
   type WalletFinanceTimeRangeFilter,
   type WalletFinanceTransactionStatusFilter,
   type WalletFinanceTransactionTypeFilter,
 } from "@/interface";
-import { TableSkeleton } from "@/components/shared";
+import { StatCard, StatCardSkeleton, TableSkeleton } from "@/components/shared";
 import { useRetrieveWalletFinance } from "@/hook/wallet-finance";
-import { debounce } from "@/utils/helpers";
+import { debounce, formatCurrency } from "@/utils/helpers";
 
-export function AllTransactions({
-  onCountChange,
-}: {
-  onCountChange?: (count: number, summary?: WalletFinanceSummary) => void;
-}) {
+export function AllTransactions() {
   const [search, setSearch] = useState("");
 
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -51,20 +54,79 @@ export function AllTransactions({
     setPage(1);
     debouncedSetSearch(value);
   };
+  const iconMap = {
+    Wallet,
+    Users: Users2,
+    TrendingUp,
+    Clock,
+  };
 
-  useEffect(() => {
-    onCountChange?.(
-      transactionsData?.pagination?.totalItems ?? 0,
-      transactionsData?.summary,
-    );
-  }, [
-    transactionsData?.pagination?.totalItems,
-    transactionsData?.summary,
-    onCountChange,
-  ]);
+  const stats = [
+    {
+      label: "Total Balance",
+      value: formatCurrency(transactionsData?.summary?.totalBalance || 0),
+      description: "As of today",
+      icon: "Wallet",
+      color: "text-gray-900",
+      iconColor: "text-blue-600",
+      bgColor: "bg-blue-100",
+    },
+    {
+      label: "Active Vaults",
+      value: transactionsData?.summary?.activeVaults || 0,
+      description: "Investor vaults",
+      status: "Active",
+      icon: "Users",
+      color: "text-gray-900",
+      iconColor: "text-purple-600",
+      bgColor: "bg-purple-100",
+    },
+    {
+      label: "Total Yields Disbursed",
+      value: transactionsData?.summary?.totalYieldsDisbursed || 0,
+      description: "Year to date",
+      icon: "TrendingUp",
+      color: "text-gray-900",
+      iconColor: "text-green-600",
+      bgColor: "bg-green-100",
+    },
+    {
+      label: "Pending Withdrawals",
+      value: transactionsData?.summary?.pendingWithdrawals.amount || 0,
+      description: `${transactionsData?.summary?.pendingWithdrawals.count || 0} requests`,
+      icon: "Clock",
+      color: "text-gray-900",
+      iconColor: "text-orange-600",
+      bgColor: "bg-orange-100",
+    },
+  ];
 
   return (
     <div className="w-full space-y-6">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        {isLoading ? (
+          <StatCardSkeleton />
+        ) : (
+          stats.map((stat, i) => {
+            const IconComponent = iconMap[stat.icon as keyof typeof iconMap];
+
+            return (
+              <StatCard
+                key={i}
+                label={stat.label}
+                value={stat.value}
+                description={stat.description}
+                status={stat.status}
+                Icon={IconComponent}
+                iconColor={stat.iconColor}
+                bgColor={stat.bgColor}
+                color={stat.color}
+                loading={isLoading}
+              />
+            );
+          })
+        )}
+      </div>
       <TableFilters
         searchValue={search}
         onSearchChange={handleSearchChange}

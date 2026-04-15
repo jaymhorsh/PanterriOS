@@ -1,22 +1,15 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ReUseAbleTable } from "@/components/shared/reusableTable";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { TableSkeleton } from "@/components/shared/loader";
 import { Check } from "lucide-react";
-import {
-  type InvestorWalletStatusFilter,
-  type WalletFinanceSummary,
-} from "@/interface";
+import { type InvestorWalletStatusFilter } from "@/interface";
 import { useRetrieveInvestorWallets } from "@/hook/wallet-finance";
 import { investorsWalletColumns } from "./investorsWalletColumns";
 import { debounce } from "@/utils/helpers";
 
-interface InvestorsWalletProps {
-  onCountChange?: (count: number, summary?: WalletFinanceSummary) => void;
-}
-
-export function InvestorsWallet({ onCountChange }: InvestorsWalletProps) {
+export function InvestorsWallet() {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -39,17 +32,6 @@ export function InvestorsWallet({ onCountChange }: InvestorsWalletProps) {
     search: debouncedSearchValue || undefined,
   });
   const walletsData = data?.data?.data;
-
-  useEffect(() => {
-    onCountChange?.(
-      walletsData?.pagination?.totalItems ?? 0,
-      walletsData?.summary,
-    );
-  }, [
-    walletsData?.pagination?.totalItems,
-    walletsData?.summary,
-    onCountChange,
-  ]);
 
   return (
     <div className="w-full space-y-6">

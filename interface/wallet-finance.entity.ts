@@ -97,6 +97,7 @@ export interface RetrieveYieldDisbursementsQuery {
   page?: number;
   limit?: number;
   search?: string;
+  status?: "all" | "pending" | "disbursed";
   timeRange?: WalletFinanceTimeRangeFilter;
 }
 

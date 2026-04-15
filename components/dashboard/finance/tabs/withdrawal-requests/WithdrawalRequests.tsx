@@ -14,11 +14,7 @@ import {
 import { Check, Shield } from "lucide-react";
 import { debounce } from "@/utils/helpers";
 
-export function WithdrawalRequests({
-  onCountChange,
-}: {
-  onCountChange?: (count: number, summary?: WalletFinanceSummary) => void;
-}) {
+export function WithdrawalRequests() {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -40,9 +36,6 @@ export function WithdrawalRequests({
     riskProfile: riskProfile as WithdrawalApprovalRiskProfileFilter,
     search: debouncedSearchValue || undefined,
   });
-  useEffect(() => {
-    onCountChange?.(data?.pagination?.totalItems ?? 0, data?.summary);
-  }, [data?.pagination?.totalItems, data?.summary, onCountChange]);
 
   return (
     <div className="w-full space-y-6">

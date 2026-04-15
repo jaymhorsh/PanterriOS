@@ -17,6 +17,7 @@ export interface FinanceStats {
   label: string;
   value: number | string;
   description: string;
+  status?: string;
   icon: string;
   color: string;
   bgColor: string;
