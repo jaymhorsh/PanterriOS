@@ -95,7 +95,7 @@ export default function ArticlesContainer() {
         pageTitle="Articles Management"
         subTitle="Manage platform content, crawled articles, and editors picks"
       >
-        <Link href="/investments/articles">
+        <Link href="/articles/create-article">
           <Button className="flex h-9 items-center gap-2 rounded-sm px-3 text-xs sm:h-10 sm:text-sm">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Create Article</span>
