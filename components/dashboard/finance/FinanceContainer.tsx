@@ -26,11 +26,11 @@ const iconMap = {
 
 export function FinanceContainer() {
   const [activeTab, setActiveTab] = useState("all-transactions");
-  const [allTransactionsCount, setAllTransactionsCount] = useState(0);
-  const [withdrawalCount, setWithdrawalCount] = useState(0);
-  const [yieldCount, setYieldCount] = useState(0);
-  const [investorWalletCount, setInvestorWalletCount] = useState(0);
-  const [summary, setSummary] = useState<WalletFinanceSummary | undefined>();
+  const [allTransactionsCount] = useState(0);
+  const [withdrawalCount] = useState(0);
+  const [yieldCount] = useState(0);
+  const [investorWalletCount] = useState(0);
+  const [summary] = useState<WalletFinanceSummary | undefined>();
 
   // Badge color mapping for each tab
   const badgeColors: Record<string, string> = {
@@ -47,60 +47,33 @@ export function FinanceContainer() {
       title: "All Transactions",
       value: "all-transactions",
       count: activeTab === "all-transactions" ? allTransactionsCount : 0,
-      content: (
-        <AllTransactions
-          onCountChange={(count, summary) => {
-            setAllTransactionsCount(count);
-            if (summary) setSummary(summary);
-          }}
-        />
-      ),
+      content: <AllTransactions />,
     },
     {
       title: "Withdrawal Requests",
       value: "withdrawal-requests",
       count: activeTab === "withdrawal-requests" ? withdrawalCount : 0,
-      content: (
-        <WithdrawalRequests
-          onCountChange={(count, summary) => {
-            setWithdrawalCount(count);
-            if (summary) setSummary(summary);
-          }}
-        />
-      ),
+      content: <WithdrawalRequests />,
     },
 
     {
       title: "Reconciliation",
       value: "reconciliation",
-      count: activeTab === "reconciliation" ? DUMMY_RECONCILIATION_DATA.length : 0,
+      count:
+        activeTab === "reconciliation" ? DUMMY_RECONCILIATION_DATA.length : 0,
       content: <Reconciliation />,
     },
     {
       title: "Yield Events",
       value: "yield-events",
       count: activeTab === "yield-events" ? yieldCount : 0,
-      content: (
-        <YieldEvents
-          onCountChange={(count, summary) => {
-            setYieldCount(count);
-            if (summary) setSummary(summary);
-          }}
-        />
-      ),
+      content: <YieldEvents />,
     },
     {
       title: "Investors Wallet",
       value: "investors-wallet",
       count: activeTab === "investors-wallet" ? investorWalletCount : 0,
-      content: (
-        <InvestorsWallet
-          onCountChange={(count, summary) => {
-            setInvestorWalletCount(count);
-            if (summary) setSummary(summary);
-          }}
-        />
-      ),
+      content: <InvestorsWallet />,
     },
   ];
 
@@ -191,7 +164,7 @@ export function FinanceContainer() {
                 className="relative flex h-9 items-center gap-2 whitespace-nowrap rounded-md border-0 bg-transparent px-3 py-2 text-sm font-medium text-gray-700 transition-all data-[state=active]:bg-white data-[state=active]:text-black sm:px-4"
               >
                 {tab.title}
-                {tab.count > 0  && (
+                {tab.count > 0 && (
                   <Badge
                     className={`rounded-sm px-2 py-1 ${badgeColors[tab.value]}`}
                   >
