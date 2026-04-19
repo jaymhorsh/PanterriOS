@@ -23,7 +23,7 @@ export interface ArticleRecord {
   badges: string[];
   tags: string[];
   status: "published" | "crawled" | "draft";
-  coverImage?: StaticImageData;
+  coverImage?: StaticImageData | string;
   coverClassName?: string;
   readTime?: string;
   excerpt?: string;
