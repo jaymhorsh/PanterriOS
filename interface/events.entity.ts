@@ -2,7 +2,7 @@ export interface RetrieveEventsQuery {
   page?: number;
   per_page?: number;
   search?: string;
-  all?: boolean | 'true' | 'false';
+  all?: boolean | "true" | "false";
   location?: string;
   eventType?: string;
   eventDateTime?: string;
@@ -63,13 +63,21 @@ export interface EventsMeta {
   pagination?: EventsPagination;
 }
 
+export interface EventStats {
+  totalEvents: number;
+  aiDiscovered: number;
+  submitted: number;
+  freeEvents: number;
+  virtualEvents: number;
+  expectedAttendees: number;
+}
+
 export interface RetrieveEventsRes {
   meta: EventsMeta;
   data: EventEntity[];
 }
 
-
 export interface RetrieveEventStatsRes {
   meta: EventsMeta;
-  data: Record<string, unknown>;
+  data: EventStats;
 }

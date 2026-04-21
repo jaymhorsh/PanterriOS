@@ -55,19 +55,8 @@ export interface EventRecordRow {
   featured: boolean;
 }
 
-export interface EventSummary {
-  totalEvents: number;
-  aiDiscovered: number;
-  submitted: number;
-  featured: number;
-}
 
-export const eventsSummary: EventSummary = {
-  totalEvents: 8,
-  aiDiscovered: 2,
-  submitted: 1,
-  featured: 3,
-};
+
 
 export const eventsData: EventRecord[] = [
   {

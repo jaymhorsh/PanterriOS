@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import { CalendarDays, UsersRound, Star, Bot } from "lucide-react";
 import Link from "next/link";
-import { PageHead, StatCard } from "@/components/shared";
+import { PageHead, StatCard, StatCardSkeleton } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { eventTabCounts, eventsData, eventsSummary, EventStatus } from "./data";
+import { eventTabCounts, eventsData, EventStatus } from "./data";
+import { useRetrieveEventStats } from "@/hook/events";
 import {
   AIDiscoveredEventsTab,
   EventsTabContent,
@@ -30,6 +31,9 @@ const tabs: Array<{ label: string; value: EventStatus; count: number }> = [
 export default function EventsContainer() {
   const [activeTab, setActiveTab] = useState<EventStatus>("published");
   const [search, setSearch] = useState("");
+  const { data: eventStatsResponse, isLoading } = useRetrieveEventStats();
+
+  const eventStats = eventStatsResponse?.data;
 
   const filteredEvents = useMemo(() => {
     const loweredSearch = search.trim().toLowerCase();
@@ -57,7 +61,7 @@ export default function EventsContainer() {
   const stats = [
     {
       label: "Total Events (this month)",
-      value: eventsSummary.totalEvents,
+      value: eventStats?.totalEvents ?? 0,
       description: "Published events",
       icon: CalendarDays,
       color: "text-gray-900",
@@ -66,7 +70,7 @@ export default function EventsContainer() {
     },
     {
       label: "AI Discovered",
-      value: eventsSummary.aiDiscovered,
+      value: eventStats?.aiDiscovered ?? 0,
       description: "Awaiting review",
       icon: Bot,
       color: "text-gray-900",
@@ -75,7 +79,7 @@ export default function EventsContainer() {
     },
     {
       label: "Submitted Events",
-      value: eventsSummary.submitted,
+      value: eventStats?.submitted ?? 0,
       description: "External submissions",
       icon: UsersRound,
       color: "text-gray-900",
@@ -83,9 +87,9 @@ export default function EventsContainer() {
       bgColor: "bg-[#FEF9C2]",
     },
     {
-      label: "Featured",
-      value: eventsSummary.featured,
-      description: "Highlighted events",
+      label: "Expected Attendees",
+      value: eventStats?.expectedAttendees ?? 0,
+      description: "Projected attendance",
       icon: Star,
       color: "text-gray-900",
       iconColor: "text-[#9810FA]",
@@ -112,7 +116,8 @@ export default function EventsContainer() {
       </PageHead>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-4">
-        {stats.map((stat, index) => (
+        
+        {isLoading ? <StatCardSkeleton /> : stats.map((stat, index) => (
           <StatCard
             key={index}
             label={stat.label}
