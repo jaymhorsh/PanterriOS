@@ -9,14 +9,14 @@ import {
   type RetrieveWithdrawalApprovalsRes,
   WithdrawalRequestActions,
   RetrieveWithdrawalRequestDetailsRes,
-} from "@/interface";
-import API from "@/services/axios";
+} from '@/interface';
+import { API } from '@/services/axios';
 
 export const retrieveWalletFinance = async (
   params: RetrieveWalletFinanceQuery,
 ): Promise<RetrieveWalletFinanceRes> => {
   const { data } = await API.get(
-    "/investor-wallet/admin/finance/transactions",
+    '/investor-wallet/admin/finance/transactions',
     {
       params,
     },
@@ -39,7 +39,7 @@ export const retrieveWithdrawalApprovals = async (
   query: RetrieveWithdrawalApprovalsQuery,
 ): Promise<RetrieveWithdrawalApprovalsRes> => {
   const { data } = await API.get(
-    "/investor-wallet/admin/withdrawals/approvals",
+    '/investor-wallet/admin/withdrawals/approvals',
     {
       params: query,
     },
@@ -51,7 +51,7 @@ export const retrieveWithdrawalApprovals = async (
 export const retrieveInvestorWallets = async (
   query: RetrieveInvestorWalletsQuery,
 ): Promise<RetrieveInvestorWalletsRes> => {
-  const { data } = await API.get("/investor-wallet/admin/investor-wallets", {
+  const { data } = await API.get('/investor-wallet/admin/investor-wallets', {
     params: query,
   });
 

@@ -34,6 +34,14 @@ AUTH.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+const CRAWLER_API = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_CRAWLER_BASE_API,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.NEXT_PUBLIC_CRAWLER_API_KEY,
+  },
+});
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const setRegEmail = async (email: string) => {
@@ -76,6 +84,19 @@ export const deleteTwoFactorTemporaryToken = async () => {
 
 // Request interceptor
 API.interceptors.request.use(
+  (config) => {
+    const token = tokenStore.get();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    handleAxiosError(error as import('axios').AxiosError);
+    return Promise.reject(error);
+  },
+);
+CRAWLER_API.interceptors.request.use(
   (config) => {
     const token = tokenStore.get();
     if (token) {
@@ -162,5 +183,62 @@ API.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+CRAWLER_API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
+    const status = error.response?.status;
 
-export default API;
+    const canRefresh =
+      status === 401 &&
+      Boolean(originalRequest) &&
+      !originalRequest?._retry &&
+      !String(originalRequest?.url ?? '').includes('/api/auth/refresh');
+
+    if (canRefresh && originalRequest) {
+      if (isRefreshing) {
+        return new Promise<string>((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return API(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const { data } = await AUTH.post('/api/auth/refresh');
+        const newAccessToken = data?.accessToken ?? data?.data?.accessToken;
+
+        if (typeof newAccessToken !== 'string' || !newAccessToken) {
+          throw new Error(
+            `Invalid refresh response: missing accessToken. Response: ${JSON.stringify(data)}`,
+          );
+        }
+
+        tokenStore.set(newAccessToken);
+        processQueue(null, newAccessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return API(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError);
+
+        if (isAuthFailure(refreshError)) {
+          tokenStore.clear();
+          localStorage.removeItem('auth-store');
+        }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    handleAxiosError(error as import('axios').AxiosError);
+    return Promise.reject(error);
+  },
+);
+
+export { API, CRAWLER_API };

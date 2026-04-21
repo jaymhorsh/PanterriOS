@@ -66,30 +66,6 @@ export function TwoFaBar() {
           </div>
         </div>
       </div>
-
-      <div className="rounded-xl shadow p-4 space-y-8">
-        <div className="text-xl font-semibold">Account Status</div>
-        <div className=" space-y-1">
-          <div className="flex justify-between">
-            <p>Email Verified</p>
-            <small className="text-xs text-green-500 bg-green-50 p-2">
-              Verified
-            </small>
-          </div>
-          <div className="flex justify-between">
-            <p>Phone Verified</p>
-            <small className="text-xs text-green-500 bg-green-50 p-2">
-              Verified
-            </small>
-          </div>
-          <div className="flex justify-between">
-            <p>Account Status</p>
-            <small className="text-xs text-green-500 bg-green-50 p-2">
-              {profile?.data?.userStatus || 'Active'}
-            </small>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

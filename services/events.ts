@@ -1,15 +1,15 @@
 import {
-  type RetrieveEventDetailsRes,
+ 
   type RetrieveEventsQuery,
   type RetrieveEventsRes,
   type RetrieveEventStatsRes,
 } from "@/interface";
-import API from "@/services/axios";
+import { CRAWLER_API } from "@/services/axios";
 
 export const retrieveEvents = async (
   params: RetrieveEventsQuery,
 ): Promise<RetrieveEventsRes> => {
-  const { data } = await API.get("/events", {
+  const { data } = await CRAWLER_API.get("/events", {
     params,
   });
 
@@ -17,15 +17,15 @@ export const retrieveEvents = async (
 };
 
 export const retrieveEventStats = async (): Promise<RetrieveEventStatsRes> => {
-  const { data } = await API.get("/events/stats");
+  const { data } = await CRAWLER_API.get("/events/stats");
 
   return data;
 };
 
 export const retrieveEventDetails = async (
   id: string,
-): Promise<RetrieveEventDetailsRes> => {
-  const { data } = await API.get(`/events/${id}`);
+): Promise<RetrieveEventsRes> => {
+  const { data } = await CRAWLER_API.get(`/events/${id}`);
 
-  return data;
-};
+    return data;
+}

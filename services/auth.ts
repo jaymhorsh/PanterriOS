@@ -14,7 +14,7 @@ import {
   VerifyOtpReq,
   VerifyOtpRes,
 } from '@/interface';
-import API, { AUTH, getTwoFactorTemporaryToken } from '@/services/axios';
+import  {API, AUTH, getTwoFactorTemporaryToken } from '@/services/axios';
 import { UserProfileRes } from '@/interface/user-profile.entity';
 import { tokenStore } from '@/store/tokenStore';
 

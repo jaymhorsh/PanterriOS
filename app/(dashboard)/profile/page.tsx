@@ -32,9 +32,11 @@ export default function ProfilePage() {
       <div className=" my-8 flex  flex-col lg:flex-row lg:gap-8 ">
         <div className="lg:w-3/4 space-y-8">
           <ChangePassword />
-          <ActiveSessions />
+          <div className="hidden">
+            <ActiveSessions />
+          </div>
         </div>
-        <div className="lg:w-1/4 space-y-8">
+        <div className="lg:w-2/4 space-y-8">
           <TwoFaBar />
         </div>
       </div>

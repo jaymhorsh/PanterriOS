@@ -9,17 +9,7 @@ import {
 import { ReUseAbleTable } from '@/components/shared/reusableTable';
 import { Button } from '@/components/ui/button';
 import { type ColumnDef } from '@tanstack/react-table';
-import {
-  CircleCheckBig,
-  CircleX,
-  Eye,
-  Plus,
-  Shield,
-  SquarePen,
-  User,
-  Users,
-  X,
-} from 'lucide-react';
+import { Eye, Plus, Shield, SquarePen, User, Users, X } from 'lucide-react';
 import {
   Drawer,
   DrawerClose,
@@ -40,7 +30,7 @@ interface UsersRow {
   email: string;
   role: string;
   status: string;
-  last_login: string;
+  lastLogin: string;
 }
 
 export default function UsersPage() {
@@ -57,7 +47,7 @@ export default function UsersPage() {
       email: user.email,
       role: user.roles?.join(', ') || '-',
       status: user.status,
-      last_login: '-',
+      lastLogin: user.lastLogin || '-',
     })) || [];
 
   const summary = [
@@ -116,22 +106,20 @@ export default function UsersPage() {
         return status.toLowerCase() === 'active' ||
           status.toLowerCase() === 'activated' ? (
           <div className="text-center capitalize bg-green-50 text-green-500 flex  items-center gap-1.5 border border-green-300 whitespace-nowrap p-1 rounded-sm w-fit ">
-            <CircleCheckBig className="w-3 h-3" />
             <span> {status}</span>
           </div>
         ) : (
           <div className="text-center capitalize bg-gray-50 text-gray-500 flex  items-center gap-1.5 border border-gray-300 whitespace-nowrap p-1 rounded-sm w-fit ">
-            <CircleX className="w-3 h-3" />
             <span> {status}</span>
           </div>
         );
       },
     },
     {
-      accessorKey: 'last_login',
+      accessorKey: 'lastLogin',
       header: 'last login',
       cell: ({ row }) => (
-        <div className="text-center font-medium">{row.original.last_login}</div>
+        <div className="text-center font-medium">{row.original.lastLogin}</div>
       ),
     },
 

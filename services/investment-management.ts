@@ -11,7 +11,7 @@ import {
   UpdateInvestmentPublicationStatusRes,
   UpdateInvestmentRes,
 } from '@/interface';
-import API from '@/services/axios';
+import { API } from '@/services/axios';
 
 export const createInvestment = async (
   payload: CreateInvestmentReq,
@@ -65,7 +65,10 @@ export const createInvestment = async (
   }
 
   // Append project milestones as JSON string array
-  formData.append('projectMilestones', JSON.stringify(payload.projectMilestones));
+  formData.append(
+    'projectMilestones',
+    JSON.stringify(payload.projectMilestones),
+  );
 
   // Append document visibility if provided
   if (payload.documentVisibility && payload.documentVisibility.length > 0) {
@@ -88,15 +91,11 @@ export const createInvestment = async (
     formData.append('propertyDocuments', file);
   });
 
-  const { data } = await API.post(
-    '/investments/admin/create',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  const { data } = await API.post('/investments/admin/create', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-  );
+  });
 
   return data;
 };
@@ -158,10 +157,7 @@ export const updateInvestmentDetails = async (
     payload.returnDistributionSchedule,
   );
   appendIfDefined('duration', payload.duration);
-  appendIfDefined(
-    'expectedReturnPercentage',
-    payload.expectedReturnPercentage,
-  );
+  appendIfDefined('expectedReturnPercentage', payload.expectedReturnPercentage);
   appendIfDefined('riskRating', payload.riskRating);
   appendIfDefined(
     'investmentPublicationStatus',
@@ -217,7 +213,9 @@ export const toggleInvestmentDocumentVisibility = async (
 export const updateInvestmentPublicationStatus = async (
   id: number,
 ): Promise<UpdateInvestmentPublicationStatusRes> => {
-  const { data } = await API.patch(`/investments/admin/${id}/publication-status`);
+  const { data } = await API.patch(
+    `/investments/admin/${id}/publication-status`,
+  );
 
   return data;
 };

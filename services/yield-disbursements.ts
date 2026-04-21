@@ -6,13 +6,13 @@ import {
   type RetrieveYieldDisbursementReviewRes,
   type RetrieveYieldDisbursementsQuery,
   type RetrieveYieldDisbursementsRes,
-} from "@/interface";
-import API from "@/services/axios";
+} from '@/interface';
+import { API } from '@/services/axios';
 
 export const retrieveYieldDisbursements = async (
   query: RetrieveYieldDisbursementsQuery,
 ): Promise<RetrieveYieldDisbursementsRes> => {
-  const { data } = await API.get("/investments/admin/yield-disbursements", {
+  const { data } = await API.get('/investments/admin/yield-disbursements', {
     params: query,
   });
 

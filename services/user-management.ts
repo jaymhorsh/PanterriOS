@@ -4,7 +4,7 @@ import {
   UserProfileRes,
 } from '@/interface/user-profile.entity';
 import { ChangePasswordReq, CommonRes } from '@/interface';
-import API from '@/services/axios';
+import { API } from '@/services/axios';
 
 export const uploadMyProfilePicture = async (
   file: File,

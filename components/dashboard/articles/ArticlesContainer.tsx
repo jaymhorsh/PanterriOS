@@ -1,19 +1,26 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { BriefcaseBusiness, FileText, Plus, Star, TrendingUp } from "lucide-react";
-import { PageHead, StatCard } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { ReusableSelect } from "@/components/ui/ReusableSelect";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PublishedArticles, CrawledQueue, Drafts } from "./tabs";
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import {
+  BriefcaseBusiness,
+  FileText,
+  Plus,
+  Star,
+  TrendingUp,
+} from 'lucide-react';
+import { PageHead, StatCard } from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { ReusableSelect } from '@/components/ui/ReusableSelect';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PublishedArticles, CrawledQueue, Drafts } from './tabs';
+import { useRetrieveArticles } from '@/hook/articles/useRetrieveArticles';
 
 const categoryOptions = [
-  { label: "All Categories", value: "all" },
-  { label: "Technology", value: "technology" },
-  { label: "Finance", value: "finance" },
-  { label: "Business", value: "business" },
+  { label: 'All Categories', value: 'all' },
+  { label: 'Technology', value: 'technology' },
+  { label: 'Finance', value: 'finance' },
+  { label: 'Business', value: 'business' },
 ];
 
 const tabCounts = {
@@ -23,70 +30,73 @@ const tabCounts = {
 };
 
 export default function ArticlesContainer() {
-  const [activeTab, setActiveTab] = useState("published");
-  const [category, setCategory] = useState("all");
+  const [activeTab, setActiveTab] = useState('published');
+  const [category, setCategory] = useState('all');
+  const { data: crawledArticles } = useRetrieveArticles({});
 
   const stats = [
     {
-      label: "Total Articles",
+      label: 'Total Articles',
       value: 8,
-      description: "6 published",
+      description: '6 published',
       icon: FileText,
-      color: "text-gray-900",
-      iconColor: "text-[#255FDE]",
-      bgColor: "bg-[#DDEBFF]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#255FDE]',
+      bgColor: 'bg-[#DDEBFF]',
     },
     {
-      label: "Crawled Queue",
+      label: 'Crawled Queue',
       value: 5,
-      description: "Awaiting review",
+      description: 'Awaiting review',
       icon: BriefcaseBusiness,
-      color: "text-gray-900",
-      iconColor: "text-[#0AA84F]",
-      bgColor: "bg-[#D6F1E1]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#0AA84F]',
+      bgColor: 'bg-[#D6F1E1]',
     },
     {
       label: "Editor's Picks",
       value: 3,
-      description: "Featured content",
+      description: 'Featured content',
       icon: Star,
-      color: "text-gray-900",
-      iconColor: "text-[#CF8C00]",
-      bgColor: "bg-[#F8F2B7]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#CF8C00]',
+      bgColor: 'bg-[#F8F2B7]',
     },
     {
-      label: "Total Views",
-      value: "16,764",
-      description: "This month",
+      label: 'Total Views',
+      value: '16,764',
+      description: 'This month',
       icon: TrendingUp,
-      color: "text-gray-900",
-      iconColor: "text-[#8B23E8]",
-      bgColor: "bg-[#EBD9FA]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#8B23E8]',
+      bgColor: 'bg-[#EBD9FA]',
     },
   ];
 
   const tabs = useMemo(
     () => [
       {
-        title: "Published Articles",
-        value: "published",
+        title: 'Published Articles',
+        value: 'published',
         count: tabCounts.published,
         content: <PublishedArticles category={category} />,
       },
       {
-        title: "Crawled Queue",
-        value: "crawled",
-        count: tabCounts.crawled,
-        content: <CrawledQueue category={category} />,
+        title: 'Crawled Queue',
+        value: 'crawled',
+        count: crawledArticles
+          ? crawledArticles.meta.pagination.total_count
+          : 0,
+        content: <CrawledQueue article={crawledArticles!} />,
       },
       {
-        title: "Drafts",
-        value: "drafts",
+        title: 'Drafts',
+        value: 'drafts',
         count: tabCounts.drafts,
         content: <Drafts category={category} />,
       },
     ],
-    [category],
+    [category, crawledArticles],
   );
 
   return (

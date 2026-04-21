@@ -68,10 +68,6 @@ export interface RetrieveEventsRes {
   data: EventEntity[];
 }
 
-export interface RetrieveEventDetailsRes {
-  meta: EventsMeta;
-  data: EventEntity;
-}
 
 export interface RetrieveEventStatsRes {
   meta: EventsMeta;

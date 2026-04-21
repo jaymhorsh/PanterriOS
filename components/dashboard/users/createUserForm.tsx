@@ -41,6 +41,7 @@ import { useCreateUser } from '@/hook/user-management/useCreateUser';
 import { useRetrieveUserProfile } from '@/hook/user-management/useRetrieveUserProfile';
 import { useUpdateUser } from '@/hook/user-management/useUpdateUser';
 import { generatePassword } from '@/utils/helpers';
+import { CreateUserFormSkeleton } from '@/components/shared';
 
 const createUserSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -77,7 +78,7 @@ export function CreateUserForm({ closeModal, id }: Prop) {
   const isEditMode = Boolean(userId);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
-  const { data: editProfile } = useRetrieveUserProfile(userId || 0);
+  const { data: editProfile, isLoading } = useRetrieveUserProfile(userId || 0);
   const { mutateAsync: createUserFn, isPending: isCreating } = useCreateUser();
   const { mutateAsync: updateUserFn, isPending: isUpdating } = useUpdateUser();
 
@@ -154,6 +155,10 @@ export function CreateUserForm({ closeModal, id }: Prop) {
     closeModal();
     form.reset();
   };
+
+  if (isEditMode && isLoading) {
+    return <CreateUserFormSkeleton isEditMode={isEditMode} />;
+  }
 
   return (
     <div className="space-y-6 pb-6 w-full">

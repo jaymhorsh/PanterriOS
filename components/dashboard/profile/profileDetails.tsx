@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMyProfileDetails } from '@/hook/user-management/useMyProfileDetails';
 import { useUploadMyProfilePicture } from '@/hook/user-management/useUploadMyProfilePicture';
 
@@ -24,6 +24,18 @@ export function ProfileDetails() {
   const { mutateAsync: uploadProfilePicture, isPending: isUploading } =
     useUploadMyProfilePicture();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const previewImage = useMemo(
+    () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
+    [selectedFile],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
 
   const fullName = useMemo(() => {
     if (!profile) return 'Administrator';
@@ -62,6 +74,9 @@ export function ProfileDetails() {
     setSelectedFile(null);
   };
 
+  const currentProfileImage =
+    previewImage || profile?.data?.profileImage || ProfilePic;
+
   return (
     <div className=" lg:my-10 my-5 relative container mx-auto shadow h-fit ">
       <Image
@@ -75,23 +90,13 @@ export function ProfileDetails() {
         <div className="flex lg:flex-row flex-col gap-2 justify-between w-full lg:items-end items-center ">
           <div className=" flex items-end gap-6 ">
             <div className=" w-35 h-35  object-cover object-center items-center rounded-md overflow-hidden">
-              {profile?.data?.profileImage ? (
-                <Image
-                  src={profile.data.profileImage}
-                  alt="Profile"
-                  width={100}
-                  height={100}
-                  className="object-center w-full"
-                />
-              ) : (
-                <Image
-                  src={ProfilePic}
-                  alt=""
-                  width={100}
-                  height={100}
-                  className="object-center w-full"
-                />
-              )}
+              <Image
+                src={currentProfileImage}
+                alt="Profile"
+                width={100}
+                height={100}
+                className="object-center w-full"
+              />
             </div>
 
             <div className="space-y-2">
@@ -112,23 +117,13 @@ export function ProfileDetails() {
                 <DialogDescription className="  hidden" />
                 <div className=" space-y-4 items-center ">
                   <div className=" flex gap-4 bg-gray-100 p-2">
-                    {profile?.data?.profileImage ? (
-                      <Image
-                        src={profile.data.profileImage}
-                        alt=""
-                        width={100}
-                        height={100}
-                        className=" w-24 h-24 object-cover object-center items-center rounded-md "
-                      />
-                    ) : (
-                      <Image
-                        src={ProfilePic}
-                        alt=""
-                        width={100}
-                        height={100}
-                        className=" w-24 h-24 object-cover object-center items-center rounded-md "
-                      />
-                    )}
+                    <Image
+                      src={currentProfileImage}
+                      alt="Profile preview"
+                      width={100}
+                      height={100}
+                      className=" w-24 h-24 object-cover object-center items-center rounded-md "
+                    />
                     <div className="space-y-1">
                       <div className="text-xl font-bold">Profile Picture</div>
                       <div className="text-gray-500">
@@ -149,11 +144,20 @@ export function ProfileDetails() {
                           />
                         </label>
                       </div>
+                      {selectedFile && (
+                        <div className="text-xs text-gray-500">
+                          Previewing: {selectedFile.name}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className=" flex gap-4 ">
                     <DialogClose asChild>
-                      <Button className="" variant={'outline'}>
+                      <Button
+                        className=""
+                        variant={'outline'}
+                        onClick={() => setSelectedFile(null)}
+                      >
                         Cancel
                       </Button>
                     </DialogClose>

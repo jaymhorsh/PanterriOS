@@ -36,6 +36,7 @@ export interface AdminUsersDataItem {
   email: string;
   roles: string[];
   status: string;
+  lastLogin: string;
 }
 
 export interface AdminUsersRes {

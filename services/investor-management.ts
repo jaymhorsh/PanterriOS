@@ -4,7 +4,7 @@ import {
   RetrieveInvestorOverviewQuery,
   RetrieveInvestorsQuery,
 } from '@/interface';
-import API from '@/services/axios';
+import { API } from '@/services/axios';
 
 function getPayload<T>(value: unknown): T {
   if (
