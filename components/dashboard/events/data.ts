@@ -3,6 +3,7 @@ import event1 from "@/assets/images/article/article1.jpg";
 import event2 from "@/assets/images/article/article2.jpg";
 import event3 from "@/assets/images/article/article3.jpg";
 import event4 from "@/assets/images/article/article4.jpg";
+import { EventEntity } from "@/interface";
 
 export type EventStatus = "published" | "ai-discovered" | "submitted";
 
@@ -28,7 +29,7 @@ export interface EventRecord {
 }
 
 export interface EventReviewRecord {
-  id: number;
+  _id: string;
   title: string;
   location: string;
   date: string;
@@ -146,7 +147,7 @@ export const eventTabCounts = {
 
 export const aiDiscoveredReviewItems: EventReviewRecord[] = [
   {
-    id: 101,
+    _id: '101',
     title: "Lagos Property Investment Summit 2026",
     location: "Eko Hotels, Lagos",
     date: "15/06/2026",
@@ -159,7 +160,7 @@ export const aiDiscoveredReviewItems: EventReviewRecord[] = [
     source: "EventBrite",
   },
   {
-    id: 102,
+    _id: '102',
     title: "Real Estate Tech Conference",
     location: "Eko Hotels, Lagos",
     date: "15/06/2026",
@@ -173,46 +174,105 @@ export const aiDiscoveredReviewItems: EventReviewRecord[] = [
   },
 ];
 
-export const submittedReviewItems: EventReviewRecord[] = [
+export const submittedReviewItems: EventEntity[] = [
   {
-    id: 201,
+    _id: "201",
     title: "Lagos Property Investment Summit 2026",
+    about:
+      "A submitted summit focused on real estate investment opportunities and developer partnerships.",
+    excerpt:
+      "A submitted summit focused on real estate investment opportunities and developer partnerships.",
+    sourceType: "Submitted",
+    status: "pending",
+    eventType: "summit",
+    eventTopic: "investment",
+    attendanceMode: "Physical",
+    organizerFullName: "External Organizer",
+    organizerShortName: "EO",
     location: "Landmark Centre, Lagos",
-    date: "28/08/2026",
-    time: "10:00 AM",
-    price: "From N15,000",
-    organizerLabel: "Submitter",
-    organizerValue: "External Organizer",
-    email: "jaji.moshodo@example.com",
-
-    category: "Expo",
-    source: "Submitted",
+    venueName: "Landmark Centre",
+    venueAddress: "Lagos, Nigeria",
+    detailsUrl: "https://example.com/events/lagos-property-investment-summit",
+    registrationUrl:
+      "https://example.com/events/lagos-property-investment-summit/register",
+    imageUrl: "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+    eventDateTime: "2026-08-28T10:00:00.000Z",
+    startDateTime: "2026-08-28T10:00:00.000Z",
+    endDateTime: "2026-08-28T17:00:00.000Z",
+    priceFrom: 15000,
+    priceCurrency: "NGN",
+    categories: ["Expo", "Investment"],
+    highlights: ["Networking", "Market Insights"],
+    matchedKeywords: ["real estate", "lagos", "developers"],
+    isFeatured: false,
+    isEditorsPick: false,
+    relevanceScore: 180,
   },
   {
-    id: 202,
-    title: "Lagos Property Investment Summit 2026",
-    location: "Landmark Centre, Lagos",
-    date: "28/08/2026",
-    time: "10:00 AM",
-    price: "From N15,000",
-    organizerLabel: "Submitter",
-    organizerValue: "External Organizer",
-    email: "jaji.moshodo@example.com",
-    category: "Expo",
-    source: "Submitted",
+    _id: "202",
+    title: "Abuja Housing Development Roundtable",
+    about:
+      "Policy and financing roundtable for affordable housing across federal and private sectors.",
+    excerpt:
+      "Policy and financing roundtable for affordable housing across federal and private sectors.",
+    sourceType: "Submitted",
+    status: "pending",
+    eventType: "roundtable",
+    eventTopic: "housing policy",
+    attendanceMode: "Hybrid",
+    organizerFullName: "National Housing Coalition",
+    organizerShortName: "NHC",
+    location: "Transcorp Hilton, Abuja",
+    venueName: "Transcorp Hilton",
+    venueAddress: "Abuja, Nigeria",
+    detailsUrl: "https://example.com/events/abuja-housing-roundtable",
+    registrationUrl:
+      "https://example.com/events/abuja-housing-roundtable/register",
+    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab",
+    eventDateTime: "2026-09-03T09:00:00.000Z",
+    startDateTime: "2026-09-03T09:00:00.000Z",
+    endDateTime: "2026-09-03T15:00:00.000Z",
+    priceFrom: 0,
+    priceCurrency: "NGN",
+    categories: ["Policy", "Housing"],
+    highlights: ["Affordable Housing", "Public-Private Partnerships"],
+    matchedKeywords: ["abuja", "housing", "policy"],
+    isFeatured: false,
+    isEditorsPick: true,
+    relevanceScore: 167,
   },
   {
-    id: 203,
-    title: "Lagos Property Investment Summit 2026",
-    location: "Landmark Centre, Lagos",
-    date: "28/08/2026",
-    time: "10:00 AM",
-    price: "From N15,000",
-    organizerLabel: "Submitter",
-    organizerValue: "External Organizer",
-    email: "moshoodadisa@gmail.com",
-    category: "Expo",
-    source: "Submitted",
+    _id: "203",
+    title: "PropTech Builders Meetup Africa",
+    about:
+      "A community meetup for PropTech founders, asset managers, and developers exploring digital transformation.",
+    excerpt:
+      "A community meetup for PropTech founders, asset managers, and developers exploring digital transformation.",
+    sourceType: "Submitted",
+    status: "pending",
+    eventType: "meetup",
+    eventTopic: "technology",
+    attendanceMode: "Virtual",
+    organizerFullName: "PropTech Africa Guild",
+    organizerShortName: "PAG",
+    location: "Virtual Event",
+    venueName: "Online",
+    venueAddress: "Remote",
+    detailsUrl: "https://example.com/events/proptech-builders-meetup",
+    registrationUrl:
+      "https://example.com/events/proptech-builders-meetup/register",
+    imageUrl: "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
+    eventDateTime: "2026-09-10T13:00:00.000Z",
+    startDateTime: "2026-09-10T13:00:00.000Z",
+    endDateTime: "2026-09-10T16:00:00.000Z",
+    priceFrom: 5000,
+    priceCurrency: "NGN",
+    categories: ["Technology", "Networking"],
+    highlights: ["PropTech Demos", "Founder Q&A"],
+    matchedKeywords: ["proptech", "virtual", "innovation"],
+    isFeatured: false,
+    isEditorsPick: false,
+    relevanceScore: 154,
   },
 ];
 

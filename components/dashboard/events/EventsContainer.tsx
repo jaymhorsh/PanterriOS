@@ -14,27 +14,29 @@ import {
   SubmittedEventsTab,
 } from "./tabs";
 
-const tabs: Array<{ label: string; value: EventStatus; count: number }> = [
-  {
-    label: "Published Events",
-    value: "published",
-    count: eventTabCounts.published,
-  },
-  {
-    label: "AI-Discovered",
-    value: "ai-discovered",
-    count: eventTabCounts.aiDiscovered,
-  },
-  { label: "Submissions", value: "submitted", count: eventTabCounts.submitted },
-];
-
 export default function EventsContainer() {
-  const [activeTab, setActiveTab] = useState<EventStatus>("published");
+  const [activeTab, setActiveTab] = useState<EventStatus>("ai-discovered");
   const [search, setSearch] = useState("");
   const { data: eventStatsResponse, isLoading } = useRetrieveEventStats();
 
   const eventStats = eventStatsResponse?.data;
-
+  const tabs: Array<{ label: string; value: EventStatus; count: number }> = [
+    {
+      label: "AI-Discovered",
+      value: "ai-discovered",
+      count: eventStats?.aiDiscovered ?? 0,
+    },
+    {
+      label: "Published Events",
+      value: "published",
+      count: eventStats?.virtualEvents ?? 0,
+    },
+    {
+      label: "Submissions",
+      value: "submitted",
+      count: eventStats?.submitted ?? 0,
+    },
+  ];
   const filteredEvents = useMemo(() => {
     const loweredSearch = search.trim().toLowerCase();
 
@@ -116,19 +118,22 @@ export default function EventsContainer() {
       </PageHead>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-4">
-        
-        {isLoading ? <StatCardSkeleton /> : stats.map((stat, index) => (
-          <StatCard
-            key={index}
-            label={stat.label}
-            value={stat.value}
-            description={stat.description}
-            Icon={stat.icon}
-            iconColor={stat.iconColor}
-            bgColor={stat.bgColor}
-            color={stat.color}
-          />
-        ))}
+        {isLoading ? (
+          <StatCardSkeleton />
+        ) : (
+          stats.map((stat, index) => (
+            <StatCard
+              key={index}
+              label={stat.label}
+              value={stat.value}
+              description={stat.description}
+              Icon={stat.icon}
+              iconColor={stat.iconColor}
+              bgColor={stat.bgColor}
+              color={stat.color}
+            />
+          ))
+        )}
       </div>
 
       <div className="rounded-2xl  bg-white p-4">
