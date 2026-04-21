@@ -5,6 +5,7 @@ export * from './user-profile.entity';
 export * from './investor-management.entity';
 export * from './investment-management.entity';
 export * from './wallet-finance.entity';
+export * from './events.entity';
 
 export interface Pagination {
   currentPage: number;
