@@ -74,7 +74,7 @@ export interface CreateArticleReq {
   imageUrl: string;
   isEditorsPick: boolean;
   isFeatured: boolean;
-  status: string;
+  status?: string;
   readingTime: string;
   tags: string;
   title: string;

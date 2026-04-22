@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   Clock3,
   ExternalLink,
+  Eye,
   User,
   XCircle,
 } from 'lucide-react';
@@ -13,6 +14,8 @@ import { dateAndTimeFormatter } from '@/utils/helpers';
 import { Button } from '@/components/ui/button';
 import { useUpdateArticleStatus } from '@/hook/articles/useArticleUpdateStatsus';
 import Link from 'next/link';
+import { SlideInPanelDrawer } from '@/components/shared';
+import { ArticlePreview } from '../ArticlePreview';
 
 interface CrawledQueueCardProps {
   article: CrwalerArticle;
@@ -65,10 +68,14 @@ export function CrawledQueueCard({ article }: CrawledQueueCardProps) {
             </span> */}
           </div>
 
-          <p className="line-clamp-1 text-sm text-[#64748B]">
-            {article.content ??
-              'No summary available for this crawled article.'}
-          </p>
+          <p
+            className="line-clamp-1 text-sm text-[#64748B]"
+            dangerouslySetInnerHTML={{
+              __html:
+                article.content ??
+                'No summary available for this crawled article.',
+            }}
+          ></p>
 
           <div className="flex flex-wrap gap-2">
             {article.categories.map((category) => (
@@ -120,6 +127,24 @@ export function CrawledQueueCard({ article }: CrawledQueueCardProps) {
                 View Source
               </button>
             </Link>
+            <SlideInPanelDrawer
+              trigger={
+                <Button
+                  type="button"
+                  className="transition flex items-center gap-1.5"
+                  aria-label="View article"
+                  variant={'outline'}
+                >
+                  <Eye className="h-5 w-5" /> <span>Preview</span>
+                </Button>
+              }
+              title="Article Preview"
+              subtitle="View article details"
+              width="lg"
+              contentClassName="mx-0"
+            >
+              <ArticlePreview article={article} />
+            </SlideInPanelDrawer>
           </div>
         </div>
       </div>

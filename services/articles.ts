@@ -27,3 +27,10 @@ export const updateArticleStatus = async (
   const { data } = await CRAWLER_API.put(`/articles/${id}/status`, { status });
   return data;
 };
+
+export const retrivePublishedArticles = async (
+  params: ArticleFilters,
+): Promise<CrawlerArticlesResponse> => {
+  const { data } = await CRAWLER_API.get('/articles/feed', { params });
+  return data;
+};

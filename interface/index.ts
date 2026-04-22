@@ -7,10 +7,15 @@ export * from './investment-management.entity';
 export * from './wallet-finance.entity';
 export * from './article.entity';
 export * from './events.entity';
+export * from './media.entity';
 
 export interface Pagination {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  limit: number;
+  currentPage?: number;
+  totalPages?: number;
+  totalItems?: number;
+  limit?: number;
+  per_page?: number;
+  current?: number;
+  current_page?: string;
+  total_count?: number;
 }

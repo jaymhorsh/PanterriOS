@@ -1,52 +1,63 @@
-"use client";
+'use client';
 
-import { useMemo, useRef } from "react";
-import { z } from "zod";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PageHead } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { z } from 'zod';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PageHead } from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { ArticleEditor } from "./articleEditor";
-import { Eye, Save, Send, Upload } from "lucide-react";
-import Image from "next/image";
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { ArticleEditor } from './articleEditor';
+import { Eye, Save, Send, Upload } from 'lucide-react';
+import Image from 'next/image';
+import { useCreateArticle } from '@/hook/articles/useCreateArticle';
+import { useUploadMediaImage } from '@/hook/media-upload/useUploadMediaImage';
+
+const articleCategories = [
+  'Market Analysis',
+  'Investment Strategy',
+  'Housing Crisis',
+  'Technology',
+  'Infrastructure',
+  'Regulation',
+] as const;
 
 const articleSchema = z.object({
-  title: z.string().trim().min(5, "Title must be at least 5 characters"),
-  summary: z.string().trim().min(20, "Summary must be at least 20 characters"),
-  content: z.string().trim().min(1, "Article content is required"),
-  coverImage: z.string().trim().min(1, "Featured image is required"),
-  category: z.string().trim().min(1, "Category is required"),
-  author: z.string().trim().min(2, "Author name is required"),
-  readTime: z.string().trim().min(1, "Reading time is required"),
-  tags: z.array(z.string()).min(1, "Add at least one tag"),
+  title: z.string().trim().min(5, 'Title must be at least 5 characters'),
+  summary: z.string().trim().min(20, 'Summary must be at least 20 characters'),
+  content: z.string().trim().min(1, 'Article content is required'),
+  coverImage: z.string().trim().min(1, 'Featured image is required'),
+  category: z.array(z.string().trim().min(1)).min(1, 'Category is required'),
+  author: z.string().trim().min(2, 'Author name is required'),
+  readTime: z.string().trim().min(1, 'Reading time is required'),
+  tags: z.string().min(1, 'Add at least one tag'),
   featureOnHomepage: z.boolean(),
-  allowComments: z.boolean(),
+  editorsPick: z.boolean(),
 });
 
 type ArticleFormValues = z.infer<typeof articleSchema>;
 
 const defaultArticleState: ArticleFormValues = {
-  title: "",
-  summary: "",
-  content: "",
-  coverImage: "",
-  category: "",
-  author: "",
-  readTime: "",
-  tags: [],
+  title: '',
+  summary: '',
+  content: '',
+  coverImage: '',
+  category: [],
+  author: '',
+  readTime: '',
+  tags: '',
   featureOnHomepage: false,
-  allowComments: false,
+  editorsPick: false,
 };
 
 function FieldShell({
@@ -76,7 +87,16 @@ function FieldShell({
 
 const CreateArticleForm = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { mutateAsync: createArticleFn, isPending: isLoading } =
+    useCreateArticle();
+  const {
+    mutateAsync: uploadMediaImageFn,
+    isPending: isUploadingImage,
+    data: uploadedImg,
+  } = useUploadMediaImage();
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(
+    null,
+  );
   const {
     register,
     control,
@@ -89,28 +109,48 @@ const CreateArticleForm = () => {
     defaultValues: defaultArticleState,
   });
 
-  const featureOnHomepage = watch("featureOnHomepage");
-  const allowComments = watch("allowComments");
-  const coverImage = watch("coverImage");
+  const featureOnHomepage = watch('featureOnHomepage');
+  const editorsPick = watch('editorsPick');
+  const coverImage = watch('coverImage');
+
+  useEffect(() => {
+    return () => {
+      if (coverImagePreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(coverImagePreview);
+      }
+    };
+  }, [coverImagePreview]);
+
   const activeBadges = useMemo(() => {
     const badges: string[] = [];
 
     if (featureOnHomepage) {
-      badges.push("FEATURED");
+      badges.push('FEATURED');
     }
 
-    if (allowComments) {
+    if (editorsPick) {
       badges.push("Editor's Pick");
     }
 
     return badges;
-  }, [featureOnHomepage, allowComments]);
+  }, [featureOnHomepage, editorsPick]);
 
-  const onSubmit: SubmitHandler<ArticleFormValues> = (data) => {
-    console.log("Submitted article data:", data);
+  const onSubmit: SubmitHandler<ArticleFormValues> = async (data) => {
+    const payload = {
+      categories: data.category,
+      content: data.content,
+      excerpt: data.summary,
+      imageUrl: data.coverImage,
+      isEditorsPick: data.editorsPick,
+      isFeatured: data.featureOnHomepage,
+      readingTime: data.readTime,
+      tags: data.tags,
+      title: data.title,
+    };
+    await createArticleFn(payload);
   };
 
-  const handleFeaturedImageFileChange = (
+  const handleFeaturedImageFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
@@ -119,20 +159,45 @@ const CreateArticleForm = () => {
       return;
     }
 
-    const reader = new FileReader();
+    const previewUrl = URL.createObjectURL(file);
 
-    reader.onload = () => {
-      const result = typeof reader.result === "string" ? reader.result : "";
+    setCoverImagePreview((currentPreview) => {
+      if (currentPreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(currentPreview);
+      }
 
-      setValue("coverImage", result, {
+      return previewUrl;
+    });
+
+    try {
+      const response = await uploadMediaImageFn(file);
+      const result = response.data?.file?.url ?? '';
+
+      setValue('coverImage', result, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
       });
-    };
+      setCoverImagePreview(result);
+    } catch {
+      setValue('coverImage', '', {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+      setCoverImagePreview((currentPreview) => {
+        if (currentPreview?.startsWith('blob:')) {
+          URL.revokeObjectURL(currentPreview);
+        }
 
-    reader.readAsDataURL(file);
+        return null;
+      });
+    } finally {
+      event.target.value = '';
+    }
   };
+
+  const displayedCoverImage = coverImagePreview || coverImage;
 
   return (
     <form
@@ -165,6 +230,7 @@ const CreateArticleForm = () => {
           <Button
             size="sm"
             type="submit"
+            disabled={isLoading || isUploadingImage}
             className="flex h-9 items-center gap-2 rounded-sm px-3 text-xs sm:h-10 sm:text-sm"
           >
             <Send className="h-4 w-4" />
@@ -185,7 +251,7 @@ const CreateArticleForm = () => {
                 helper="Use a clear, keyword-rich headline."
               >
                 <Input
-                  {...register("title")}
+                  {...register('title')}
                   placeholder="Lagos real estate demand accelerates in Q2 2026"
                   className="border-input bg-surface h-9 w-full rounded-md border p-2 text-xs sm:h-10 sm:p-3 sm:text-sm"
                 />
@@ -199,7 +265,7 @@ const CreateArticleForm = () => {
                 helper="This will be used in cards, previews, and search listings."
               >
                 <Textarea
-                  {...register("summary")}
+                  {...register('summary')}
                   placeholder="Write a concise summary that explains the angle of the article in two short sentences."
                   className="border-input bg-surface min-h-28 w-full rounded-md border p-2 text-xs sm:min-h-32 sm:p-3 sm:text-sm"
                 />
@@ -276,7 +342,7 @@ const CreateArticleForm = () => {
                       Editor&apos;s Pick
                     </p>
                     <Controller
-                      name="allowComments"
+                      name="editorsPick"
                       control={control}
                       render={({ field }) => (
                         <Switch
@@ -297,7 +363,7 @@ const CreateArticleForm = () => {
                     Active Badges:
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {activeBadges.includes("FEATURED") ? (
+                    {activeBadges.includes('FEATURED') ? (
                       <span className="inline-flex rounded-sm bg-amber-400 px-3 py-1 text-sm font-semibold text-black">
                         FEATURED
                       </span>
@@ -327,7 +393,7 @@ const CreateArticleForm = () => {
             <CardContent className="space-y-4">
               <FieldShell label="Author Name">
                 <Input
-                  {...register("author")}
+                  {...register('author')}
                   placeholder="Your name"
                   className="border-input bg-surface h-9 w-full rounded-md border p-2 text-xs sm:h-10 sm:p-3 sm:text-sm"
                 />
@@ -343,25 +409,19 @@ const CreateArticleForm = () => {
                   name="category"
                   control={control}
                   render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value[0] ?? ''}
+                      onValueChange={(value) => field.onChange([value])}
+                    >
                       <SelectTrigger className="h-9 p-2 text-xs sm:h-10 sm:p-3 sm:text-sm">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent position="popper">
-                        <SelectItem value="Market Analysis">
-                          Market Analysis
-                        </SelectItem>
-                        <SelectItem value="Investment Strategy">
-                          Investment Strategy
-                        </SelectItem>
-                        <SelectItem value="Housing Crisis">
-                          Housing Crisis
-                        </SelectItem>
-                        <SelectItem value="Technology">Technology</SelectItem>
-                        <SelectItem value="Infrastructure">
-                          Infrastructure
-                        </SelectItem>
-                        <SelectItem value="Regulation">Regulation</SelectItem>
+                        {articleCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -382,13 +442,9 @@ const CreateArticleForm = () => {
                   control={control}
                   render={({ field }) => (
                     <Input
-                      value={field.value.join(", ")}
+                      value={field.value}
                       onChange={(event) => {
-                        const tags = event.target.value
-                          .split(",")
-                          .map((tag) => tag.trim())
-                          .filter(Boolean);
-                        field.onChange(tags);
+                        field.onChange(event.target.value);
                       }}
                       placeholder="Student Housing, ROI, Education"
                       className="border-input bg-surface h-9 w-full rounded-md border p-2 text-xs sm:h-10 sm:p-3 sm:text-sm"
@@ -405,7 +461,7 @@ const CreateArticleForm = () => {
                 helper="Estimated reading duration"
               >
                 <Input
-                  {...register("readTime")}
+                  {...register('readTime')}
                   placeholder="e.g., 8 min"
                   className="border-input bg-surface h-9 w-full rounded-md border p-2 text-xs sm:h-10 sm:p-3 sm:text-sm"
                 />
@@ -436,10 +492,10 @@ const CreateArticleForm = () => {
                 onChange={handleFeaturedImageFileChange}
               />
 
-              {coverImage ? (
+              {displayedCoverImage ? (
                 <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
                   <Image
-                    src={coverImage}
+                    src={displayedCoverImage}
                     alt="Featured preview"
                     className="h-56 w-full object-cover"
                     width={439}
@@ -451,6 +507,7 @@ const CreateArticleForm = () => {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingImage}
                 className="flex min-h-40 w-full items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-5 text-center transition hover:border-slate-400 hover:bg-slate-100"
               >
                 <div className="space-y-3">
@@ -459,7 +516,9 @@ const CreateArticleForm = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">
-                      Click to upload image
+                      {isUploadingImage
+                        ? 'Uploading image...'
+                        : 'Click to upload image'}
                     </p>
                     <p className="mt-1 text-xs text-slate-500">
                       PNG, JPG, WEBP up to 5MB
@@ -477,7 +536,16 @@ const CreateArticleForm = () => {
                     {...field}
                     type="text"
                     value={field.value}
-                    onChange={(event) => field.onChange(event.target.value)}
+                    onChange={(event) => {
+                      setCoverImagePreview((currentPreview) => {
+                        if (currentPreview?.startsWith('blob:')) {
+                          URL.revokeObjectURL(currentPreview);
+                        }
+
+                        return null;
+                      });
+                      field.onChange(event.target.value);
+                    }}
                     placeholder="https://example.com/image.jpg"
                     className="border-input bg-surface h-9 w-full rounded-md border p-2 text-xs sm:h-10 sm:p-3 sm:text-sm"
                   />

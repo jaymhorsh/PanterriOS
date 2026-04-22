@@ -9,12 +9,13 @@ import {
   Star,
   TrendingUp,
 } from 'lucide-react';
-import { PageHead, StatCard } from '@/components/shared';
+import { ArticlesPageSkeleton, PageHead, StatCard } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { ReusableSelect } from '@/components/ui/ReusableSelect';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PublishedArticles, CrawledQueue, Drafts } from './tabs';
 import { useRetrieveArticles } from '@/hook/articles/useRetrieveArticles';
+import { useRetrievePublishedArticles } from '@/hook/articles/useRetrievePublishedArticles';
 
 const categoryOptions = [
   { label: 'All Categories', value: 'all' },
@@ -32,7 +33,10 @@ const tabCounts = {
 export default function ArticlesContainer() {
   const [activeTab, setActiveTab] = useState('published');
   const [category, setCategory] = useState('all');
-  const { data: crawledArticles } = useRetrieveArticles({});
+  const { data: crawledArticles, isLoading: isFetchingCrawledArticles } =
+    useRetrieveArticles({});
+  const { data: publishedArticles, isLoading: isFetchingPublishedArticles } =
+    useRetrievePublishedArticles({});
 
   const stats = [
     {
@@ -79,7 +83,9 @@ export default function ArticlesContainer() {
         title: 'Published Articles',
         value: 'published',
         count: tabCounts.published,
-        content: <PublishedArticles category={category} />,
+        content: (
+          <PublishedArticles article={crawledArticles!} category={category} />
+        ),
       },
       {
         title: 'Crawled Queue',
@@ -87,7 +93,7 @@ export default function ArticlesContainer() {
         count: crawledArticles
           ? crawledArticles.meta.pagination.total_count
           : 0,
-        content: <CrawledQueue article={crawledArticles!} />,
+        content: <CrawledQueue article={publishedArticles!} />,
       },
       {
         title: 'Drafts',
@@ -96,8 +102,12 @@ export default function ArticlesContainer() {
         content: <Drafts category={category} />,
       },
     ],
-    [category, crawledArticles],
+    [category, crawledArticles, publishedArticles],
   );
+
+  if (isFetchingCrawledArticles || isFetchingPublishedArticles) {
+    return <ArticlesPageSkeleton />;
+  }
 
   return (
     <div className="w-full space-y-6 px-0">

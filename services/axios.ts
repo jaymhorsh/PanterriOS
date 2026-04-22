@@ -1,8 +1,13 @@
 import { tokenStore } from '@/store/tokenStore';
 import { handleAxiosError } from '@/utils/error';
-import axios from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 
-type RetryableRequestConfig = import('axios').InternalAxiosRequestConfig & {
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
@@ -40,6 +45,14 @@ const CRAWLER_API = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'x-api-key': process.env.NEXT_PUBLIC_CRAWLER_API_KEY,
+  },
+});
+const MEDIA_API = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_S3BUCKET_MEDIA_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.NEXT_PUBLIC_S3BUCKET_MEDIA_API_KEY,
   },
 });
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -83,32 +96,24 @@ export const deleteTwoFactorTemporaryToken = async () => {
 };
 
 // Request interceptor
-API.interceptors.request.use(
-  (config) => {
-    const token = tokenStore.get();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    handleAxiosError(error as import('axios').AxiosError);
-    return Promise.reject(error);
-  },
-);
-CRAWLER_API.interceptors.request.use(
-  (config) => {
-    const token = tokenStore.get();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    handleAxiosError(error as import('axios').AxiosError);
-    return Promise.reject(error);
-  },
-);
+function attachAuthInterceptor(instance: AxiosInstance) {
+  instance.interceptors.request.use(
+    (config) => {
+      const token = tokenStore.get();
+
+      if (token) {
+        config.headers = config.headers ?? {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error: AxiosError) => {
+      handleAxiosError(error);
+      return Promise.reject(error);
+    },
+  );
+}
 
 const processQueue = (error: unknown, token?: string) => {
   failedQueue.forEach((request) => {
@@ -126,119 +131,76 @@ const isAuthFailure = (error: unknown) => {
 };
 
 // Response interceptor
-API.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config as RetryableRequestConfig | undefined;
-    const status = error.response?.status;
 
-    const canRefresh =
-      status === 401 &&
-      Boolean(originalRequest) &&
-      !originalRequest?._retry &&
-      !String(originalRequest?.url ?? '').includes('/api/auth/refresh');
+function attachRefreshInterceptor(instance: AxiosInstance) {
+  instance.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    async (error: AxiosError) => {
+      const originalRequest = error.config as
+        | RetryableRequestConfig
+        | undefined;
+      const status = error.response?.status;
 
-    if (canRefresh && originalRequest) {
-      if (isRefreshing) {
-        return new Promise<string>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return API(originalRequest);
-        });
-      }
+      const canRefresh =
+        status === 401 &&
+        Boolean(originalRequest) &&
+        !originalRequest?._retry &&
+        !String(originalRequest?.url ?? '').includes('/api/auth/refresh');
 
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const { data } = await AUTH.post('/api/auth/refresh');
-        const newAccessToken = data?.accessToken ?? data?.data?.accessToken;
-
-        if (typeof newAccessToken !== 'string' || !newAccessToken) {
-          throw new Error(
-            `Invalid refresh response: missing accessToken. Response: ${JSON.stringify(data)}`,
-          );
+      if (canRefresh && originalRequest) {
+        if (isRefreshing) {
+          return new Promise<string>((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          }).then((token) => {
+            originalRequest.headers = originalRequest.headers ?? {};
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return instance.request(originalRequest);
+          });
         }
 
-        tokenStore.set(newAccessToken);
-        processQueue(null, newAccessToken);
+        originalRequest._retry = true;
+        isRefreshing = true;
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return API(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError);
+        try {
+          const { data } = await AUTH.post('/api/auth/refresh');
+          const newAccessToken = data?.accessToken ?? data?.data?.accessToken;
 
-        if (isAuthFailure(refreshError)) {
-          tokenStore.clear();
-          localStorage.removeItem('auth-store');
+          if (typeof newAccessToken !== 'string' || !newAccessToken) {
+            throw new Error(
+              `Invalid refresh response: missing accessToken. Response: ${JSON.stringify(data)}`,
+            );
+          }
+
+          tokenStore.set(newAccessToken);
+          processQueue(null, newAccessToken);
+
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+          return instance.request(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError);
+
+          if (isAuthFailure(refreshError)) {
+            tokenStore.clear();
+            localStorage.removeItem('auth-store');
+          }
+
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
         }
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
-
-    handleAxiosError(error as import('axios').AxiosError);
-    return Promise.reject(error);
-  },
-);
-CRAWLER_API.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config as RetryableRequestConfig | undefined;
-    const status = error.response?.status;
-
-    const canRefresh =
-      status === 401 &&
-      Boolean(originalRequest) &&
-      !originalRequest?._retry &&
-      !String(originalRequest?.url ?? '').includes('/api/auth/refresh');
-
-    if (canRefresh && originalRequest) {
-      if (isRefreshing) {
-        return new Promise<string>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return API(originalRequest);
-        });
       }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const { data } = await AUTH.post('/api/auth/refresh');
-        const newAccessToken = data?.accessToken ?? data?.data?.accessToken;
-
-        if (typeof newAccessToken !== 'string' || !newAccessToken) {
-          throw new Error(
-            `Invalid refresh response: missing accessToken. Response: ${JSON.stringify(data)}`,
-          );
-        }
-
-        tokenStore.set(newAccessToken);
-        processQueue(null, newAccessToken);
-
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return API(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError);
-
-        if (isAuthFailure(refreshError)) {
-          tokenStore.clear();
-          localStorage.removeItem('auth-store');
-        }
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
-
-    handleAxiosError(error as import('axios').AxiosError);
-    return Promise.reject(error);
-  },
-);
-
-export { API, CRAWLER_API };
+      handleAxiosError(error);
+      return Promise.reject(error);
+    },
+  );
+}
+attachAuthInterceptor(API);
+attachAuthInterceptor(CRAWLER_API);
+attachAuthInterceptor(MEDIA_API);
+attachRefreshInterceptor(API);
+attachRefreshInterceptor(CRAWLER_API);
+attachRefreshInterceptor(MEDIA_API);
+export { API, CRAWLER_API, MEDIA_API };
