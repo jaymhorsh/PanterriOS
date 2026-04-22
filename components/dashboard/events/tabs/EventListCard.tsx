@@ -1,15 +1,25 @@
 import {
   Calendar,
   CheckCircle2,
-  CircleX,
   Eye,
   MapPin,
   Clock3,
+  Building2,
+  Monitor,
+  Users,
+  XCircle,
 } from "lucide-react";
-import { EventReviewRecord } from "../data";
+import { useState } from "react";
+import { EventEntity } from "@/interface";
+import { SlideInPanelDrawer } from "@/components/shared/SlideInPanel";
+import { useUpdateEvent } from "@/hook/events";
+import { EventPreview } from "./EventPreview";
+import { formatDate, formatTime } from "@/utils/helpers";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ReviewEventCardProps {
-  event: EventReviewRecord;
+  event: EventEntity;
 }
 
 const sourceClassMap: Record<string, string> = {
@@ -19,73 +29,173 @@ const sourceClassMap: Record<string, string> = {
 };
 
 export function EventListCard({ event }: ReviewEventCardProps) {
+  const sourceLabel = event.sourceType ?? event.source?.name ?? "AI";
+  const organizerValue = event.organizerFullName ?? event.author ?? "-";
+  const displayDate = formatDate(event.eventDateTime ?? event.startDateTime);
+  const displayTime = formatTime(event.startDateTime ?? event.eventDateTime);
+  const displayLocation = event.location ?? event.venueAddress ?? "-";
+  const attendanceMode = event.attendanceMode ?? "";
+  const displayCategory = event.eventTopic ?? event.eventType ?? "-";
+  const displayPrice = event.priceFrom
+    ? `${event.priceFrom} ${event.priceCurrency ?? ""}`
+    : "Price not available";
+
+  const tagPool = [
+    ...(event.categories ?? []),
+    ...(event.highlights ?? []),
+    ...(event.matchedKeywords ?? []),
+  ];
+
+  const uniqueTags = Array.from(
+    new Set(tagPool.map((tag) => tag.trim()).filter(Boolean)),
+  ).slice(0, 6);
+
+  const chipTone = [
+    "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
+    "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]",
+    "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]",
+    "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]",
+  ];
+
+  const { updateEvent, isLoading } = useUpdateEvent();
+
+  const attendanceModeLabel = attendanceMode || "Unknown";
+  const attendanceIcon = attendanceModeLabel.toLowerCase().includes("virtual")
+    ? Monitor
+    : attendanceModeLabel.toLowerCase().includes("hybrid")
+      ? Users
+      : Building2;
+  const AttendanceIcon = attendanceIcon;
+  const attendanceTone = attendanceModeLabel.toLowerCase().includes("virtual")
+    ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+    : attendanceModeLabel.toLowerCase().includes("hybrid")
+      ? "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]"
+      : "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]";
+
+  const handleStatusUpdate = async (id: string, status: string) => {
+    await updateEvent({ id, payload: { status } });
+  };
+
   return (
     <div className="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-6">
       <div className="mb-3 flex items-start justify-between gap-3">
-        <h4 className="text-base font-semibold text-[#111827]">
-          {event.title}
-        </h4>
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-[#E2E8F0]">
+            {event.imageUrl ? (
+              <img
+                src={event.imageUrl}
+                alt={event.title}
+                className="h-full w-full object-cover"
+              />
+            ) : null}
+          </div>
+          <h4 className="line-clamp-2 text-base capitalize font-semibold text-[#111827]">
+            {event.title}
+          </h4>
+        </div>
         <span
-          className={`rounded-sm border px-2 py-0.5 text-xs ${sourceClassMap[event.source] ?? "border-[#E5E7EB] text-[#334155]"}`}
+          className={`rounded-sm border capitalize px-2 py-0.5 text-xs ${sourceClassMap[sourceLabel] ?? "border-[#E5E7EB] text-[#334155]"}`}
         >
-          {event.source}
+          {sourceLabel}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 text-sm text-[#334155] md:grid-cols-2">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className="rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1 text-xs font-medium capitalize text-[#475569]">
+          {displayCategory}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 text-sm text-[#334155] md:grid-cols-2">
         <div className="space-y-2">
-          <p className="inline-flex items-center gap-1">
-            <MapPin className="h-4 w-4 text-[#64748B]" /> {event.location}
+          <p className="inline-flex items-start gap-1">
+            <MapPin className="h-5 w-5 text-[#64748B]" /> {displayLocation}
           </p>
-          <p className="inline-flex items-center pl-4 gap-1">
-            <Clock3 className="h-4 w-4 text-[#64748B]" /> {event.time}
+          <p className="inline-flex items-center  gap-1">
+            <Clock3 className="h-4 w-4 text-[#64748B]" /> {displayTime}
           </p>
           <p>
-            {event.organizerLabel}:
-            <span className="text-[#475569]">{" "}{event.organizerValue}</span>
+            Organizer:
+            <span className="text-[#475569]"> {organizerValue}</span>
+          </p>
+          <p className="inline-flex items-center gap-2">
+            Mode:
+            <span
+              className={`inline-flex items-center gap-1 border p-1 rounded-sm text-xs font-medium ${attendanceTone}`}
+            >
+              <AttendanceIcon className="h-3.5 w-3.5" />
+              {attendanceModeLabel}
+            </span>
           </p>
         </div>
         <div className="space-y-2">
           <p className="inline-flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-[#64748B]" /> {event.date}
+            <Calendar className="h-5 w-5 text-[#64748B]" /> {displayDate}
           </p>
           <p>
-            Price: <span className="text-[#475569]">{event.price}</span>
+            Price: <span className="text-[#475569]">{displayPrice}</span>
           </p>
-          {event?.email && (
-            <p>
-              Email: <span className="text-[#475569]">{event.email}</span>
-            </p>
-          )}
           <p>
-            Category: <span className="text-[#475569]">{event.category}</span>
+            Category:{" "}
+            <span className="capitalize text-[#475569]">{displayCategory}</span>
           </p>
         </div>
       </div>
 
+      {uniqueTags.length > 0 ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {uniqueTags.map((tag, index) => (
+            <span
+              key={tag}
+              className={`rounded-md capitalize border px-2.5 py-1 text-xs font-medium ${chipTone[index % chipTone.length]}`}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      ) : null}
+
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-[#D1D5DB] bg-white px-4 text-sm font-medium text-[#111827]"
+          <SlideInPanelDrawer
+            trigger={
+              <button
+                type="button"
+                className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-[#D1D5DB] bg-white px-4 text-sm font-medium text-[#111827]"
+              >
+                <Eye className="h-4 w-4" />
+                Preview
+              </button>
+            }
+            title="Event Preview"
+            subtitle="View event details"
+            width="lg"
+            contentClassName="mx-0"
           >
-            <Eye className="h-4 w-4" />
-            Preview
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md bg-[#16A34A] px-4 text-sm font-medium text-white"
-          >
-            <CheckCircle2 className="h-4 w-4" />
-            Approve & Publish
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-[#FCA5A5] bg-white px-4 text-sm font-medium text-[#DC2626]"
-          >
-            <CircleX className="h-4 w-4" />
-            Reject
-          </button>
+            <EventPreview id={event._id} />
+          </SlideInPanelDrawer>
+
+          {event.status === "published" ? (
+            <Button
+              type="button"
+              className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
+              onClick={() => handleStatusUpdate(event._id, "rejected")}
+              disabled={isLoading}
+            >
+              <XCircle className="h-4 w-4" />
+              {isLoading ? "Rejecting..." : "Reject"}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm bg-[#0AA84F] px-3 py-1.5 text-sm font-medium text-white transition hover:bg-[#098a42]"
+              onClick={() => handleStatusUpdate(event._id, "published")}
+              disabled={isLoading}
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              {isLoading ? <Spinner /> : "Approve & Publish"}
+            </Button>
+          )}
         </div>
       </div>
     </div>
