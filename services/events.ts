@@ -4,13 +4,14 @@ import {
   RetrieveEventsRes,
   RetrieveEventStatsRes,
   RetrieveEventDetailsRes,
-} from "@/interface";
-import { CRAWLER_API } from "@/services/axios";
+  EventFilters,
+} from '@/interface';
+import { CRAWLER_API } from '@/services/axios';
 
 export const retrieveEvents = async (
   params: RetrieveEventsQuery,
 ): Promise<RetrieveEventsRes> => {
-  const { data } = await CRAWLER_API.get("/events", {
+  const { data } = await CRAWLER_API.get('/events', {
     params,
   });
 
@@ -18,7 +19,7 @@ export const retrieveEvents = async (
 };
 
 export const retrieveEventStats = async (): Promise<RetrieveEventStatsRes> => {
-  const { data } = await CRAWLER_API.get("/events/stats");
+  const { data } = await CRAWLER_API.get('/events/stats');
 
   return data;
 };
@@ -37,5 +38,11 @@ export const updateEventById = async (
 ): Promise<RetrieveEventsRes> => {
   const { data } = await CRAWLER_API.put(`/events/${id}`, payload);
 
+  return data;
+};
+export const retrievePublsihedEvents = async (
+  params: EventFilters,
+): Promise<RetrieveEventsRes> => {
+  const { data } = await CRAWLER_API.get('/events/published', { params });
   return data;
 };

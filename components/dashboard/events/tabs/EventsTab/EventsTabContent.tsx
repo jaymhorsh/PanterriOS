@@ -1,16 +1,16 @@
-import Image from "next/image";
+import Image from 'next/image';
 import {
   Search,
   Filter,
   MapPin,
   CalendarDays,
   ExternalLink,
-} from "lucide-react";
-import { EventRecord } from "../../data";
-import { EventListCard } from "./EventListCard";
+} from 'lucide-react';
+import { EventPublishedListCard } from './EventPublishedListCard';
+import { EventEntity } from '@/interface';
 
 interface EventsTabContentProps {
-  events: EventRecord[];
+  events: EventEntity[];
   search: string;
   onSearchChange: (value: string) => void;
 }
@@ -20,7 +20,7 @@ export function EventsTabContent({
   search,
   onSearchChange,
 }: EventsTabContentProps) {
-  const featuredEvents = events.filter((event) => event.featured);
+  const featuredEvents = events.filter((event) => event.isFeatured);
 
   return (
     <div className="space-y-6">
@@ -29,34 +29,35 @@ export function EventsTabContent({
           Featured Events
         </h3>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {featuredEvents.map((event) => (
-            <div
-              key={event.id}
-              className="overflow-hidden rounded-md border border-[#111827] bg-black text-white"
-            >
-              <div className="relative h-40 w-full">
-                <Image
-                  src={event.coverImage}
-                  alt={event.title}
-                  fill
-                  className="object-cover opacity-80"
-                />
-              </div>
-              <div className="space-y-2 relative p-3">
-                <h4 className="line-clamp-2 h-9 text-[#EDEDED] text-sm font-semibold">
-                  {event.title}
-                </h4>
-                <p className="text-sm pt-1 text-[#888888]">Feb 15-16</p>
-                <div className="flex w-full justify-between items-center">
-                  <p className="inline-flex items-center gap-1 text-sm text-[#4A5565]">
-                    <MapPin className="h-3.5 w-3.5 text-[#4A5565]" /> Eko
-                    Hotels, Lagos
-                  </p>
-                  <ExternalLink className="h-5 w-5 cursor-pointer text-[#444444] bottom-2 right-2" />
+          {featuredEvents &&
+            featuredEvents.map((event) => (
+              <div
+                key={event._id}
+                className="overflow-hidden rounded-md border border-[#111827] bg-black text-white"
+              >
+                <div className="relative h-40 w-full">
+                  <Image
+                    src={event.imageUrl!}
+                    alt={event.title}
+                    fill
+                    className="object-cover bg-white"
+                  />
+                </div>
+                <div className="space-y-2 relative p-3">
+                  <h4 className="line-clamp-2 h-9 text-[#EDEDED] text-sm font-semibold">
+                    {event.title}
+                  </h4>
+                  <p className="text-sm pt-1 text-[#888888]">Feb 15-16</p>
+                  <div className="flex w-full justify-between items-center">
+                    <p className="inline-flex items-center gap-1 text-sm text-[#4A5565]">
+                      <MapPin className="h-3.5 w-3.5 text-[#4A5565]" /> Eko
+                      Hotels, Lagos
+                    </p>
+                    <ExternalLink className="h-5 w-5 cursor-pointer text-[#444444] bottom-2 right-2" />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
@@ -91,7 +92,7 @@ export function EventsTabContent({
 
       <div className="space-y-4">
         {events.map((event) => (
-          <EventListCard key={event.id} event={event} />
+          <EventPublishedListCard key={event._id} event={event} />
         ))}
       </div>
     </div>

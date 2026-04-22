@@ -2,7 +2,7 @@ export interface RetrieveEventsQuery {
   page?: number;
   per_page?: number;
   search?: string;
-  all?: boolean | "true" | "false";
+  all?: boolean | 'true' | 'false';
   location?: string;
   eventType?: string;
   sourceType?: string;
@@ -36,7 +36,7 @@ export interface EventEntity {
   eventType?: string;
   eventTopic?: string;
   attendanceMode?: string;
-  status?: "pending" | "published" | "rejected" | string;
+  status?: 'pending' | 'published' | 'rejected' | string;
   sourceType?: string;
   source?: EventSource;
   location?: string;
@@ -53,13 +53,13 @@ export interface EventEntity {
   isEditorsPick?: boolean;
   isSelected?: boolean;
   relevanceScore?: number;
-  eventDateTime?: string;
-  startDateTime?: string;
-  endDateTime?: string;
-  publishedAt?: string;
-  crawledAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  eventDateTime?: Date;
+  startDateTime?: Date;
+  endDateTime?: Date;
+  publishedAt?: Date;
+  crawledAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface EventsPagination {
@@ -102,9 +102,32 @@ export interface RetrieveEventDetailsRes {
 export interface UpdateEventByIdReq {
   status: string;
   isFeatured?: boolean;
+  title?: string;
+  categories?: string[];
+  content?: string;
+  excerpt?: string;
+  imageUrl?: string;
+  isEditorsPick?: boolean;
+  readingTime?: string;
+  tags?: string;
 }
 
 export interface UpdateEventByIdRes {
   meta: EventsMeta;
   data: EventEntity;
+}
+export interface EventFilters {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  all?: boolean;
+  sourceName?: string;
+  isFeatured?: boolean;
+  isEditorsPick?: boolean;
+  slug?: string;
+  location?: string;
+  category?: string;
+  eventType?: string;
+  eventDateTime?: Date;
+  startDateTime?: Date;
 }

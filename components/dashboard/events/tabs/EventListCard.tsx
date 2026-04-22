@@ -8,37 +8,37 @@ import {
   Monitor,
   Users,
   XCircle,
-} from "lucide-react";
-import { useState } from "react";
-import { EventEntity } from "@/interface";
-import { SlideInPanelDrawer } from "@/components/shared/SlideInPanel";
-import { useUpdateEvent } from "@/hook/events";
-import { EventPreview } from "./EventPreview";
-import { formatDate, formatTime } from "@/utils/helpers";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+} from 'lucide-react';
+import { EventEntity } from '@/interface';
+import { SlideInPanelDrawer } from '@/components/shared/SlideInPanel';
+import { useUpdateEvent } from '@/hook/events';
+import { EventPreview } from './EventPreview';
+import { dateAndTimeFormatter, formatDate } from '@/utils/helpers';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import Image from 'next/image';
 
 interface ReviewEventCardProps {
   event: EventEntity;
 }
 
 const sourceClassMap: Record<string, string> = {
-  EventBrite: "border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]",
-  Submitted: "border-[#DDD6FE] bg-[#F5F3FF] text-[#7C3AED]",
-  AI: "border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]",
+  EventBrite: 'border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]',
+  Submitted: 'border-[#DDD6FE] bg-[#F5F3FF] text-[#7C3AED]',
+  AI: 'border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]',
 };
 
 export function EventListCard({ event }: ReviewEventCardProps) {
-  const sourceLabel = event.sourceType ?? event.source?.name ?? "AI";
-  const organizerValue = event.organizerFullName ?? event.author ?? "-";
+  const sourceLabel = event.sourceType ?? event.source?.name ?? 'AI';
+  const organizerValue = event.organizerFullName ?? event.author ?? '-';
   const displayDate = formatDate(event.eventDateTime ?? event.startDateTime);
-  const displayTime = formatTime(event.startDateTime ?? event.eventDateTime);
-  const displayLocation = event.location ?? event.venueAddress ?? "-";
-  const attendanceMode = event.attendanceMode ?? "";
-  const displayCategory = event.eventTopic ?? event.eventType ?? "-";
+  const displayTime = dateAndTimeFormatter(event.eventDateTime! ?? '-');
+  const displayLocation = event.location ?? event.venueAddress ?? '-';
+  const attendanceMode = event.attendanceMode ?? '';
+  const displayCategory = event.eventTopic ?? event.eventType ?? '-';
   const displayPrice = event.priceFrom
-    ? `${event.priceFrom} ${event.priceCurrency ?? ""}`
-    : "Price not available";
+    ? `${event.priceFrom} ${event.priceCurrency ?? ''}`
+    : 'Price not available';
 
   const tagPool = [
     ...(event.categories ?? []),
@@ -51,26 +51,26 @@ export function EventListCard({ event }: ReviewEventCardProps) {
   ).slice(0, 6);
 
   const chipTone = [
-    "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
-    "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]",
-    "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]",
-    "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]",
+    'border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]',
+    'border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]',
+    'border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]',
+    'border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]',
   ];
 
   const { updateEvent, isLoading } = useUpdateEvent();
 
-  const attendanceModeLabel = attendanceMode || "Unknown";
-  const attendanceIcon = attendanceModeLabel.toLowerCase().includes("virtual")
+  const attendanceModeLabel = attendanceMode || 'Unknown';
+  const attendanceIcon = attendanceModeLabel.toLowerCase().includes('virtual')
     ? Monitor
-    : attendanceModeLabel.toLowerCase().includes("hybrid")
+    : attendanceModeLabel.toLowerCase().includes('hybrid')
       ? Users
       : Building2;
   const AttendanceIcon = attendanceIcon;
-  const attendanceTone = attendanceModeLabel.toLowerCase().includes("virtual")
-    ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-    : attendanceModeLabel.toLowerCase().includes("hybrid")
-      ? "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]"
-      : "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]";
+  const attendanceTone = attendanceModeLabel.toLowerCase().includes('virtual')
+    ? 'border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]'
+    : attendanceModeLabel.toLowerCase().includes('hybrid')
+      ? 'border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]'
+      : 'border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]';
 
   const handleStatusUpdate = async (id: string, status: string) => {
     await updateEvent({ id, payload: { status } });
@@ -82,9 +82,11 @@ export function EventListCard({ event }: ReviewEventCardProps) {
         <div className="flex min-w-0 items-start gap-3">
           <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-[#E2E8F0]">
             {event.imageUrl ? (
-              <img
+              <Image
                 src={event.imageUrl}
                 alt={event.title}
+                width={100}
+                height={100}
                 className="h-full w-full object-cover"
               />
             ) : null}
@@ -94,7 +96,7 @@ export function EventListCard({ event }: ReviewEventCardProps) {
           </h4>
         </div>
         <span
-          className={`rounded-sm border capitalize px-2 py-0.5 text-xs ${sourceClassMap[sourceLabel] ?? "border-[#E5E7EB] text-[#334155]"}`}
+          className={`rounded-sm border capitalize px-2 py-0.5 text-xs ${sourceClassMap[sourceLabel] ?? 'border-[#E5E7EB] text-[#334155]'}`}
         >
           {sourceLabel}
         </span>
@@ -136,7 +138,7 @@ export function EventListCard({ event }: ReviewEventCardProps) {
             Price: <span className="text-[#475569]">{displayPrice}</span>
           </p>
           <p>
-            Category:{" "}
+            Category:{' '}
             <span className="capitalize text-[#475569]">{displayCategory}</span>
           </p>
         </div>
@@ -175,25 +177,25 @@ export function EventListCard({ event }: ReviewEventCardProps) {
             <EventPreview id={event._id} />
           </SlideInPanelDrawer>
 
-          {event.status === "published" ? (
+          {event.status === 'published' ? (
             <Button
               type="button"
               className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
-              onClick={() => handleStatusUpdate(event._id, "rejected")}
+              onClick={() => handleStatusUpdate(event._id, 'rejected')}
               disabled={isLoading}
             >
               <XCircle className="h-4 w-4" />
-              {isLoading ? "Rejecting..." : "Reject"}
+              {isLoading ? 'Rejecting...' : 'Reject'}
             </Button>
           ) : (
             <Button
               type="button"
               className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm bg-[#0AA84F] px-3 py-1.5 text-sm font-medium text-white transition hover:bg-[#098a42]"
-              onClick={() => handleStatusUpdate(event._id, "published")}
+              onClick={() => handleStatusUpdate(event._id, 'published')}
               disabled={isLoading}
             >
               <CheckCircle2 className="h-4 w-4" />
-              {isLoading ? <Spinner /> : "Approve & Publish"}
+              {isLoading ? <Spinner /> : 'Approve & Publish'}
             </Button>
           )}
         </div>

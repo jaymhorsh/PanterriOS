@@ -1,39 +1,56 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { CalendarDays, UsersRound, Star, Bot } from "lucide-react";
-import Link from "next/link";
-import { PageHead, StatCard, StatCardSkeleton } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { eventTabCounts, eventsData, EventStatus } from "./data";
-import { useRetrieveEventStats } from "@/hook/events";
+import { useEffect, useMemo, useState } from 'react';
+import { CalendarDays, UsersRound, Star, Bot } from 'lucide-react';
+import Link from 'next/link';
+import { PageHead, StatCard, StatCardSkeleton } from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { eventsData, EventStatus } from './data';
+import { useRetrieveEventStats } from '@/hook/events';
 import {
   AIDiscoveredEventsTab,
   EventsTabContent,
   SubmittedEventsTab,
-} from "./tabs";
+} from './tabs';
+import { useRetrievePublishedEvents } from '@/hook/events/useRetrievePublishedEvents';
 
 export default function EventsContainer() {
-  const [activeTab, setActiveTab] = useState<EventStatus>("ai-discovered");
-  const [search, setSearch] = useState("");
-  const { data: eventStatsResponse, isLoading } = useRetrieveEventStats();
+  const [activeTab, setActiveTab] = useState<EventStatus>('ai-discovered');
+  const [search, setSearch] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
+  const { data: eventStatsResponse, isLoading } = useRetrieveEventStats();
+  const { data: publishedEvents, isLoading: isPublished } =
+    useRetrievePublishedEvents(
+      debouncedSearchTerm
+        ? {
+            search: debouncedSearchTerm,
+          }
+        : {},
+    );
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(search);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
   const eventStats = eventStatsResponse?.data;
   const tabs: Array<{ label: string; value: EventStatus; count: number }> = [
     {
-      label: "AI-Discovered",
-      value: "ai-discovered",
-      count: eventStats?.aiDiscovered ?? 0,
+      label: 'AI-Discovered',
+      value: 'ai-discovered',
+      count: eventStatsResponse?.meta.pagination?.total_count ?? 0,
     },
     {
-      label: "Published Events",
-      value: "published",
+      label: 'Published Events',
+      value: 'published',
       count: eventStats?.virtualEvents ?? 0,
     },
     {
-      label: "Submissions",
-      value: "submitted",
+      label: 'Submissions',
+      value: 'submitted',
       count: eventStats?.submitted ?? 0,
     },
   ];
@@ -62,40 +79,40 @@ export default function EventsContainer() {
 
   const stats = [
     {
-      label: "Total Events (this month)",
+      label: 'Total Events (this month)',
       value: eventStats?.totalEvents ?? 0,
-      description: "Published events",
+      description: 'Published events',
       icon: CalendarDays,
-      color: "text-gray-900",
-      iconColor: "text-[#155DFC]",
-      bgColor: "bg-[#DBEAFE]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#155DFC]',
+      bgColor: 'bg-[#DBEAFE]',
     },
     {
-      label: "AI Discovered",
+      label: 'AI Discovered',
       value: eventStats?.aiDiscovered ?? 0,
-      description: "Awaiting review",
+      description: 'Awaiting review',
       icon: Bot,
-      color: "text-gray-900",
-      iconColor: "text-[#F54900]",
-      bgColor: "bg-[#FFEDD4]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#F54900]',
+      bgColor: 'bg-[#FFEDD4]',
     },
     {
-      label: "Submitted Events",
+      label: 'Submitted Events',
       value: eventStats?.submitted ?? 0,
-      description: "External submissions",
+      description: 'External submissions',
       icon: UsersRound,
-      color: "text-gray-900",
-      iconColor: "text-[#D08700]",
-      bgColor: "bg-[#FEF9C2]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#D08700]',
+      bgColor: 'bg-[#FEF9C2]',
     },
     {
-      label: "Expected Attendees",
+      label: 'Expected Attendees',
       value: eventStats?.expectedAttendees ?? 0,
-      description: "Projected attendance",
+      description: 'Projected attendance',
       icon: Star,
-      color: "text-gray-900",
-      iconColor: "text-[#9810FA]",
-      bgColor: "bg-[#E9D4FF]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#9810FA]',
+      bgColor: 'bg-[#E9D4FF]',
     },
   ];
 
@@ -118,7 +135,7 @@ export default function EventsContainer() {
       </PageHead>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-4">
-        {isLoading ? (
+        {isLoading || isPublished ? (
           <StatCardSkeleton />
         ) : (
           stats.map((stat, index) => (
@@ -160,11 +177,13 @@ export default function EventsContainer() {
           </TabsList>
 
           <TabsContent value="published" className="pt-6">
-            <EventsTabContent
-              events={filteredEvents}
-              search={search}
-              onSearchChange={setSearch}
-            />
+            {publishedEvents?.data && (
+              <EventsTabContent
+                events={publishedEvents?.data}
+                search={search}
+                onSearchChange={setSearch}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="ai-discovered" className="pt-6">
