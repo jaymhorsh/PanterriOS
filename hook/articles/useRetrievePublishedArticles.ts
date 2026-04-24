@@ -6,7 +6,7 @@ import { ArticleFilters } from '@/interface/article.entity';
 
 export function useRetrievePublishedArticles(query: ArticleFilters) {
   return useQuery({
-    queryKey: ['published-articles'],
+    queryKey: ['published-articles', query],
     queryFn: () => retrivePublishedArticles(query),
   });
 }

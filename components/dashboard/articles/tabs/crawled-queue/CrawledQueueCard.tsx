@@ -5,6 +5,7 @@ import {
   Clock3,
   ExternalLink,
   Eye,
+  Pencil,
   User,
   XCircle,
 } from 'lucide-react';
@@ -16,12 +17,14 @@ import { useUpdateArticleStatus } from '@/hook/articles/useArticleUpdateStatsus'
 import Link from 'next/link';
 import { SlideInPanelDrawer } from '@/components/shared';
 import { ArticlePreview } from '../ArticlePreview';
+import { useRouter } from 'next/navigation';
 
 interface CrawledQueueCardProps {
   article: CrwalerArticle;
 }
 
 export function CrawledQueueCard({ article }: CrawledQueueCardProps) {
+  const router = useRouter();
   const { mutateAsync: updateStatusFn, isPending: isLoading } =
     useUpdateArticleStatus();
   const publishedDate = article.publishedAt ?? '2026-02-18';
@@ -95,56 +98,67 @@ export function CrawledQueueCard({ article }: CrawledQueueCardProps) {
               </span>
             ))}
           </div>
-
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            {article.status === 'published' ? (
-              <Button
-                type="button"
-                className="inline-flex items-center gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
-                onClick={() => handleStatusUpdate(article._id, 'rejected')}
-                disabled={isLoading}
-              >
-                <XCircle className="h-4 w-4" />
-                {isLoading ? 'rejecting...' : 'Reject'}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                className="inline-flex items-center gap-2 cursor-pointer rounded-sm bg-[#0AA84F] px-3 py-1.5 text-sm font-medium text-white transition hover:bg-[#098a42]"
-                onClick={() => handleStatusUpdate(article._id, 'published')}
-                disabled={isLoading}
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                {isLoading ? 'publsishing...' : 'Approve & Publish'}
-              </Button>
-            )}
-            <Link href={article.url}>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 px-2 py-1.5 text-sm font-medium text-[#111827] transition hover:text-[#1D4ED8]"
-              >
-                <ExternalLink className="h-4 w-4" />
-                View Source
-              </button>
-            </Link>
-            <SlideInPanelDrawer
-              trigger={
+          <div className="mt-4 flex justify-between items-center gap-2 ">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {article.status === 'published' ? (
                 <Button
                   type="button"
-                  className="transition flex items-center gap-1.5"
-                  aria-label="View article"
-                  variant={'outline'}
+                  className="inline-flex items-center gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
+                  onClick={() => handleStatusUpdate(article._id, 'rejected')}
+                  disabled={isLoading}
                 >
-                  <Eye className="h-5 w-5" /> <span>Preview</span>
+                  <XCircle className="h-4 w-4" />
+                  {isLoading ? 'rejecting...' : 'Reject'}
                 </Button>
+              ) : (
+                <Button
+                  type="button"
+                  className="inline-flex items-center gap-2 cursor-pointer rounded-sm bg-[#0AA84F] px-3 py-1.5 text-sm font-medium text-white transition hover:bg-[#098a42]"
+                  onClick={() => handleStatusUpdate(article._id, 'published')}
+                  disabled={isLoading}
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  {isLoading ? 'publsishing...' : 'Approve & Publish'}
+                </Button>
+              )}
+              <Link href={article.url}>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 px-2 py-1.5 text-sm font-medium text-[#111827] transition hover:text-[#1D4ED8]"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Source
+                </button>
+              </Link>
+              <SlideInPanelDrawer
+                trigger={
+                  <Button
+                    type="button"
+                    className="transition flex items-center gap-1.5"
+                    aria-label="View article"
+                    variant={'outline'}
+                  >
+                    <Eye className="h-5 w-5" /> <span>Preview</span>
+                  </Button>
+                }
+                title="Article Preview"
+                subtitle="View article details"
+                width="lg"
+                contentClassName="mx-0"
+              >
+                <ArticlePreview article={article} />
+              </SlideInPanelDrawer>
+            </div>
+
+            <Button
+              variant={'outline'}
+              className="hover:text-[#111827]"
+              onClick={() =>
+                router.push(`/articles/create-article?id=${article._id}`)
               }
-              title="Article Preview"
-              subtitle="View article details"
-              width="lg"
-              contentClassName="mx-0"
             >
-              <ArticlePreview article={article} />
-            </SlideInPanelDrawer>
+              <Pencil className="h-5 w-5 cursor-pointer text-[#111111]" />
+            </Button>
           </div>
         </div>
       </div>

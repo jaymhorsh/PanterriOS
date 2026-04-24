@@ -46,3 +46,11 @@ export const retrievePublsihedEvents = async (
   const { data } = await CRAWLER_API.get('/events/published', { params });
   return data;
 };
+export const retrievePublishedRejectedEvents = async (
+  params: EventFilters,
+): Promise<RetrieveEventsRes> => {
+  const { data } = await CRAWLER_API.get('/events/published-rejected', {
+    params,
+  });
+  return data;
+};

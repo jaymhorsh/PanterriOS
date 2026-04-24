@@ -2,32 +2,31 @@
  * Format a date to a readable string
  */
 export function formatDate(date: Date | string | undefined): string {
-  if (!date) return "-";
+  if (!date) return '-';
   const d = new Date(date);
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   }).format(d);
 }
 
 export const formatTime = (value: string | undefined) => {
-  if (!value) return "-";
+  if (!value) return '-';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
   });
 };
 /**
  * Format a number as currency
  */
-export function formatCurrency(amount: number) {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    maximumFractionDigits: 2,
+export function formatCurrency(amount: number, currency = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
   }).format(amount);
 }
 
@@ -35,11 +34,11 @@ export function formatCurrency(amount: number) {
  * Mask email address showing first 2 characters and domain
  */
 export function maskEmail(email: string): string {
-  const [localPart, domain] = email.split("@");
+  const [localPart, domain] = email.split('@');
   if (!domain) return email;
 
   const visibleChars = Math.min(3, localPart.length);
-  const masked = localPart.slice(0, visibleChars) + "***";
+  const masked = localPart.slice(0, visibleChars) + '***';
 
   return `${masked}@${domain}`;
 }
@@ -48,7 +47,7 @@ export function maskEmail(email: string): string {
  */
 export function truncate(text: string, length: number): string {
   if (text.length <= length) return text;
-  return text.slice(0, length) + "...";
+  return text.slice(0, length) + '...';
 }
 
 /**
@@ -75,10 +74,10 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 export function generatePassword(length: number = 12): string {
-  const lower = "abcdefghijklmnopqrstuvwxyz";
-  const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const numbers = "0123456789";
-  const symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
+  const lower = 'abcdefghijklmnopqrstuvwxyz';
+  const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*()_+[]{}|;:,.<>?';
 
   const allChars = lower + upper + numbers + symbols;
 
@@ -98,12 +97,12 @@ export function generatePassword(length: number = 12): string {
 
   // shuffle password
   password = password.sort(() => Math.random() - 0.5);
-  return password.join("");
+  return password.join('');
 }
 
 export const formatDisplayValue = (value: string): string => {
   return value
-    .replace(/_/g, " ")
+    .replace(/_/g, ' ')
     .trim()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
@@ -124,9 +123,9 @@ export const normalizeIdentifierLabel = (value?: string): string => {
 
 export const dateAndTimeFormatter = (date: Date) => {
   const newDate = new Date(date);
-  return newDate.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return newDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 };

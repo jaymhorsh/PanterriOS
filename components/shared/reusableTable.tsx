@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -18,7 +17,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, Inbox } from "lucide-react";
+import { Inbox } from "lucide-react";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 
 interface PaginationConfig {
   currentPage: number;
@@ -117,163 +117,28 @@ export function ReUseAbleTable<TData extends object>({
           </TableBody>
         </Table>
         </div>
-        {/* Pagination */}
         {hasData && (
-          <div className="flex flex-col gap-3 border-t border-[#E5E7EB] px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="px-4 py-4 sm:px-6">
             {pagination ? (
-              <>
-                <div className="text-sm text-[#6B7280]">
-                  Showing{" "}
-                  <span className="font-medium text-[#111827]">
-                    {(pagination.currentPage - 1) * pagination.limit + 1}-
-                    {Math.min(
-                      pagination.currentPage * pagination.limit,
-                      pagination.totalItems,
-                    )}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium text-[#111827]">
-                    {pagination.totalItems}
-                  </span>{" "}
-                  {entityName}
-                </div>
-                <div className="flex flex-wrap items-center gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      pagination.onPageChange(
-                        Math.max(1, pagination.currentPage - 1),
-                      )
-                    }
-                    disabled={pagination.currentPage === 1}
-                    className="h-9 w-9 p-0"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {Array.from(
-                    { length: pagination.totalPages },
-                    (_, i) => i + 1,
-                  )
-                    .filter((page) => {
-                      const distance = Math.abs(page - pagination.currentPage);
-                      return (
-                        distance === 0 ||
-                        distance === 1 ||
-                        page === 1 ||
-                        page === pagination.totalPages
-                      );
-                    })
-                    .map((page, index, array) => {
-                      const showEllipsisBefore =
-                        index > 0 && array[index - 1] !== page - 1;
-
-                      return (
-                        <div key={page} className="flex items-center gap-1">
-                          {showEllipsisBefore && (
-                            <span className="px-2 text-gray-500">...</span>
-                          )}
-                          <Button
-                            variant={
-                              pagination.currentPage === page
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            onClick={() => pagination.onPageChange(page)}
-                            className="min-w-[40px]"
-                          >
-                            {page}
-                          </Button>
-                        </div>
-                      );
-                    })}
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      pagination.onPageChange(
-                        Math.min(
-                          pagination.totalPages,
-                          pagination.currentPage + 1,
-                        ),
-                      )
-                    }
-                    disabled={pagination.currentPage === pagination.totalPages}
-                    className="h-9 w-9 p-0"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </>
+              <PaginationControls
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                itemsPerPage={pagination.limit}
+                onPageChange={pagination.onPageChange}
+                entityName={entityName}
+                className="border-t-0 pt-0"
+              />
             ) : (
-              <>
-                <div className="text-sm text-[#6B7280]">
-                  Showing{" "}
-                  <span className="font-medium text-[#111827]">
-                    {table.getState().pagination.pageIndex *
-                      table.getState().pagination.pageSize +
-                      1}
-                    -
-                    {Math.min(
-                      (table.getState().pagination.pageIndex + 1) *
-                        table.getState().pagination.pageSize,
-                      table.getFilteredRowModel().rows.length,
-                    )}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium text-[#111827]">
-                    {table.getFilteredRowModel().rows.length}
-                  </span>{" "}
-                  {entityName}
-                </div>
-                <div className="flex flex-wrap items-center gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="h-9 w-9 p-0"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {Array.from(
-                    { length: table.getPageCount() },
-                    (_, i) => i,
-                  ).map((pageIndex) => (
-                    <Button
-                      key={pageIndex}
-                      variant={
-                        table.getState().pagination.pageIndex === pageIndex
-                          ? "default"
-                          : "outline"
-                      }
-                      size="sm"
-                      onClick={() => table.setPageIndex(pageIndex)}
-                      className={`h-9 w-9 p-0 ${
-                        table.getState().pagination.pageIndex === pageIndex
-                          ? "bg-primary-blue text-white hover:bg-primary-blue/90"
-                          : "hover:bg-gray-50"
-                      }`}
-                    >
-                      {pageIndex + 1}
-                    </Button>
-                  ))}
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="h-9 w-9 p-0"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </>
+              <PaginationControls
+                currentPage={table.getState().pagination.pageIndex + 1}
+                totalPages={table.getPageCount()}
+                totalItems={table.getFilteredRowModel().rows.length}
+                itemsPerPage={table.getState().pagination.pageSize}
+                onPageChange={(page) => table.setPageIndex(page - 1)}
+                entityName={entityName}
+                className="border-t-0 pt-0"
+              />
             )}
           </div>
         )}

@@ -10,6 +10,9 @@ export interface CrwalerArticle {
   content: string;
   author: string;
   imageUrl: string;
+  excerpt?: string;
+  readingTime?: string;
+  tags?: string[] | string;
   source: Source;
   publishedAt: Date;
   matchedKeywords: string[];
@@ -56,6 +59,7 @@ export interface ArticleFilters {
   isFeatured?: boolean;
   isEditorsPick?: boolean;
   slug?: string;
+  status?: string;
 }
 
 export interface ArticleStatusUpdateRes {

@@ -6,4 +6,5 @@ export * from './UserDetailsSkeleton';
 export * from './ProfilePageSkeleton';
 export * from './InvestmentDetailsSkeleton';
 export * from './TransactionAuditSkeleton';
+export * from './EventFormSkeleton';
 export * from './createEdituserSekeleton';

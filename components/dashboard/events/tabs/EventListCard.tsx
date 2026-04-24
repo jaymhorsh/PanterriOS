@@ -8,69 +8,69 @@ import {
   Monitor,
   Users,
   XCircle,
-} from "lucide-react";
-import { EventEntity } from "@/interface";
-import { SlideInPanelDrawer } from "@/components/shared/SlideInPanel";
-import { useUpdateEvent } from "@/hook/events";
-import { EventPreview } from "./EventPreview";
-import { dateAndTimeFormatter, formatDate } from "@/utils/helpers";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import Image from "next/image";
+  Pencil,
+  Trash2,
+} from 'lucide-react';
+import { EventEntity } from '@/interface';
+import { SlideInPanelDrawer } from '@/components/shared/SlideInPanel';
+import { useUpdateEvent } from '@/hook/events';
+import { EventPreview } from './EventPreview';
+import {
+  dateAndTimeFormatter,
+  formatCurrency,
+  formatDate,
+} from '@/utils/helpers';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import EditCreateEvent from './PublishedEventsTab/EditCreateEvent';
 
 interface ReviewEventCardProps {
   event: EventEntity;
 }
 
 const sourceClassMap: Record<string, string> = {
-  EventBrite: "border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]",
-  Submitted: "border-[#DDD6FE] bg-[#F5F3FF] text-[#7C3AED]",
-  AI: "border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]",
+  EventBrite: 'border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]',
+  Submitted: 'border-[#DDD6FE] bg-[#F5F3FF] text-[#7C3AED]',
+  AI: 'border-[#FED7AA] bg-[#FFF7ED] text-[#EA580C]',
 };
 
 export function EventListCard({ event }: ReviewEventCardProps) {
-  const sourceLabel = event.sourceType ?? event.source?.name ?? "AI";
-  const organizerValue = event.organizerFullName ?? event.author ?? "-";
+  const sourceLabel = event.sourceType ?? event.source?.name ?? 'AI';
+  const organizerValue = event.organizerFullName ?? event.author ?? '-';
   const displayDate = formatDate(event.eventDateTime ?? event.startDateTime);
-  const displayTime = dateAndTimeFormatter(event.eventDateTime! ?? "-");
-  const displayLocation = event.location ?? event.venueAddress ?? "-";
-  const attendanceMode = event.attendanceMode ?? "";
-  const displayCategory = event.eventTopic ?? event.eventType ?? "-";
-  const displayPrice = event.priceFrom
-    ? `${event.priceFrom} ${event.priceCurrency ?? ""}`
-    : "Price not available";
-
-  const tagPool = [
-    ...(event.categories ?? []),
-    ...(event.highlights ?? []),
-    ...(event.matchedKeywords ?? []),
-  ];
-
-  const uniqueTags = Array.from(
-    new Set(tagPool.map((tag) => tag.trim()).filter(Boolean)),
-  ).slice(0, 6);
-
-  const chipTone = [
-    "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
-    "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]",
-    "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]",
-    "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]",
-  ];
+  const displayTime = dateAndTimeFormatter(event.eventDateTime! ?? '-');
+  const displayLocation = event.location ?? event.venueAddress ?? '-';
+  const attendanceMode = event.attendanceMode ?? '';
+  const displayCategory = event.eventTopic ?? event.eventType ?? '-';
 
   const { updateEvent, isLoading } = useUpdateEvent();
 
-  const attendanceModeLabel = attendanceMode || "Unknown";
-  const attendanceIcon = attendanceModeLabel.toLowerCase().includes("virtual")
+  const chipTone = [
+    'border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]',
+    'border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]',
+    'border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]',
+    'border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]',
+  ];
+  const attendanceModeLabel = attendanceMode || 'Unknown';
+  const attendanceIcon = attendanceModeLabel.toLowerCase().includes('virtual')
     ? Monitor
-    : attendanceModeLabel.toLowerCase().includes("hybrid")
+    : attendanceModeLabel.toLowerCase().includes('physical')
       ? Users
       : Building2;
   const AttendanceIcon = attendanceIcon;
-  const attendanceTone = attendanceModeLabel.toLowerCase().includes("virtual")
-    ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-    : attendanceModeLabel.toLowerCase().includes("hybrid")
-      ? "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]"
-      : "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]";
+  const attendanceTone = attendanceModeLabel.toLowerCase().includes('virtual')
+    ? 'border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]'
+    : attendanceModeLabel.toLowerCase().includes('hybrid')
+      ? 'border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]'
+      : 'border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]';
 
   const handleStatusUpdate = async (id: string, status: string) => {
     await updateEvent({ id, payload: { status } });
@@ -96,7 +96,7 @@ export function EventListCard({ event }: ReviewEventCardProps) {
           </h4>
         </div>
         <span
-          className={`rounded-sm border capitalize px-2 py-0.5 text-xs ${sourceClassMap[sourceLabel] ?? "border-[#E5E7EB] text-[#334155]"}`}
+          className={`rounded-sm border capitalize px-2 py-0.5 text-xs ${sourceClassMap[sourceLabel] ?? 'border-[#E5E7EB] text-[#334155]'}`}
         >
           {sourceLabel}
         </span>
@@ -135,18 +135,26 @@ export function EventListCard({ event }: ReviewEventCardProps) {
             <Calendar className="h-5 w-5 text-[#64748B]" /> {displayDate}
           </p>
           <p>
-            Price: <span className="text-[#475569]">{displayPrice}</span>
+            Price:{' '}
+            <span className="text-[#475569]">
+              {' '}
+              {event.priceFrom === 0
+                ? 'FREE'
+                : event.priceFrom
+                  ? formatCurrency(event.priceFrom, event.priceCurrency)
+                  : 'unknown'}
+            </span>
           </p>
           <p>
-            Category:{" "}
+            Category:{' '}
             <span className="capitalize text-[#475569]">{displayCategory}</span>
           </p>
         </div>
       </div>
 
-      {uniqueTags.length > 0 ? (
+      {event?.matchedKeywords && event?.matchedKeywords.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
-          {uniqueTags.map((tag, index) => (
+          {event.matchedKeywords.map((tag, index) => (
             <span
               key={tag}
               className={`rounded-md capitalize border px-2.5 py-1 text-xs font-medium ${chipTone[index % chipTone.length]}`}
@@ -157,7 +165,7 @@ export function EventListCard({ event }: ReviewEventCardProps) {
         </div>
       ) : null}
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-3 justify-between">
         <div className="flex flex-wrap gap-2">
           <SlideInPanelDrawer
             trigger={
@@ -177,27 +185,49 @@ export function EventListCard({ event }: ReviewEventCardProps) {
             <EventPreview id={event._id} />
           </SlideInPanelDrawer>
 
-          {event.status === "published" ? (
+          {event.status === 'published' ? (
             <Button
               type="button"
               className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
-              onClick={() => handleStatusUpdate(event._id, "rejected")}
+              onClick={() => handleStatusUpdate(event._id, 'rejected')}
               disabled={isLoading}
             >
               <XCircle className="h-4 w-4" />
-              {isLoading ? "Rejecting..." : "Reject"}
+              {isLoading ? 'Rejecting...' : 'Reject'}
             </Button>
           ) : (
             <Button
               type="button"
               className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm bg-[#0AA84F] px-3 py-1.5 text-sm font-medium text-white transition hover:bg-[#098a42]"
-              onClick={() => handleStatusUpdate(event._id, "published")}
+              onClick={() => handleStatusUpdate(event._id, 'published')}
               disabled={isLoading}
             >
               <CheckCircle2 className="h-4 w-4" />
-              {isLoading ? "Publishing..." : "Approve & Publish"}
+              {isLoading ? 'Publishing...' : 'Approve & Publish'}
             </Button>
           )}
+        </div>
+        <div className="flex items-center gap-3 text-[#6B7280]">
+          <Dialog>
+            <DialogTrigger
+              className="border rounded-md px-4 py-2 bg-white"
+              asChild
+            >
+              <button className="hover:text-[#111827]">
+                <Pencil className="h-5 w-5 cursor-pointer text-[#111111]" />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="p-6 sm:max-w-3xl lg:max-w-5xl xl:max-w-5xl  ">
+              <DialogHeader>
+                <DialogTitle>Edit Event</DialogTitle>
+                <DialogDescription className="  hidden" />
+                <EditCreateEvent id={event._id} />
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+          <button className="hover:text-[#DC2626] cursor-pointer">
+            <Trash2 className="h-5 w-5 text-[#E7000B]" />
+          </button>
         </div>
       </div>
     </div>

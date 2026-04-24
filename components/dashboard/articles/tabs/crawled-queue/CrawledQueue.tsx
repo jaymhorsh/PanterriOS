@@ -1,14 +1,20 @@
-import { useMemo } from 'react';
 import { CrawledQueueCard } from '.';
-import { getCrawledQueueItems } from './dummy';
 import { CrawlerArticlesResponse } from '@/interface';
+import { PaginationControls } from '@/components/shared/PaginationControls';
 
 interface ArticlesTabProps {
   article: CrawlerArticlesResponse;
+  setCurrentPage: (page: number) => void;
+  currentPage: number;
 }
 
-export function CrawledQueue({ article }: ArticlesTabProps) {
+export function CrawledQueue({
+  article,
+  currentPage,
+  setCurrentPage,
+}: ArticlesTabProps) {
   const articlsData = article.data;
+  const pagination = article.meta.pagination;
 
   return (
     <div className="space-y-4">
@@ -30,6 +36,13 @@ export function CrawledQueue({ article }: ArticlesTabProps) {
           No crawled articles found for this category.
         </div>
       )}
+      <PaginationControls
+        currentPage={currentPage}
+        totalItems={pagination.total_count}
+        itemsPerPage={pagination.per_page}
+        onPageChange={setCurrentPage}
+        entityName="crawled-articles"
+      />
     </div>
   );
 }
