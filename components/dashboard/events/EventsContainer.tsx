@@ -39,6 +39,7 @@ export default function EventsContainer() {
     return () => clearTimeout(timeoutId);
   }, [search]);
   const eventStats = eventStatsResponse?.data;
+
   const tabs: Array<{
     label: string;
     value: "ai-discovered" | "published";
@@ -47,12 +48,12 @@ export default function EventsContainer() {
     {
       label: "Published Events",
       value: "published",
-      count: eventStats?.virtualEvents ?? 0,
+      count: publishedEvents?.meta.pagination?.total_count ?? 0,
     },
     {
       label: "AI-Discovered",
       value: "ai-discovered",
-      count: eventStatsResponse?.meta.pagination?.total_count ?? 0,
+      count: eventStats?.aiDiscovered ?? 0,
     },
 
     // {
@@ -155,7 +156,7 @@ export default function EventsContainer() {
               >
                 <span>{tab.label}</span>
                 {tab.count > 0 ? (
-                  <span className="ml-2 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563EB] px-2 text-sm font-semibold text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                  <span className="ml-2 inline-flex h-6  min-w-6 items-center justify-center rounded-full bg-[#2563EB] px-2 text-xs font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black">
                     {tab.count}
                   </span>
                 ) : null}

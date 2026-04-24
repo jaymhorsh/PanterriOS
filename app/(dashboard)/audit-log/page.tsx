@@ -1,3 +1,5 @@
+import { AuditLogsContainer } from "@/components/audit-log/AuditLogsContainer";
+
 export default function AuditLogPage() {
-  return <div>page</div>;
+  return <AuditLogsContainer />;
 }

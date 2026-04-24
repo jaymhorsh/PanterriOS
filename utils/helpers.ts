@@ -108,6 +108,20 @@ export const formatDisplayValue = (value: string): string => {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
+export const normalizeIdentifierLabel = (value?: string): string => {
+  if (!value) return "-";
+
+  const cleaned = value
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+  if (!cleaned) return "-";
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+};
+
 export const dateAndTimeFormatter = (date: Date) => {
   const newDate = new Date(date);
   return newDate.toLocaleDateString("en-US", {
