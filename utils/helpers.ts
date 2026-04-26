@@ -23,8 +23,8 @@ export const formatTime = (value: string | undefined) => {
 /**
  * Format a number as currency
  */
-export function formatCurrency(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number, currency = 'NGN'): string {
+  return new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency,
   }).format(amount);
@@ -108,15 +108,15 @@ export const formatDisplayValue = (value: string): string => {
 };
 
 export const normalizeIdentifierLabel = (value?: string): string => {
-  if (!value) return "-";
+  if (!value) return '-';
 
   const cleaned = value
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();
 
-  if (!cleaned) return "-";
+  if (!cleaned) return '-';
 
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 };
