@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ReUseAbleTable, SlideInPanelDrawer } from '@/components/shared';
 import { articlesDashboardData } from '../data';
 import { BadgePill } from '../articleColumns';
@@ -15,13 +15,18 @@ import { extractAltOrText } from '@/utils/articles.helper';
 interface ArticlesTabProps {
   article: CrawlerArticlesResponse;
   category?: string;
+  setCurrentPage: (page: number) => void;
+  currentPage: number;
 }
 
 const pageLimit = articlesDashboardData.pagination.limit;
 
-export function PublishedArticles({ article, category }: ArticlesTabProps) {
-  const [page, setPage] = useState(1);
-
+export function PublishedArticles({
+  article,
+  category,
+  setCurrentPage,
+  currentPage,
+}: ArticlesTabProps) {
   const filteredArticles = useMemo(() => {
     if (category === 'all') {
       return articlesDashboardData.publishedArticles;
@@ -175,7 +180,7 @@ export function PublishedArticles({ article, category }: ArticlesTabProps) {
           All Published Articles
         </h3>
         <p className="mt-1 text-sm text-gray-600">
-          {filteredArticles.length} articles
+          {article.meta.pagination.total_count} articles
         </p>
       </div>
 
@@ -184,14 +189,17 @@ export function PublishedArticles({ article, category }: ArticlesTabProps) {
         columns={publishedArticleColumns}
         entityName="articles"
         pagination={{
-          currentPage: page,
+          currentPage: currentPage,
           totalPages: Math.max(
             1,
-            Math.ceil(filteredArticles.length / pageLimit),
+            Math.ceil(
+              article.meta.pagination.total_count /
+                article.meta.pagination.per_page,
+            ),
           ),
-          totalItems: filteredArticles.length,
-          limit: pageLimit,
-          onPageChange: setPage,
+          totalItems: article.meta.pagination.total_count,
+          limit: article.meta.pagination.per_page,
+          onPageChange: setCurrentPage,
         }}
       />
     </div>

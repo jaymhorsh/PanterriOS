@@ -1,33 +1,34 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { CalendarDays, UsersRound, Star, Bot } from "lucide-react";
-import Link from "next/link";
-import { PageHead, StatCard, StatCardSkeleton } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from 'react';
+import { CalendarDays, UsersRound, Star, Bot } from 'lucide-react';
+import Link from 'next/link';
+import { PageHead, StatCard, StatCardSkeleton } from '@/components/shared';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { useRetrieveEventStats } from "@/hook/events";
+import { useRetrieveEventStats } from '@/hook/events';
 import {
   AIDiscoveredEventsTab,
   EventsTabContent,
   SubmittedEventsTab,
-} from "./tabs";
-import { useRetrievePublishedEvents } from "@/hook/events/useRetrievePublishedEvents";
+} from './tabs';
+import { useRetrievePublishedEvents } from '@/hook/events/useRetrievePublishedEvents';
 
 export default function EventsContainer() {
-  const [activeTab, setActiveTab] = useState<"ai-discovered" | "published">(
-    "published",
+  const [activeTab, setActiveTab] = useState<'ai-discovered' | 'published'>(
+    'published',
   );
-  const [search, setSearch] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
+  const [search, setSearch] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [publishedPage, setpublishedPage] = useState(1);
   const { data: eventStatsResponse, isLoading } = useRetrieveEventStats();
   const { data: publishedEvents, isLoading: isPublished } =
     useRetrievePublishedEvents(
       debouncedSearchTerm
         ? {
             search: debouncedSearchTerm,
+            page: publishedPage,
           }
         : {},
     );
@@ -42,18 +43,18 @@ export default function EventsContainer() {
 
   const tabs: Array<{
     label: string;
-    value: "ai-discovered" | "published";
+    value: 'ai-discovered' | 'published';
     count: number;
   }> = [
     {
-      label: "Published Events",
-      value: "published",
+      label: 'Published Events',
+      value: 'published',
       count: publishedEvents?.meta.pagination?.total_count ?? 0,
     },
     {
-      label: "AI-Discovered",
-      value: "ai-discovered",
-      count: eventStats?.aiDiscovered ?? 0,
+      label: 'AI-Discovered',
+      value: 'ai-discovered',
+      count: eventStatsResponse?.data.aiDiscovered ?? 0,
     },
 
     // {
@@ -65,40 +66,40 @@ export default function EventsContainer() {
 
   const stats = [
     {
-      label: "Total Events (this month)",
+      label: 'Total Events (this month)',
       value: eventStats?.totalEvents ?? 0,
-      description: "Published events",
+      description: 'Published events',
       icon: CalendarDays,
-      color: "text-gray-900",
-      iconColor: "text-[#155DFC]",
-      bgColor: "bg-[#DBEAFE]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#155DFC]',
+      bgColor: 'bg-[#DBEAFE]',
     },
     {
-      label: "AI Discovered",
+      label: 'AI Discovered',
       value: eventStats?.aiDiscovered ?? 0,
-      description: "Awaiting review",
+      description: 'Awaiting review',
       icon: Bot,
-      color: "text-gray-900",
-      iconColor: "text-[#F54900]",
-      bgColor: "bg-[#FFEDD4]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#F54900]',
+      bgColor: 'bg-[#FFEDD4]',
     },
     {
-      label: "Submitted Events",
+      label: 'Submitted Events',
       value: eventStats?.submitted ?? 0,
-      description: "External submissions",
+      description: 'External submissions',
       icon: UsersRound,
-      color: "text-gray-900",
-      iconColor: "text-[#D08700]",
-      bgColor: "bg-[#FEF9C2]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#D08700]',
+      bgColor: 'bg-[#FEF9C2]',
     },
     {
-      label: "Expected Attendees",
+      label: 'Expected Attendees',
       value: eventStats?.expectedAttendees ?? 0,
-      description: "Projected attendance",
+      description: 'Projected attendance',
       icon: Star,
-      color: "text-gray-900",
-      iconColor: "text-[#9810FA]",
-      bgColor: "bg-[#E9D4FF]",
+      color: 'text-gray-900',
+      iconColor: 'text-[#9810FA]',
+      bgColor: 'bg-[#E9D4FF]',
     },
   ];
 
@@ -143,7 +144,7 @@ export default function EventsContainer() {
         <Tabs
           value={activeTab}
           onValueChange={(value) =>
-            setActiveTab(value as "ai-discovered" | "published")
+            setActiveTab(value as 'ai-discovered' | 'published')
           }
           className="w-full"
         >
@@ -170,6 +171,9 @@ export default function EventsContainer() {
                 events={publishedEvents?.data}
                 search={search}
                 onSearchChange={setSearch}
+                pagination={publishedEvents.meta.pagination!}
+                currentPage={publishedPage}
+                setCurrentPage={setpublishedPage}
               />
             )}
           </TabsContent>

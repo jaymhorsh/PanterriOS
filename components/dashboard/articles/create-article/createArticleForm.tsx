@@ -21,6 +21,9 @@ import { ArticleEditor } from './articleEditor';
 import Image from 'next/image';
 import { useCreateArticle } from '@/hook/articles/useCreateArticle';
 import { useUploadMediaImage } from '@/hook/media-upload/useUploadMediaImage';
+import { useSearchParams } from 'next/navigation';
+import { useRetrieveArticleDetails } from '@/hook/articles/useRetrieveArticlesDetails';
+import { useEditArticle } from '@/hook/articles/useEditArticle';
 
 const articleCategories = [
   'Market Analysis',
@@ -88,6 +91,12 @@ const CreateArticleForm = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: createArticleFn, isPending: isLoading } =
     useCreateArticle();
+  const artilceId = useSearchParams().get('id');
+  const editMode = Boolean(artilceId);
+  const { data: article, isLoading: isFetching } = useRetrieveArticleDetails(
+    artilceId ?? '',
+  );
+  const { mutateAsync: editArticleFn, isPending: isEditing } = useEditArticle();
   const {
     mutateAsync: uploadMediaImageFn,
     isPending: isUploadingImage,
@@ -101,6 +110,7 @@ const CreateArticleForm = () => {
     control,
     handleSubmit,
     watch,
+    reset,
     setValue,
     formState: { errors },
   } = useForm<ArticleFormValues>({
@@ -119,6 +129,32 @@ const CreateArticleForm = () => {
       }
     };
   }, [coverImagePreview]);
+
+  useEffect(() => {
+    if (!artilceId || !article?.data) {
+      return;
+    }
+
+    const articleDetails = article.data;
+    const normalizedTags = Array.isArray(articleDetails.tags)
+      ? articleDetails.tags.join(', ')
+      : (articleDetails.tags ?? '');
+
+    reset({
+      title: articleDetails.title ?? '',
+      summary: articleDetails.excerpt ?? '',
+      content: articleDetails.content ?? '',
+      coverImage: articleDetails.imageUrl ?? '',
+      category: articleDetails.categories ?? [],
+      author: articleDetails.author ?? '',
+      readTime: articleDetails.readingTime ?? '',
+      tags: normalizedTags,
+      featureOnHomepage: articleDetails.isFeatured ?? false,
+      editorsPick: articleDetails.isEditorsPick ?? false,
+    });
+
+    setCoverImagePreview(articleDetails.imageUrl ?? null);
+  }, [artilceId, article, reset]);
 
   const activeBadges = useMemo(() => {
     const badges: string[] = [];
@@ -146,7 +182,11 @@ const CreateArticleForm = () => {
       tags: data.tags,
       title: data.title,
     };
-    await createArticleFn(payload);
+    if (editMode && artilceId) {
+      await editArticleFn({ id: artilceId, payload });
+    } else {
+      await createArticleFn(payload);
+    }
   };
 
   const handleFeaturedImageFileChange = async (
@@ -204,7 +244,7 @@ const CreateArticleForm = () => {
       className="w-full space-y-6 px-0 pb-10"
     >
       <PageHead
-        pageTitle="Create New Article"
+        pageTitle={editMode ? 'Edit Article' : 'Create New Article'}
         subTitle="Write and publish content for the platform"
       >
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -233,7 +273,7 @@ const CreateArticleForm = () => {
             className="flex h-9 items-center gap-2 rounded-sm px-3 text-xs sm:h-10 sm:text-sm"
           >
             <Send className="h-4 w-4" />
-            <span>Publish Article</span>
+            {editMode ? <span>Save Change</span> : <span>Publish Article</span>}
           </Button>
         </div>
       </PageHead>
