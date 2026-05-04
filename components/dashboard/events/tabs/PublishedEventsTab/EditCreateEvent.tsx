@@ -84,7 +84,7 @@ function FieldShell({
 
 const EditCreateEvent = ({ id }: { id: string }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: event } = useRetrieveEventDetails(id);
+  const { data: event, isLoading: eventLoading } = useRetrieveEventDetails(id);
   const { updateEvent, isLoading } = useUpdateEvent();
   const { mutateAsync: uploadMediaImageFn, isPending: isUploadingImage } =
     useUploadMediaImage();
