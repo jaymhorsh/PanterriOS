@@ -11,7 +11,6 @@ import {
   LayoutDashboard,
   MapPin,
   Scale,
-  Settings,
   Shield,
   TrendingUp,
   User,

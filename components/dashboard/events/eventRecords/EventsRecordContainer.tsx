@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot, Calendar, Download, Filter, Search, Sparkle, User, Users, X } from "lucide-react";
+import { Bot, Calendar, Download, Search, Users, X } from "lucide-react";
 import { PageHead, TableSkeleton } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { ReUseAbleTable } from "@/components/shared";

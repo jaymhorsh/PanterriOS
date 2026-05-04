@@ -24,11 +24,11 @@ const categoryOptions = [
   { label: 'Business', value: 'business' },
 ];
 
-const tabCounts = {
-  published: 6,
-  crawled: 3,
-  drafts: 4,
-};
+// const tabCounts = {
+//   published: 6,
+//   crawled: 3,
+//   drafts: 4,
+// };
 
 export default function ArticlesContainer() {
   const [activeTab, setActiveTab] = useState('published');

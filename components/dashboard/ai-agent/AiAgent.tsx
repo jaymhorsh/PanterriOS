@@ -5,11 +5,10 @@ import {
   CircleCheck,
   Clock3,
   Play,
-  RefreshCw,
   Settings,
-  ShieldCheck,
   Sparkles,
   SquareActivity,
+  Globe,
 } from "lucide-react";
 import { PageHead, StatCard } from "@/components/shared";
 import { Button } from "@/components/ui/button";
@@ -142,96 +141,100 @@ const AIAgentContainer = () => {
         {agents.map((agent) => (
           <div
             key={agent.name}
-            className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm"
+            className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DBEAFE]">
-                  <Bot className="h-5 w-5 text-[#155DFC]" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[#111827]">
-                    {agent.name}
-                  </h3>
-                  <p className="text-sm capitalize text-[#64748B]">
-                    {agent.type}
-                  </p>
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#DBEAFE]">
+                  <Bot className="h-6 w-6 text-[#155DFC]" />
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
-                  className="h-8 rounded-sm px-3 text-xs"
+                  className="h-9 rounded-sm px-3 text-sm"
                 >
                   <Settings className="h-4 w-4" />
                   Configure
                 </Button>
-                <Button className="h-8 rounded-sm bg-black px-3 text-xs text-white hover:bg-black/90">
+                <Button className="h-9 rounded-sm bg-black px-3 text-sm text-white hover:bg-black/90">
                   <Play className="h-4 w-4" />
                   Run Now
                 </Button>
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
-                <p className="text-xs font-medium uppercase tracking-[0.08em] text-[#64748B]">
-                  Success Rate
-                </p>
-                <p className="mt-1 text-2xl font-semibold text-[#111827]">
-                  {agent.successRate}%
+            <div className="mt-4 flex flex-col items-ceter justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-[#111827]">
+                  {agent.name}
+                </h3>
+                <p className="text-sm py-2 text-[#64748B]">
+                  {agent.type === "article"
+                    ? "Content Discovery"
+                    : "Event Discovery"}
                 </p>
               </div>
-              <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
-                <p className="text-xs font-medium uppercase tracking-[0.08em] text-[#64748B]">
-                  Operational Status
-                </p>
+              <div className="flex items-center gap-4">
                 <span
-                  className={`mt-2 inline-flex rounded-sm border px-2 py-0.5 text-xs font-medium capitalize ${getStatusTone(agent.operationalStatus)}`}
+                  className={`inline-flex items-center gap-2 rounded-sm border px-3 py-1 text-sm font-medium ${getStatusTone(
+                    agent.operationalStatus,
+                  )}`}
                 >
+                  <CircleCheck className="h-4 w-4 text-[#16A34A]" />
                   {agent.operationalStatus}
                 </span>
+
+                <p className="text-sm text-[#64748B]">
+                  Success Rate:{" "}
+                  <span className="ml-2 font-medium text-[#111827]">
+                    {agent.successRate}%
+                  </span>
+                </p>
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-              <div>
-                <p className="text-[#64748B]">Last Run</p>
-                <p className="mt-1 font-medium text-[#111827]">
+            <div className="mt-4 flex flex-col gap-3 text-sm">
+              <div className="flex justify-between">
+                <p className="text-[#64748B] flex-1">Last Run</p>
+                <p className="font-medium flex-1 text-[#111827]">
                   {formatTime(agent.lastRun)}
                 </p>
               </div>
-              <div>
-                <p className="text-[#64748B]">Next Scheduled Run</p>
-                <p className="mt-1 font-medium text-[#111827]">
+
+              <div className="flex justify-between">
+                <p className="text-[#64748B] flex-1">Items Found</p>
+                <p className="font-medium flex-1 text-[#111827]">
+                  {agent.itemsFound} items
+                </p>
+              </div>
+
+              <div className="flex justify-between">
+                <p className="text-[#64748B]  flex-1">Next Scheduled Run</p>
+                <p className="font-medium text-[#111827] flex-1">
                   {formatTime(agent.nextScheduledRun)}
                 </p>
               </div>
-              <div>
-                <p className="text-[#64748B]">Items Found</p>
-                <p className="mt-1 font-medium text-[#111827]">
-                  {agent.itemsFound}
-                </p>
-              </div>
-              <div>
-                <p className="text-[#64748B]">Status</p>
-                <p className="mt-1 inline-flex items-center capitalize gap-2 font-medium text-[#111827]">
-                  <CircleCheck className="h-4 w-4  text-[#16A34A]" />
+
+              <div className="flex justify-between">
+                <p className="text-[#64748B] flex-1">Status</p>
+                <p className="font-medium capitalize text-[#16A34A] flex-1">
                   {agent.status}
                 </p>
               </div>
             </div>
 
-            <div className="mt-4 border-t border-[#E5E7EB] pt-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#64748B]">
+            <div className="  border-[#E5E7EB] pt-4">
+              <p className="text-sm font-semibold text-[#111827]  flex items-center gap-2">
+                <Globe className="h-4 w-4 text-[#64748B] fex-1" /> Institutional
                 Sources
               </p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {agent.sources.map((source) => (
                   <span
                     key={source}
-                    className="rounded-sm border border-[#E2E8F0] bg-[#F8FAFC] px-2.5 py-1 text-xs text-[#334155]"
+                    className="rounded-sm border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-1 text-sm text-[#334155]"
                   >
                     {source}
                   </span>

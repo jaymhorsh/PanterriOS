@@ -18,7 +18,6 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ArticleEditor } from './articleEditor';
-import { Eye, Save, Send, Upload } from 'lucide-react';
 import Image from 'next/image';
 import { useCreateArticle } from '@/hook/articles/useCreateArticle';
 import { useUploadMediaImage } from '@/hook/media-upload/useUploadMediaImage';
@@ -92,7 +91,7 @@ const CreateArticleForm = () => {
   const {
     mutateAsync: uploadMediaImageFn,
     isPending: isUploadingImage,
-    data: uploadedImg,
+    // data: uploadedImg,
   } = useUploadMediaImage();
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(
     null,

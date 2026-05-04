@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
 import { CrawledQueueCard } from '.';
-import { getCrawledQueueItems } from './dummy';
 import { CrawlerArticlesResponse } from '@/interface';
 
 interface ArticlesTabProps {

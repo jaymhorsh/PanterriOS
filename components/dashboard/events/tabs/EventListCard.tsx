@@ -15,7 +15,6 @@ import { useUpdateEvent } from "@/hook/events";
 import { EventPreview } from "./EventPreview";
 import { dateAndTimeFormatter, formatDate } from "@/utils/helpers";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 
 interface ReviewEventCardProps {
