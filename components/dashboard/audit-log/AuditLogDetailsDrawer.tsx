@@ -54,7 +54,9 @@ function formatDateTime(value?: string) {
   return `${dateText}, ${timeText}`;
 }
 
-function formatDeviceInfo(deviceInfo?: string | Record<string, unknown> | null) {
+function formatDeviceInfo(
+  deviceInfo?: string | Record<string, unknown> | null,
+) {
   if (!deviceInfo) return "-";
   if (typeof deviceInfo === "string") return deviceInfo;
 
@@ -128,7 +130,11 @@ export function AuditLogDetailsDrawer({ row }: AuditLogDetailsDrawerProps) {
   const changedFields = changes?.changedFields ?? [];
   const beforeState = changes?.before;
   const afterState = changes?.after;
-  const fieldsToDisplay = buildFieldsToDisplay(changedFields, beforeState, afterState);
+  const fieldsToDisplay = buildFieldsToDisplay(
+    changedFields,
+    beforeState,
+    afterState,
+  );
   const shouldShowChanges =
     Boolean(changes) &&
     (fieldsToDisplay.length > 0 || Boolean(beforeState) || Boolean(afterState));

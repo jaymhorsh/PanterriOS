@@ -8,6 +8,7 @@ export * from './wallet-finance.entity';
 export * from './article.entity';
 export * from './events.entity';
 export * from './audit-log.entity';
+export * from './ai-agents';
 export * from './media.entity';
 
 export interface Pagination {

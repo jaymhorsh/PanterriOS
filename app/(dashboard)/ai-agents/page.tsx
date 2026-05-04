@@ -1,3 +1,5 @@
+import AIAgentContainer from "@/components/dashboard/ai-agent/AiAgent";
+
 export default function AIagentsPage() {
-  return <div>page</div>;
+  return <AIAgentContainer />;
 }

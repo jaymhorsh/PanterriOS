@@ -30,15 +30,6 @@ function getInitials(name?: string) {
 }
 export const auditLogColumns: ColumnDef<AuditLogRecord>[] = [
   {
-    accessorKey: "id",
-    header: "User ID",
-    cell: ({ row }) => (
-      <span className="text-sm font-semibold text-[#111827]">
-        {row.original.actor.userId}
-      </span>
-    ),
-  },
-  {
     accessorKey: "reference",
     header: "Log ID",
     cell: ({ row }) => (
