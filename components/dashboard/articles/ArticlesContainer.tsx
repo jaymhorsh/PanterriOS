@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   BriefcaseBusiness,
@@ -24,34 +24,34 @@ const categoryOptions = [
   { label: 'Business', value: 'business' },
 ];
 
-// const tabCounts = {
-//   published: 6,
-//   crawled: 3,
-//   drafts: 4,
-// };
-
 export default function ArticlesContainer() {
   const [activeTab, setActiveTab] = useState('published');
   const [category, setCategory] = useState('all');
+  const [publishedPage, setPublishedPage] = useState(1);
+  const [crawledPage, setCrawledPage] = useState(1);
   const { data: crawledArticles, isLoading: isFetchingCrawledArticles } =
-    useRetrieveArticles({});
+    useRetrieveArticles({
+      page: crawledPage,
+    });
   const { data: publishedArticles, isLoading: isFetchingPublishedArticles } =
-    useRetrievePublishedArticles({});
+    useRetrievePublishedArticles({
+      page: publishedPage,
+    });
 
   const stats = [
     {
       label: 'Total Articles',
-      value: 8,
+      value: crawledArticles?.meta.pagination.total_count ?? 0,
       description: '6 published',
       icon: FileText,
-     
+
       color: 'text-gray-900',
       iconColor: 'text-[#255FDE]',
       bgColor: 'bg-[#DDEBFF]',
     },
     {
       label: 'Crawled Queue',
-      value:  crawledArticles?.meta?.pagination?.total_count ?? 0,
+      value: crawledArticles?.meta?.pagination?.total_count ?? 0,
       description: 'Awaiting review',
       icon: BriefcaseBusiness,
       color: 'text-gray-900',
@@ -78,33 +78,39 @@ export default function ArticlesContainer() {
     },
   ];
 
-  const tabs = useMemo(
-    () => [
-      {
-        title: 'Published Articles',
-        value: 'published',
-        count: 0,
-        content: (
-          <PublishedArticles article={crawledArticles!} category={category} />
-        ),
-      },
-      {
-        title: 'Crawled Queue',
-        value: 'crawled',
-        count: crawledArticles
-          ? crawledArticles.meta.pagination.total_count
-          : 0,
-        content: <CrawledQueue article={publishedArticles!} />,
-      },
-      {
-        title: 'Drafts',
-        value: 'drafts',
-        count: 0,
-        content: <Drafts category={category} />,
-      },
-    ],
-    [category, crawledArticles, publishedArticles],
-  );
+  const tabs = [
+    {
+      title: 'Published Articles',
+      value: 'published',
+      count: publishedArticles?.meta.pagination.total_count ?? 0,
+      content: (
+        <PublishedArticles
+          article={publishedArticles!}
+          category={category}
+          currentPage={publishedPage}
+          setCurrentPage={setPublishedPage}
+        />
+      ),
+    },
+    {
+      title: 'Crawled Queue',
+      value: 'crawled',
+      count: crawledArticles ? crawledArticles.meta.pagination.total_count : 0,
+      content: (
+        <CrawledQueue
+          article={crawledArticles!}
+          currentPage={crawledPage}
+          setCurrentPage={setCrawledPage}
+        />
+      ),
+    },
+    {
+      title: 'Drafts',
+      value: 'drafts',
+      count: 0,
+      content: <Drafts />,
+    },
+  ];
 
   if (isFetchingCrawledArticles || isFetchingPublishedArticles) {
     return <ArticlesPageSkeleton />;

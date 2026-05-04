@@ -10,6 +10,7 @@ import {
   SquareActivity,
   Globe,
 } from "lucide-react";
+import Link from "next/link";
 import { PageHead, StatCard } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { AIAgentsPageSkeleton } from "@/components/shared/loader";
@@ -151,12 +152,11 @@ const AIAgentContainer = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  className="h-9 rounded-sm px-3 text-sm"
-                >
-                  <Settings className="h-4 w-4" />
-                  Configure
+                <Button asChild variant="outline" className="h-9 rounded-sm px-3 text-sm">
+                  <Link href={`/settings/agents/${encodeURIComponent(agent.name)}`}>
+                    <Settings className="h-4 w-4" />
+                    Configure
+                  </Link>
                 </Button>
                 <Button className="h-9 rounded-sm bg-black px-3 text-sm text-white hover:bg-black/90">
                   <Play className="h-4 w-4" />

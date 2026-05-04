@@ -1,27 +1,39 @@
-import Image from "next/image";
+import Image from 'next/image';
 import {
   Search,
   Filter,
   MapPin,
   CalendarDays,
   ExternalLink,
-} from "lucide-react";
-import { EventPublishedListCard } from "./EventPublishedListCard";
-import { EventEntity } from "@/interface";
+} from 'lucide-react';
+import { EventPublishedListCard } from './EventPublishedListCard';
+import { EventEntity, Pagination } from '@/interface';
+
+import { PaginationControls } from '@/components/shared/PaginationControls';
 
 interface EventsTabContentProps {
   events: EventEntity[];
   search: string;
+  pagination: Pagination;
   onSearchChange: (value: string) => void;
+  setCurrentPage: (page: number) => void;
+  currentPage: number;
 }
 
 export function EventsTabContent({
   events,
   search,
   onSearchChange,
+  pagination,
+  currentPage,
+  setCurrentPage,
 }: EventsTabContentProps) {
   const featuredEvents = events.filter((event) => event.isFeatured);
 
+  const perPage = 10;
+
+  const totalItems = pagination?.total_count ?? 0;
+  const limit = pagination?.per_page ?? perPage;
   return (
     <div className="space-y-6">
       {featuredEvents && (
@@ -96,6 +108,13 @@ export function EventsTabContent({
           <EventPublishedListCard key={event._id} event={event} />
         ))}
       </div>
+      <PaginationControls
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={limit}
+        onPageChange={setCurrentPage}
+        entityName="published-events"
+      />
     </div>
   );
 }

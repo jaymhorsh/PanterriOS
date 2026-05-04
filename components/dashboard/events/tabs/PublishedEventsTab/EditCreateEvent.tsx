@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
+import { EventFormSkeleton } from '@/components/shared';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -40,7 +41,7 @@ const articleCategories = [
   'Regulation',
 ] as const;
 
-const statusOptions = ['draft', 'published', 'pending'] as const;
+const statusOptions = ['published', 'pending', 'rejected'] as const;
 
 const eventSchema = z.object({
   status: z.string().trim().min(1, 'Status is required'),
@@ -54,6 +55,17 @@ const eventSchema = z.object({
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
+
+const defaultEventValues: EventFormValues = {
+  status: '',
+  title: '',
+  categories: [],
+  content: '',
+  excerpt: '',
+  imageUrl: '',
+  isFeatured: false,
+  isEditorsPick: false,
+};
 
 function FieldShell({
   label,
@@ -96,22 +108,14 @@ const EditCreateEvent = ({ id }: { id: string }) => {
     register,
     control,
     handleSubmit,
+    reset,
     watch,
     setValue,
     trigger,
     formState: { errors },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
-    defaultValues: {
-      status: event?.data.status ?? '',
-      title: event?.data.title,
-      categories: [],
-      content: event?.data.content,
-      excerpt: event?.data.excerpt,
-      imageUrl: event?.data.imageUrl,
-      isFeatured: false,
-      isEditorsPick: false,
-    },
+    defaultValues: defaultEventValues,
   });
 
   const status = watch('status');
@@ -119,6 +123,16 @@ const EditCreateEvent = ({ id }: { id: string }) => {
   const imageUrl = watch('imageUrl');
   const isFeatured = watch('isFeatured');
   const isEditorsPick = watch('isEditorsPick');
+  const availableStatusOptions = useMemo(() => {
+    if (
+      !status ||
+      statusOptions.includes(status as (typeof statusOptions)[number])
+    ) {
+      return statusOptions;
+    }
+
+    return [status, ...statusOptions] as const;
+  }, [status]);
 
   const steps: Array<{
     id: number;
@@ -152,6 +166,24 @@ const EditCreateEvent = ({ id }: { id: string }) => {
 
   const currentStep = steps.find((item) => item.id === step) ?? steps[0];
   const isLastStep = step === steps.length;
+
+  useEffect(() => {
+    if (!event?.data) {
+      return;
+    }
+
+    reset({
+      status: event.data.status ?? '',
+      title: event.data.title ?? '',
+      categories: event.data.categories ?? [],
+      content: event.data.content ?? '',
+      excerpt: event.data.excerpt ?? '',
+      imageUrl: event.data.imageUrl ?? '',
+      isFeatured: event.data.isFeatured ?? false,
+      isEditorsPick: event.data.isEditorsPick ?? false,
+    });
+    setFlyerImagePreview(event.data.imageUrl ?? null);
+  }, [event, reset]);
 
   useEffect(() => {
     return () => {
@@ -243,6 +275,10 @@ const EditCreateEvent = ({ id }: { id: string }) => {
 
   const displayedCoverImage = flyerImagePreview || imageUrl;
 
+  if (eventLoading) {
+    return <EventFormSkeleton />;
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="space-y-5">
@@ -328,7 +364,7 @@ const EditCreateEvent = ({ id }: { id: string }) => {
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent position="popper">
-                          {statusOptions.map((item) => (
+                          {availableStatusOptions.map((item) => (
                             <SelectItem key={item} value={item}>
                               {item}
                             </SelectItem>
