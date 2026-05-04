@@ -57,7 +57,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={inputType}
           className={cn(
-            ' placeholder:text-text-placeholder flex h-10 w-full rounded-md px-3 py-2 font-sans text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50 ',
+            ' placeholder:text-text-placeholder flex h-10 w-full border rounded-md px-3 py-2 font-sans text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50 ',
             variantStyles[variant],
             'aria-[invalid=true]:border-destructive',
             className,

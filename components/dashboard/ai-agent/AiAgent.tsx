@@ -9,6 +9,10 @@ import {
   Sparkles,
   SquareActivity,
   Globe,
+  Calendar,
+  TrendingUp,
+  File,
+  Activity,
 } from "lucide-react";
 import Link from "next/link";
 import { PageHead, StatCard } from "@/components/shared";
@@ -77,7 +81,7 @@ const AIAgentContainer = () => {
       label: "Avg Success Rate",
       value: `${overview?.avgSuccessRate ?? 0}%`,
       description: "Last 30 days",
-      icon: Sparkles,
+      icon: Activity,
       color: "text-gray-900",
       iconColor: "text-[#16A34A]",
       bgColor: "bg-[#DCFCE7]",
@@ -86,7 +90,7 @@ const AIAgentContainer = () => {
       label: "Items Found Today",
       value: overview?.itemsFoundToday ?? 0,
       description: "Pending review",
-      icon: SquareActivity,
+      icon: File,
       color: "text-gray-900",
       iconColor: "text-[#D97706]",
       bgColor: "bg-[#FEF3C7]",
@@ -95,7 +99,7 @@ const AIAgentContainer = () => {
       label: "Last Crawl",
       value: formatTime(overview?.lastCrawl),
       description: "Today",
-      icon: Clock3,
+      icon: Calendar,
       color: "text-gray-900",
       iconColor: "text-[#8B5CF6]",
       bgColor: "bg-[#EDE9FE]",
@@ -107,21 +111,7 @@ const AIAgentContainer = () => {
       <PageHead
         pageTitle="AI Agents Monitor"
         subTitle="Monitor and control automated content discovery agents"
-      >
-        {/* <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="h-9 rounded-sm px-3 text-sm sm:h-10"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
-          <Button className="h-9 rounded-sm bg-black px-3 text-sm text-white hover:bg-black/90 sm:h-10">
-            <Play className="h-4 w-4" />
-            Run Now
-          </Button>
-        </div> */}
-      </PageHead>
+      />
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4 sm:gap-3">
         {stats.map((stat, index) => (
@@ -142,7 +132,7 @@ const AIAgentContainer = () => {
         {agents.map((agent) => (
           <div
             key={agent.name}
-            className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-sm"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
@@ -152,8 +142,12 @@ const AIAgentContainer = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button asChild variant="outline" className="h-9 rounded-sm px-3 text-sm">
-                  <Link href={`/settings/agents/${encodeURIComponent(agent.name)}`}>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-9 rounded-sm px-3 text-sm"
+                >
+                  <Link href={`/ai-agents/configure/${agent.type}?propertyName=jjjjjjjjjjjjjjjjjjjj`}>
                     <Settings className="h-4 w-4" />
                     Configure
                   </Link>
@@ -171,7 +165,7 @@ const AIAgentContainer = () => {
                   {agent.name}
                 </h3>
                 <p className="text-sm py-2 text-[#64748B]">
-                  {agent.type === "article"
+                  {agent.type === "articles"
                     ? "Content Discovery"
                     : "Event Discovery"}
                 </p>
