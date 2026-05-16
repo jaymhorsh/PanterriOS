@@ -1,5 +1,5 @@
 
-import { EventListCard } from "./EventListCard";
+// import { EventListCard } from "./EventListCard";
 
 export function SubmittedEventsTab() {
   return (

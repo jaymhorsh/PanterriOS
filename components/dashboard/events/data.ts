@@ -3,7 +3,7 @@ import event1 from "@/assets/images/article/article1.jpg";
 import event2 from "@/assets/images/article/article2.jpg";
 import event3 from "@/assets/images/article/article3.jpg";
 import event4 from "@/assets/images/article/article4.jpg";
-import { EventEntity } from "@/interface";
+// import { EventEntity } from "@/interface";
 
 export type EventStatus = "published" | "ai-discovered" | "submitted";
 

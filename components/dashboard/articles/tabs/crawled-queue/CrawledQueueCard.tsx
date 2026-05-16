@@ -2,14 +2,14 @@ import Image from 'next/image';
 import {
   CalendarDays,
   CheckCircle2,
-  Clock3,
+  // Clock3,
   ExternalLink,
   Eye,
   Pencil,
   User,
   XCircle,
 } from 'lucide-react';
-import { ArticleRecord } from '../../data';
+// import { ArticleRecord } from '../../data';
 import { CrwalerArticle } from '@/interface';
 import { dateAndTimeFormatter } from '@/utils/helpers';
 import { Button } from '@/components/ui/button';
