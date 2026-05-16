@@ -26,6 +26,7 @@ export interface CrwalerArticle {
   crawledAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  postType: string;
   __v: number;
 }
 
