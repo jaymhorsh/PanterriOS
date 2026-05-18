@@ -1,20 +1,27 @@
-import Image from "next/image";
-import { CalendarDays, Clock, ExternalLink } from "lucide-react";
-import { CrwalerArticle } from "@/interface";
-import { dateAndTimeFormatter } from "@/utils/helpers";
-import { extractAltOrText } from "@/utils/articles.helper";
-import Link from "next/link";
+import Image from 'next/image';
+import { CalendarDays, Clock, ExternalLink, XCircle } from 'lucide-react';
+import { CrwalerArticle } from '@/interface';
+import { dateAndTimeFormatter } from '@/utils/helpers';
+import { extractAltOrText } from '@/utils/articles.helper';
+import Link from 'next/link';
+import { useUpdateArticleStatus } from '@/hook/articles/useArticleUpdateStatsus';
+import { Button } from '@/components/ui/button';
 
 interface ArticlePreviewProps {
   article: CrwalerArticle;
 }
 
 export function ArticlePreview({ article }: ArticlePreviewProps) {
-  const excerpt = article.content ?? "No article summary available.";
+  const { mutateAsync: updateStatusFn, isPending: isLoading } =
+    useUpdateArticleStatus();
+  const handleStatusUpdate = async (id: string, status: string) => {
+    await updateStatusFn({ id, status });
+  };
+  const excerpt = article.content ?? 'No article summary available.';
   const publishedDate = article.publishedAt;
-  const readTime = "5 min";
-  const publisher = article.source.name ?? "";
-  const source = article.source.baseUrl ?? "";
+  const readTime = '5 min';
+  const publisher = article.source.name ?? '';
+  const source = article.source.baseUrl ?? '';
 
   return (
     <div className="mx-auto w-full pb-10 max-w-3xl space-y-5">
@@ -53,7 +60,7 @@ export function ArticlePreview({ article }: ArticlePreviewProps) {
         </div>
 
         <h3 className="mt-4 text-xl font-semibold leading-[1.3] text-[#0F172A] sm:text-3xl">
-          {article.title.replace("...", "")}
+          {article.title.replace('...', '')}
         </h3>
 
         <p
@@ -83,17 +90,29 @@ export function ArticlePreview({ article }: ArticlePreviewProps) {
           ))}
         </div>
       </div>
-
-      <Link
-        href={source}
-        type="button"
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex px-4 mt-3 items-center gap-2 text-sm font-medium text-[#111827] transition hover:text-[#1D4ED8] sm:text-base"
-      >
-        <ExternalLink className="h-5 w-5" />
-        View Full article
-      </Link>
+      <div className="flex justify-between items-center">
+        {article.status === 'published' && (
+          <Button
+            type="button"
+            className="inline-flex items-center gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
+            onClick={() => handleStatusUpdate(article._id, 'rejected')}
+            disabled={isLoading}
+          >
+            <XCircle className="h-4 w-4" />
+            {isLoading ? 'removing...' : 'Unpublished'}
+          </Button>
+        )}{' '}
+        <Link
+          href={source}
+          type="button"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex px-4 mt-3 items-center gap-2 text-sm font-medium text-[#111827] transition hover:text-[#1D4ED8] sm:text-base"
+        >
+          <ExternalLink className="h-5 w-5" />
+          View Full article
+        </Link>
+      </div>
     </div>
   );
 }
