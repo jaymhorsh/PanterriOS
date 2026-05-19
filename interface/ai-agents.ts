@@ -31,3 +31,24 @@ export interface AIAgentStatsResponse {
     recentActivity: RecentActivities[];
   };
 }
+
+export interface AIAgentCrawlResponse {
+  meta: {
+    status_code: number;
+    success: boolean;
+    message: string;
+  };
+  data: {
+    agents: Agents[];
+  };
+}
+
+export interface AIAgentEnabledSitesResponse {
+  meta: {
+    status_code: number;
+    success: boolean;
+  };
+  data: {
+    sites: string[];
+  };
+}

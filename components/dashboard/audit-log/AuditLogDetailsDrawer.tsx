@@ -113,7 +113,9 @@ function buildFieldsToDisplay(
   const beforeKeys = before ? Object.keys(before) : [];
   const afterKeys = after ? Object.keys(after) : [];
 
-  return Array.from(new Set([...beforeKeys, ...afterKeys])).slice(0, 12);
+  return Array.from(new Set([...beforeKeys, ...afterKeys]))
+    .filter((field) => field !== "id" && field !== "_id")
+    .slice(0, 12);
 }
 
 export function AuditLogDetailsDrawer({ row }: AuditLogDetailsDrawerProps) {

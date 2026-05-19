@@ -19,6 +19,7 @@ import { PageHead, StatCard } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { AIAgentsPageSkeleton } from "@/components/shared/loader";
 import { useRetrieveAIAgentsMonitor } from "@/hook/ai-agents";
+import { CrawlForm } from "./crawlForm";
 
 function formatTime(value?: string | null) {
   if (!value) return "-";
@@ -73,7 +74,7 @@ const AIAgentContainer = () => {
       value: overview?.activeAgents ?? 0,
       description: "All running",
       icon: Bot,
-      color: "text-gray-900",
+      color: "text-gray-900 ",
       iconColor: "text-[#155DFC]",
       bgColor: "bg-[#DBEAFE]",
     },
@@ -100,7 +101,7 @@ const AIAgentContainer = () => {
       value: formatTime(overview?.lastCrawl),
       description: "Today",
       icon: Calendar,
-      color: "text-gray-900",
+      color: "text-gray-900 text-2xl",
       iconColor: "text-[#8B5CF6]",
       bgColor: "bg-[#EDE9FE]",
     },
@@ -128,6 +129,20 @@ const AIAgentContainer = () => {
         ))}
       </div>
 
+      <div className="flex items-end justify-end gap-2">
+        {/* <Button
+          asChild
+          variant="outline"
+          className="h-9 rounded-sm px-3 text-sm"
+        >
+          <Link href={``}>
+            <Settings className="h-4 w-4" />
+            Configure
+          </Link>
+        </Button> */}
+        <CrawlForm />
+      </div>
+
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         {agents.map((agent) => (
           <div
@@ -139,23 +154,6 @@ const AIAgentContainer = () => {
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#DBEAFE]">
                   <Bot className="h-6 w-6 text-[#155DFC]" />
                 </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  asChild
-                  variant="outline"
-                  className="h-9 rounded-sm px-3 text-sm"
-                >
-                  <Link href={`/ai-agents/configure/${agent.type}?propertyName=jjjjjjjjjjjjjjjjjjjj`}>
-                    <Settings className="h-4 w-4" />
-                    Configure
-                  </Link>
-                </Button>
-                <Button className="h-9 rounded-sm bg-black px-3 text-sm text-white hover:bg-black/90">
-                  <Play className="h-4 w-4" />
-                  Run Now
-                </Button>
               </div>
             </div>
 

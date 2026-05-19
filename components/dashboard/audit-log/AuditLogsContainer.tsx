@@ -204,8 +204,3 @@ export function AuditLogsContainer() {
     </div>
   );
 }
-
-// Proximity
-// Hierachy tellig tu the viaul shoould be direct and mot be visaully dominant tellig the user
-//  what to read first ,second, third
-// repeating leement ot create unty

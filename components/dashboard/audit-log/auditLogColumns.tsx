@@ -9,9 +9,10 @@ export function ActionBadge({ action }: { action?: string }) {
   const toneMap: Record<string, string> = {
     admin_login: "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]",
     update_investment: "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
-    approve: "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]",
+    create_user: "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]",
     reject: "border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]",
     create: "border-[#C7D2FE] bg-[#EEF2FF] text-[#3730A3]",
+    delete_user: "border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]",
   };
 
   return (
