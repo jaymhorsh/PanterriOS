@@ -4,23 +4,17 @@ import {
   Bot,
   CircleCheck,
   Clock3,
-  Play,
-  Settings,
-  Sparkles,
-  SquareActivity,
   Globe,
   Calendar,
-  TrendingUp,
   File,
   Activity,
 } from "lucide-react";
-import Link from "next/link";
 import { PageHead, StatCard } from "@/components/shared";
-import { Button } from "@/components/ui/button";
 import { AIAgentsPageSkeleton } from "@/components/shared/loader";
 import { useRetrieveAIAgentsMonitor } from "@/hook/ai-agents";
 import { CrawlForm } from "./crawlForm";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 function formatTime(value?: string | null) {
   if (!value) return "-";
@@ -70,18 +64,17 @@ const AIAgentContainer = () => {
   const overview = data?.data?.overview;
   const agents = data?.data?.agents ?? [];
   const recentActivity = data?.data?.recentActivity ?? [];
-  // const totalActivityPages = Math.max(
-  //   1,
-  //   Math.ceil(recentActivity.length / activityItemsPerPage),
-  // );
+  const totalActivityPages = Math.max(
+    1,
+    Math.ceil(recentActivity.length / activityItemsPerPage),
+  );
+
   const activityStartIndex = (activityPage - 1) * activityItemsPerPage;
   const paginatedRecentActivity = recentActivity.slice(
     activityStartIndex,
     activityStartIndex + activityItemsPerPage,
   );
 
-
-  
   const stats = [
     {
       label: "Active Agents",
@@ -289,7 +282,7 @@ const AIAgentContainer = () => {
           )}
 
           {/* Recent Page Pagination */}
-          {/* {recentActivity.length > activityItemsPerPage && (
+          {recentActivity.length > activityItemsPerPage && (
             <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-4">
               <p className="text-xs text-[#64748B]">
                 Showing {activityStartIndex + 1}-
@@ -330,7 +323,7 @@ const AIAgentContainer = () => {
                 </Button>
               </div>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>

@@ -39,9 +39,9 @@ export default function ArticlesContainer() {
     useRetrievePublishedArticles({
       page: publishedPage,
     });
+    
   const { ArticleStats } = useRetrieveArticleStats();
   const statsData = ArticleStats?.data ?? null;
-  // console.log(ArticleStats, 'article stats')
 
   const stats = [
     {
