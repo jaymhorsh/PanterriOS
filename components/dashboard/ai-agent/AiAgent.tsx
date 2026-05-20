@@ -119,7 +119,9 @@ const AIAgentContainer = () => {
       <PageHead
         pageTitle="AI Agents Monitor"
         subTitle="Monitor and control automated content discovery agents"
-      />
+      >
+        <CrawlForm />
+      </PageHead>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4 sm:gap-3">
         {stats.map((stat, index) => (
@@ -135,9 +137,9 @@ const AIAgentContainer = () => {
           />
         ))}
       </div>
-
+{/* 
       <div className="flex items-end justify-end gap-2">
-        {/* <Button
+        <Button
           asChild
           variant="outline"
           className="h-9 rounded-sm px-3 text-sm"
@@ -146,9 +148,9 @@ const AIAgentContainer = () => {
             <Settings className="h-4 w-4" />
             Configure
           </Link>
-        </Button> */}
+        </Button>
         <CrawlForm />
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         {agents.map((agent) => (

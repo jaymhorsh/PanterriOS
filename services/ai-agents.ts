@@ -18,9 +18,7 @@ export const aiAgentCrawl = async (): Promise<AIAgentCrawlResponse> => {
 export const aiAgentCrawlSite = async (
   siteUrl: string,
 ): Promise<AIAgentCrawlResponse> => {
-  const { data } = await CRAWLER_API.post("/crawler/crawl-site", {
-    url: siteUrl,
-  });
+  const { data } = await CRAWLER_API.post(`/crawler/crawl/${siteUrl}`);
   return data;
 };
 

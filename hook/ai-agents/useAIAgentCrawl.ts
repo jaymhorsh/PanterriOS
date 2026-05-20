@@ -11,6 +11,7 @@ export function useAIAgentCrawl() {
     isPending: isCrawlingAll,
     isError: isCrawlAllError,
     error: crawlAllError,
+    reset: resetCrawlAll,
   } = useMutation({
     mutationFn: aiAgentCrawl,
     onSuccess: () => {
@@ -25,5 +26,6 @@ export function useAIAgentCrawl() {
     isCrawlingAll,
     isCrawlAllError,
     crawlAllError,
+    resetCrawlAll,
   };
 }

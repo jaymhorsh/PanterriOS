@@ -1,142 +1,3 @@
-// "use client";
-
-// import { useEffect, useMemo, useState } from "react";
-// import {
-//   AlertCircle,
-//   CheckCircle2,
-//   Globe2,
-//   Loader2,
-//   Play,
-//   RefreshCcw,
-// } from "lucide-react";
-
-// import { Button } from "@/components/ui/button";
-// import { Dialog, DialogContent } from "@/components/ui/dialog";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-// import {
-//   useAIAgentCrawl,
-//   useAIAgentCrawlSite,
-//   useRetrieveAIAgentEnabledSites,
-// } from "@/hook/ai-agents";
-
-// const BRAND = "#121212";
-
-
-// export function CrawlForm() {
-//   const [open, setOpen] = useState(false);
-
-//   const [tab, setTab] = useState<"all" | "specific">("all");
-
-//   const [selectedSite, setSelectedSite] = useState("");
-
-//   const {
-//     data: sitesData,
-//     isLoading: isLoadingSites,
-//     isError: isSitesError,
-//     error: sitesError,
-//     refetch,
-//   } = useRetrieveAIAgentEnabledSites(open);
-
-//   const {
-//     crawlAll,
-//     crawlAllData,
-//     isCrawlingAll,
-//     isCrawlAllError,
-//     crawlAllError,
-    
-//   } = useAIAgentCrawl();
-
-//   const {
-//     crawlSite,
-//     data: crawlSiteData,
-//     isPending: isCrawlingSite,
-//     isError: isCrawlSiteError,
-//     error: crawlSiteError,
-//   } = useAIAgentCrawlSite();
-
-//   const sites = useMemo(() => sitesData?.data?.sites ?? [], [sitesData]);
-
-//   useEffect(() => {
-//     if (!open) {
-//       setTab("all");
-//       setSelectedSite("");
-//     }
-//   }, [open]);
-
-//   const handleCrawlAll = async () => {
-//     await crawlAll();
-//   };
-
-//   const handleCrawlSite = async () => {
-//     if (!selectedSite) return;
-//     await crawlSite(selectedSite);
-//   };
-
-//   return (
-//     <>
-//       <Button
-//         onClick={() => setOpen(true)}
-//         className="h-10 rounded-sm bg-[#122222] px-4 text-sm font-medium text-white"
-//       >
-//         <Play className="h-4 w-4" />
-//         Run Crawl
-//       </Button>
-
-//       <Dialog open={open} onOpenChange={setOpen}>
-//         <DialogContent className="border-0 bg-transparent p-0  shadow-none sm:max-w-lg">
-//           <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-2xl">
-//             <div className="border-b border-neutral-200 px-6 py-5">
-//               <h2 className="text-lg font-semibold text-[#121212]">
-//                 AI Crawl Manager
-//               </h2>
-
-//               <p className="mt-1 text-sm text-neutral-500">
-//                 Manage and trigger crawler jobs.
-//               </p>
-//             </div>
-
-//             <div className="p-6">
-//               <Tabs
-//                 value={tab}
-//                 onValueChange={(value) => setTab(value as "all" | "specific")}
-//               >
-//                 <TabsList className="grid group-data-[orientation=horizontal]/tabs:h-12 rounded-sm w-full grid-cols-2  bg-neutral-100 p-1">
-//                   <TabsTrigger
-//                     value="all"
-//                     className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-[#121212] data-[state=active]:text-white"
-//                   >
-//                     All Sites
-//                   </TabsTrigger>
-
-//                   <TabsTrigger
-//                     value="specific"
-//                     className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-[#121212] data-[state=active]:text-white"
-//                   >
-//                     Specific Site
-//                   </TabsTrigger>
-//                 </TabsList>
-//               </Tabs>
-
-//               <div className="mt-6">
-//                 {/* {tab === "all" ? ()} */}
-//               </div>
-//             </div>
-//           </div>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   );
-// }
-
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -150,7 +11,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -165,9 +26,6 @@ import {
   useAIAgentCrawlSite,
   useRetrieveAIAgentEnabledSites,
 } from "@/hook/ai-agents";
-
-const BRAND = "#121212";
-
 
 export function CrawlForm() {
   const [open, setOpen] = useState(false);
@@ -190,7 +48,7 @@ export function CrawlForm() {
     isCrawlingAll,
     isCrawlAllError,
     crawlAllError,
-    
+    resetCrawlAll,
   } = useAIAgentCrawl();
 
   const {
@@ -199,6 +57,7 @@ export function CrawlForm() {
     isPending: isCrawlingSite,
     isError: isCrawlSiteError,
     error: crawlSiteError,
+    resetCrawlSite,
   } = useAIAgentCrawlSite();
 
   const sites = useMemo(() => sitesData?.data?.sites ?? [], [sitesData]);
@@ -207,8 +66,11 @@ export function CrawlForm() {
     if (!open) {
       setTab("all");
       setSelectedSite("");
+      resetCrawlAll();
+      resetCrawlSite();
+    
     }
-  }, [open]);
+  }, [open, resetCrawlAll, resetCrawlSite]);
 
   const handleCrawlAll = async () => {
     await crawlAll();
@@ -223,7 +85,7 @@ export function CrawlForm() {
     <>
       <Button
         onClick={() => setOpen(true)}
-        className="h-10 rounded-sm bg-[#122222] px-4 text-sm font-medium text-white"
+        className="h-10 rounded-sm cursor-pointer bg-[#122222] px-4 text-sm font-medium text-white"
       >
         <Play className="h-4 w-4" />
         Run Crawl
@@ -232,15 +94,15 @@ export function CrawlForm() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="border-0 bg-transparent p-0  shadow-none sm:max-w-lg">
           <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-2xl">
-            <div className="border-b border-neutral-200 px-6 py-5">
-              <h2 className="text-lg font-semibold text-[#121212]">
+            <DialogTitle className="border-b border-neutral-200 px-6 py-5">
+              <p className="text-lg font-semibold text-[#121212]">
                 AI Crawl Manager
-              </h2>
+              </p>
 
               <p className="mt-1 text-sm text-neutral-500">
                 Manage and trigger crawler jobs.
               </p>
-            </div>
+            </DialogTitle>
 
             <div className="p-6">
               <Tabs
@@ -270,7 +132,9 @@ export function CrawlForm() {
                     {isCrawlingAll && (
                       <div className="flex items-center gap-3 rounded-lg bg-blue-50 p-4">
                         <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-                        <div className="text-sm text-blue-700">Crawling all sites...</div>
+                        <div className="text-sm text-blue-700">
+                          Crawling all sites...
+                        </div>
                       </div>
                     )}
 
@@ -311,7 +175,7 @@ export function CrawlForm() {
                     <Button
                       onClick={handleCrawlAll}
                       disabled={isCrawlingAll}
-                      className="w-full bg-[#121212] text-white hover:bg-black"
+                      className="w-full bg-[#121212] cursor-point text-white hover:bg-black"
                     >
                       {isCrawlingAll ? (
                         <>
@@ -369,16 +233,19 @@ export function CrawlForm() {
                           <label className="text-sm font-medium text-neutral-700">
                             Select a site
                           </label>
-                          <Select value={selectedSite} onValueChange={setSelectedSite}>
+                          <Select
+                            value={selectedSite}
+                            onValueChange={setSelectedSite
+
+                            }
+
+                          >
                             <SelectTrigger className="border-neutral-200">
                               <SelectValue placeholder="Choose a site..." />
                             </SelectTrigger>
                             <SelectContent>
                               {sites.map((site: any) => (
-                                <SelectItem
-                                  key={site}
-                                  value={site}
-                                >
+                                <SelectItem key={site} value={site}>
                                   <div className="flex capitalize items-center gap-2">
                                     <Globe2 className="h-4 w-4" />
                                     {site}
@@ -393,7 +260,7 @@ export function CrawlForm() {
                           <div className="flex items-center gap-3 rounded-lg bg-blue-50 p-4">
                             <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                             <div className="text-sm text-blue-700">
-                              Crawling selected site...
+                              {`Crawling from ${selectedSite}...`}
                             </div>
                           </div>
                         )}
@@ -438,7 +305,7 @@ export function CrawlForm() {
                         <Button
                           onClick={handleCrawlSite}
                           disabled={isCrawlingSite || !selectedSite}
-                          className="w-full bg-[#121212] text-white hover:bg-black"
+                          className="w-full bg-[#121212] text-white cursor-pointer hover:bg-black"
                         >
                           {isCrawlingSite ? (
                             <>
