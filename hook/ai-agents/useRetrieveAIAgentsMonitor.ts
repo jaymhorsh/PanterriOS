@@ -8,6 +8,5 @@ export function useRetrieveAIAgentsMonitor() {
     queryKey: ["ai-agents", "monitor"],
     queryFn: aiAgentsMonitor,
   });
-
   return { data, isLoading, isError, error, refetch };
 }

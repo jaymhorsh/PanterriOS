@@ -1,22 +1,28 @@
 import {
+  ArticleAnalyticsRes,
   ArticleFilters,
   ArticleStatusUpdateRes,
   CrawlerArticlesResponse,
   CreateArticleReq,
-} from '@/interface/article.entity';
-import { CRAWLER_API } from '@/services/axios';
+} from "@/interface/article.entity";
+import { CRAWLER_API } from "@/services/axios";
 
 export const retriveArticles = async (
   params: ArticleFilters,
 ): Promise<CrawlerArticlesResponse> => {
-  const { data } = await CRAWLER_API.get('/articles', { params });
+  const { data } = await CRAWLER_API.get("/articles", { params });
+  return data;
+};
+
+export const retrieveArticleStats = async (): Promise<ArticleAnalyticsRes> => {
+  const { data } = await CRAWLER_API.get("/articles/analytics");
   return data;
 };
 
 export const createArticle = async (
   payload: CreateArticleReq,
 ): Promise<ArticleStatusUpdateRes> => {
-  const { data } = await CRAWLER_API.post('/articles', payload);
+  const { data } = await CRAWLER_API.post("/articles", payload);
   return data;
 };
 
@@ -37,7 +43,7 @@ export const retrieveArticleDetails = async (
 export const retrivePublishedArticles = async (
   params: ArticleFilters,
 ): Promise<CrawlerArticlesResponse> => {
-  const { data } = await CRAWLER_API.get('/articles/feed', { params });
+  const { data } = await CRAWLER_API.get("/articles/feed", { params });
   return data;
 };
 

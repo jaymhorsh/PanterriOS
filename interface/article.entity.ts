@@ -72,6 +72,24 @@ export interface ArticleStatusUpdateRes {
   data: CrwalerArticle;
 }
 
+export interface ArticlesAnalytics {
+  pendingCrawledArticlesLast7Days: number;
+  totalArticles: number;
+  totalDraftArticles: number;
+  totalEditorsPick: number;
+  totalPublishedArticles: number;
+  totalViewsCurrentMonth: number;
+}
+
+export interface ArticleAnalyticsRes {
+  meta: {
+    status_code: number;
+    success: boolean;
+    message: string;
+  };
+  data: ArticlesAnalytics;
+}
+
 export interface CreateArticleReq {
   categories: string[];
   content: string;

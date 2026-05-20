@@ -1,87 +1,91 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 import {
   BriefcaseBusiness,
   FileText,
   Plus,
   Star,
   TrendingUp,
-} from 'lucide-react';
-import { ArticlesPageSkeleton, PageHead, StatCard } from '@/components/shared';
-import { Button } from '@/components/ui/button';
-import { ReusableSelect } from '@/components/ui/ReusableSelect';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PublishedArticles, CrawledQueue, Drafts } from './tabs';
-import { useRetrieveArticles } from '@/hook/articles/useRetrieveArticles';
-import { useRetrievePublishedArticles } from '@/hook/articles/useRetrievePublishedArticles';
+} from "lucide-react";
+import { ArticlesPageSkeleton, PageHead, StatCard } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import { ReusableSelect } from "@/components/ui/ReusableSelect";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PublishedArticles, CrawledQueue, Drafts } from "./tabs";
+import { useRetrieveArticles } from "@/hook/articles/useRetrieveArticles";
+import { useRetrievePublishedArticles } from "@/hook/articles/useRetrievePublishedArticles";
+import { useRetrieveArticleStats } from "@/hook/articles/useRetrieveArticleStats";
 
 const categoryOptions = [
-  { label: 'All Categories', value: 'all' },
-  { label: 'Technology', value: 'technology' },
-  { label: 'Finance', value: 'finance' },
-  { label: 'Business', value: 'business' },
+  { label: "All Categories", value: "all" },
+  { label: "Technology", value: "technology" },
+  { label: "Finance", value: "finance" },
+  { label: "Business", value: "business" },
 ];
 
 export default function ArticlesContainer() {
-  const [activeTab, setActiveTab] = useState('published');
-  const [category, setCategory] = useState('all');
+  const [activeTab, setActiveTab] = useState("published");
+  const [category, setCategory] = useState("all");
   const [publishedPage, setPublishedPage] = useState(1);
   const [crawledPage, setCrawledPage] = useState(1);
   const { data: crawledArticles, isLoading: isFetchingCrawledArticles } =
     useRetrieveArticles({
       page: crawledPage,
     });
+
   const { data: publishedArticles, isLoading: isFetchingPublishedArticles } =
     useRetrievePublishedArticles({
       page: publishedPage,
     });
+    
+  const { ArticleStats } = useRetrieveArticleStats();
+  const statsData = ArticleStats?.data ?? null;
 
   const stats = [
     {
-      label: 'Total Articles',
-      value: crawledArticles?.meta.pagination.total_count ?? 0,
-      description: '6 published',
+      label: "Total Articles",
+      value: statsData?.totalArticles ?? 0,
+      description: `${statsData?.totalPublishedArticles ?? 0 } Published Articles`,
       icon: FileText,
-
-      color: 'text-gray-900',
-      iconColor: 'text-[#255FDE]',
-      bgColor: 'bg-[#DDEBFF]',
+      color: "text-gray-900",
+      iconColor: "text-[#255FDE]",
+      bgColor: "bg-[#DDEBFF]",
     },
     {
-      label: 'Crawled Queue',
-      value: crawledArticles?.meta?.pagination?.total_count ?? 0,
-      description: 'Awaiting review',
+      label: "Crawled Queue",
+      value: statsData?.pendingCrawledArticlesLast7Days ?? 0,
+      description: "Awaiting review",
       icon: BriefcaseBusiness,
-      color: 'text-gray-900',
-      iconColor: 'text-[#0AA84F]',
-      bgColor: 'bg-[#D6F1E1]',
+      color: "text-gray-900",
+      iconColor: "text-[#0AA84F]",
+      bgColor: "bg-[#D6F1E1]",
     },
     {
       label: "Editor's Picks",
-      value: 3,
-      description: 'Featured content',
+      value: statsData?.totalEditorsPick ?? 0,
+      description: "Featured content",
       icon: Star,
-      color: 'text-gray-900',
-      iconColor: 'text-[#CF8C00]',
-      bgColor: 'bg-[#F8F2B7]',
+      color: "text-gray-900",
+      iconColor: "text-[#CF8C00]",
+      bgColor: "bg-[#F8F2B7]",
     },
     {
-      label: 'Total Views',
-      value: '16,764',
-      description: 'This month',
+      label: "Total Views",
+      value: statsData?.totalViewsCurrentMonth ?? 0,
+      description: "This month",
       icon: TrendingUp,
-      color: 'text-gray-900',
-      iconColor: 'text-[#8B23E8]',
-      bgColor: 'bg-[#EBD9FA]',
+      color: "text-gray-900",
+      iconColor: "text-[#8B23E8]",
+      bgColor: "bg-[#EBD9FA]",
     },
   ];
 
   const tabs = [
     {
-      title: 'Published Articles',
-      value: 'published',
+      title: "Published Articles",
+      value: "published",
       count: publishedArticles?.meta.pagination.total_count ?? 0,
       content: (
         <PublishedArticles
@@ -93,8 +97,8 @@ export default function ArticlesContainer() {
       ),
     },
     {
-      title: 'Crawled Queue',
-      value: 'crawled',
+      title: "Crawled Queue",
+      value: "crawled",
       count: crawledArticles ? crawledArticles.meta.pagination.total_count : 0,
       content: (
         <CrawledQueue
@@ -105,8 +109,8 @@ export default function ArticlesContainer() {
       ),
     },
     {
-      title: 'Drafts',
-      value: 'drafts',
+      title: "Drafts",
+      value: "drafts",
       count: 0,
       content: <Drafts />,
     },
