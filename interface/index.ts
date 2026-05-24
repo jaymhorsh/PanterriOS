@@ -11,6 +11,7 @@ export * from './events.entity';
 export * from './audit-log.entity';
 export * from './ai-agents';
 export * from './media.entity';
+export * from './analytics';
 
 export interface Pagination {
   currentPage?: number;
