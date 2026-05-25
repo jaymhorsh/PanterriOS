@@ -178,7 +178,6 @@ export interface CreateUserReq {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   userStatus:
     | 'activated'
     | 'deactivated'

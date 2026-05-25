@@ -1,5 +1,6 @@
-export * from './dashboard';
-export * from './navigation';
+export * from '../types/dashboard';
+export * from './dashboardOverview.entity';
+export * from '../types/navigation';
 export * from './auth.entity';
 export * from './user-profile.entity';
 export * from './investor-management.entity';
@@ -10,6 +11,7 @@ export * from './events.entity';
 export * from './audit-log.entity';
 export * from './ai-agents';
 export * from './media.entity';
+export * from './analytics';
 
 export interface Pagination {
   currentPage?: number;

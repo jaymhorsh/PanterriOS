@@ -56,14 +56,14 @@ export function PublishedArticles({
             ) : null}
           </div>
           <div className="min-w-0">
-            <p className="max-w-[360px] truncate text-base font-semibold text-[#0F172B]">
+            <p className="max-w-[340px] truncate text-base font-semibold text-[#0F172B]">
               {row.original.title}
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {row.original.matchedKeywords.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-sm bg-[#F1F5F9] px-3 py-1 text-sm font-medium text-[#45556C]"
+                  className="rounded-sm bg-[#F1F5F9] px-3 py-1 text-xs font-medium text-[#45556C]"
                 >
                   {tag}
                 </span>
@@ -119,6 +119,19 @@ export function PublishedArticles({
           {row.original.viewCount.toLocaleString()}
         </span>
       ),
+    },
+    {
+      accessorKey: 'postType',
+      header: 'Post type',
+      cell: ({ row }) => {
+        const tone =
+          row.original.postType === 'insight'
+            ? 'amber'
+            : row.original.postType === 'blog'
+              ? 'purple'
+              : 'blue';
+        return <BadgePill label={row.original.postType} tone={tone} />;
+      },
     },
     {
       accessorKey: 'badges',

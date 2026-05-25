@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { DashboardLayout } from '@/components/shared';
-import { DashboardUser } from '@/interface/dashboard';
+import { DashboardUser } from '@/types/dashboard';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/hook/protectedRoute';
 
