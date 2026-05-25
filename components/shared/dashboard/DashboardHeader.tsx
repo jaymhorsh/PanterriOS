@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { ChildMenu, DashboardUser } from '@/interface/dashboard';
+import { ChildMenu, DashboardUser } from '@/types/dashboard';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';

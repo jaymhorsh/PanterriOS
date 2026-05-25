@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { DashboardHeader } from './DashboardHeader';
 import { DashboardSidebar } from './DashboardSidebar';
 
-import { DashboardUser, MenuItem } from '@/interface/dashboard';
+import { DashboardUser, MenuItem } from '@/types/dashboard';
 import { accountMenu, SIDE_BAR_MENU } from './data';
 
 interface DashboardLayoutProps {
@@ -20,11 +20,7 @@ export function DashboardLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   function getMenuByRoles(roles: string | string[] | undefined): MenuItem[] {
-    const normalizedRoles = Array.isArray(roles)
-      ? roles
-      : roles
-        ? [roles]
-        : [];
+    const normalizedRoles = Array.isArray(roles) ? roles : roles ? [roles] : [];
 
     if (normalizedRoles.length === 0) {
       console.warn('Invalid or missing roles:', roles);

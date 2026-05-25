@@ -129,3 +129,28 @@ export const dateAndTimeFormatter = (date: Date) => {
     year: 'numeric',
   });
 };
+
+export function formatCurrencyValue(value: number | null): string {
+  if (value === null) {
+    return '-';
+  }
+
+  const units = [
+    { value: 1_000_000_000, suffix: 'B' },
+    { value: 1_000_000, suffix: 'M' },
+    { value: 1_000, suffix: 'K' },
+  ];
+
+  for (const unit of units) {
+    if (value >= unit.value) {
+      const formatted = (value / unit.value)
+        .toFixed(value / unit.value >= 100 ? 0 : 2)
+        .replace(/\.00$/, '')
+        .replace(/(\.\d*[1-9])0$/, '$1');
+
+      return `₦${formatted}${unit.suffix}`;
+    }
+  }
+
+  return `₦${value.toLocaleString('en-NG')}`;
+}

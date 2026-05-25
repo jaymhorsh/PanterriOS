@@ -40,7 +40,6 @@ import { MultiSelect } from '@/components/ui/multiSelect';
 import { useCreateUser } from '@/hook/user-management/useCreateUser';
 import { useRetrieveUserProfile } from '@/hook/user-management/useRetrieveUserProfile';
 import { useUpdateUser } from '@/hook/user-management/useUpdateUser';
-import { generatePassword } from '@/utils/helpers';
 import { CreateUserFormSkeleton } from '@/components/shared';
 
 const createUserSchema = z.object({
@@ -48,7 +47,6 @@ const createUserSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
   phoneNumber: z.string().min(7, 'Phone number is required'),
-  password: z.string().optional(),
   gender: z.string().min(1, 'Select gender'),
   roles: z.array(z.string()).min(1, 'Select at least one role'),
   department: z.string().min(1, 'Select department'),
@@ -89,7 +87,6 @@ export function CreateUserForm({ closeModal, id }: Prop) {
       lastName: '',
       email: '',
       phoneNumber: '',
-      password: '',
       gender: '',
       roles: [],
       department: '',
@@ -106,7 +103,6 @@ export function CreateUserForm({ closeModal, id }: Prop) {
       lastName: editProfile.data.lastName,
       email: editProfile.data.email,
       phoneNumber: editProfile.data.phoneNumber,
-      password: '',
       gender: editProfile.data.gender,
       roles: editProfile.data.roles,
       department: editProfile.data.department,
@@ -136,7 +132,6 @@ export function CreateUserForm({ closeModal, id }: Prop) {
         lastName: values.lastName.trim(),
         email: values.email,
         phoneNumber: values.phoneNumber.trim(),
-        password: generatePassword(16),
         gender: values.gender.trim(),
         roles: values.roles,
         department: values.department.trim(),

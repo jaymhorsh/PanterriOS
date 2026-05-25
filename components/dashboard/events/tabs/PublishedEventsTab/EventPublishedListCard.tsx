@@ -1,4 +1,4 @@
-import { Clock3, MapPin, Users, Pencil, Trash2 } from 'lucide-react';
+import { Clock3, MapPin, Users, Pencil, Trash2, XCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,19 @@ import { EventEntity } from '@/interface';
 import { dateAndTimeFormatter } from '@/utils/helpers';
 import Image from 'next/image';
 import EditCreateEvent from './EditCreateEvent';
+import { useUpdateEvent } from '@/hook/events';
+import { Button } from '@/components/ui/button';
 
 interface EventListCardProps {
   event: EventEntity;
 }
 
 export function EventPublishedListCard({ event }: EventListCardProps) {
+  const { updateEvent, isLoading } = useUpdateEvent();
+  const handleStatusUpdate = async (id: string, status: string) => {
+    await updateEvent({ id, payload: { status } });
+  };
+
   return (
     <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
       <div className="flex items-start gap-4">
@@ -77,9 +84,15 @@ export function EventPublishedListCard({ event }: EventListCardProps) {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
-              <button className="hover:text-[#DC2626] cursor-pointer">
-                <Trash2 className="h-5 w-5 text-[#E7000B]" />
-              </button>
+              <Button
+                type="button"
+                className="inline-flex items-center min-w-30 gap-2 cursor-pointer rounded-sm border border-[#FCA5A5] bg-white px-3 py-1.5 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEF2F2]"
+                onClick={() => handleStatusUpdate(event._id, 'rejected')}
+                disabled={isLoading}
+              >
+                <XCircle className="h-4 w-4" />
+                {isLoading ? 'removing...' : 'Unpublished'}
+              </Button>
             </div>
           </div>
 
