@@ -15,9 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import {
-  useDetailedMarketData,
-} from "@/hook/marketData/marketData";
+import { useDetailedMarketData } from "@/hook/marketData/marketData";
 import { MarketDataTable } from "./MarketDataTable";
 import { MarketPriceTrendChart } from "./marketPriceTrendChart";
 
@@ -85,7 +83,7 @@ function formatUpdatedAt(value?: string) {
 }
 
 export function MarketDataModule() {
-  const [selectedCity, setSelectedCity] = useState("Lagos");
+  const [selectedCity, setSelectedCity] = useState<"Lagos" | "Abuja" | "Port Harcourt">("Lagos");
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -100,14 +98,13 @@ export function MarketDataModule() {
     all: false,
   });
 
- 
-
   const marketRows = marketDataResponse?.data ?? [];
-  const loading = isMarketLoading 
+  const loading = isMarketLoading;
   const latestUpdate =
     marketRows[0]?.updatedAt ?? marketRows[marketRows.length - 1]?.updatedAt;
-  const totalItems = marketDataResponse?.meta?.pagination?.total_count ??  marketRows.length;
-  const limit =  marketDataResponse?.meta?.pagination?.per_page ?? 10;
+  const totalItems =
+    marketDataResponse?.meta?.pagination?.total_count ?? marketRows.length;
+  const limit = marketDataResponse?.meta?.pagination?.per_page ?? 10;
   const totalPages = Math.max(1, Math.ceil(totalItems / limit));
   const propertyTypeCount = useMemo(
     () => new Set(marketRows.map((row) => row.sampleAssetType)).size,
@@ -213,7 +210,7 @@ export function MarketDataModule() {
                 key={city}
                 type="button"
                 onClick={() => {
-                  setSelectedCity(city);
+                  setSelectedCity(city as "Lagos" | "Abuja" | "Port Harcourt");
                   setCurrentPage(1);
                 }}
                 className={cn(
@@ -243,12 +240,11 @@ export function MarketDataModule() {
             type="button"
             variant="outline"
             className="h-8 rounded-sm border-[#F0C85B] bg-white px-2 text-xs font-medium text-black hover:bg-[#FFFDF5]"
-            onClick={() => {
-              void refetchMarketData();
-              void refetchTrendData();
-            }}
+            onClick={() => refetchMarketData()}
           >
-            <RefreshCcw className="h-3.5 w-3.5" />
+            <RefreshCcw
+              className={`h-3.5 w-3.5 ${isMarketLoading ? "animate-spin" : ""} `}
+            />
             Refresh Data
           </Button>
         </div>
@@ -281,19 +277,20 @@ export function MarketDataModule() {
       {loading ? (
         <TableSkeleton rows={8} columns={9} />
       ) : (
-        <MarketDataTable city={selectedCity} rows={marketRows} pagination={{
-          currentPage,
-          totalPages:totalPages,
-          totalItems: totalItems,
-          limit: limit,
-          onPageChange: setCurrentPage,
-  }} />
+        <MarketDataTable
+          city={selectedCity}
+          rows={marketRows}
+          pagination={{
+            currentPage,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            limit: limit,
+            onPageChange: setCurrentPage,
+          }}
+        />
       )}
 
-
-      <MarketPriceTrendChart
-        city={selectedCity}
-      />
+      <MarketPriceTrendChart city={selectedCity} />
     </div>
   );
 }
